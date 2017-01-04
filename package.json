@@ -4,7 +4,8 @@
   "description": "Manages membership in a tribe of cool cats",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --use-strict index.js",
+    "start": "node index.js",
+    "startmon": "nodemon --use-strict index.js",
     "bundle": "webpack"
   },
   "repository": {

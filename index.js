@@ -8,6 +8,7 @@ const config = require('./config');
 require('./server/models').connect(config.dbUri);
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 // tell the app to look for static files in these directories
 app.use(express.static(path.join(__dirname, 'server/static/')));
 
@@ -39,6 +40,6 @@ app.get('*', function (request, response){
 })
 
 // start the server
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000 or http://127.0.0.1:3000');
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT} or http://127.0.0.1:${PORT}`);
 });
