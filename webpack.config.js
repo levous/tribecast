@@ -50,7 +50,8 @@ module.exports = {
   ],
   postcss: () => [autoprefixer],
   debug: true,
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-eval-source-map'
+  //,
   // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
-  watch: true
+  //watch: true
 };
