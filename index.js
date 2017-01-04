@@ -4,6 +4,10 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./config');
 
+//HACK:
+if(process.env.NODE_ENV === 'production'){
+  config.dbUri = "mongodb://heroku:s3renBE@ds151008.mlab.com:51008/tribecast"
+}
 // connect to the database and load models
 require('./server/models').connect(config.dbUri);
 
