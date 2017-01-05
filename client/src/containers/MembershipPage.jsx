@@ -22,7 +22,7 @@ class MembershipPage extends Component {
 
   render() {
     const {members, selectedMember} = this.props;
-    const selectedMemberId = selectedMember.id || -1;
+    const selectedMemberId = selectedMember ? selectedMember.id : -1;
     return (
       <div>
         <h2 className="text-center">Members</h2>
