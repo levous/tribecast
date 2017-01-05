@@ -6,16 +6,16 @@ import { List, ListItem } from 'material-ui/List';
 export default class MemberList extends Component {
   constructor(props, context) {
     super(props, context);
+    const selectedMemberId = props.selectedMemberId || -1;
     this.state = {
-      activeItem: -1
+      activeItem: selectedMemberId
     }
   }
 
   handleItemTouchTap(member){
-    console.log(member.id + ' ok') // Logs item id
+    console.log('handleItemTouchTap', member.id);
     this.setState({activeItem:member.id});
     this.props.onSelectItem(member);
-
   }
 
   render() {

@@ -4,47 +4,38 @@ import {connect} from 'react-redux';
 import { Grid, Row, Col } from 'react-bootstrap'
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
+import * as memberActions from '../actions/member-actions'
 
 class MembershipPage extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      selectedMember: null
-    }
   }
 
   handleMemberItemSelection(member){
-    this.setState({
-      selectedMember: member
-    })
+    this.props.actions.selectMember(member);
   }
 
   handleUpdate(member){
-    this.setState({
-      selectedMember: member
-    })
+    console.log('handleUpdate', member );
   }
 
   render() {
-    const {selectedMember} = this.state
-    const {actions, members} = this.props;
+    const {members, selectedMember} = this.props;
+    const selectedMemberId = selectedMember.id || -1;
     return (
       <div>
         <h2 className="text-center">Members</h2>
         <Grid>
           <Row className="show-grid">
             <Col xs={6} md={4}>
-              <MemberList members={members} onSelectItem={(member) => this.handleMemberItemSelection(member)}/>
+              <MemberList members={members} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8}>
               {selectedMember && <Member member={selectedMember} onUpdate={(member) => this.handleUpdate(member)}/> }
             </Col>
           </Row>
         </Grid>
-
-
-
       </div>
     );
   }
@@ -52,11 +43,15 @@ class MembershipPage extends Component {
 
 function mapStateToProps(state) {
   return {
-    members: state.members,
-    selectedMember: state.selectedMember
+    members: state.memberApp.members,
+    selectedMember: state.memberApp.selectedMember
   };
 }
 
-export default connect(
-  mapStateToProps
-)(MembershipPage);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(memberActions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MembershipPage);

@@ -1,3 +1,5 @@
+import {MEMBER_ACTION_TYPES} from '../actions/member-actions.js'
+
 class Member {
   constructor(id, fname, lname, street, city, state, zip){
     this.id = id;
@@ -11,10 +13,9 @@ class Member {
       zip: zip
     }
   }
-
 }
 
-const initialState = [
+const members = [
   new Member(666, 'Rusty', 'Brontobones', '3 Swann Rdg','Palmetto', 'GA', '30268'),
   new Member(1,'Fred','Flintstone','34 Swann Rdg', 'Palmetto','GA','30268'),
   new Member(2, 'Barney', 'Rubble', '23 Serenbe Ln', 'Palmetto','GA','30268'),
@@ -72,6 +73,31 @@ const initialState = [
   new Member(64,'Lourie', 'Sytsma','9785 Harvey Lane', 'Riverview', 'FL', '33569')
 ];
 
-export default function members(state = initialState, action) {
-  return state;
-}
+const initialState = {
+  members: members,
+  selectedMember: undefined
+};
+
+let memberApp = function(state = initialState, action) {
+
+  switch (action.type) {
+    case MEMBER_ACTION_TYPES.SELECT_MEMBER:
+      return Object.assign({}, state, {
+        selectedMember: action.member
+      });
+    case MEMBER_ACTION_TYPES.ADD:
+      return Object.assign({}, state, {
+        members: [
+          ...state.members,
+          {
+            text: action.member,
+            completed: false
+          }
+        ]
+      });
+    default:
+      return state;
+  }
+};
+
+export default memberApp;

@@ -38,47 +38,25 @@ export default class Member extends Component {
         {member.propertyAddress ? <Address address={member.propertyAddress}/> : <div>missing property address</div>}
         <div>
           <PropertyTextInput
-            object={member}
-            propertySelectorPath={'propertyAddress.street'}
-            editing={editing}
-            onChange={(text) => {
-                member.propertyAddress.street = text;
-                this.setState({member: member});
-              }
-            }
-          />
+            object={member} propertySelectorPath={'propertyAddress.street'} editing={editing}
+            onChange={(newMember) => this.handlePropertyChange(newMember)} />
+
         </div>
         <div>
           <PropertyTextInput
-            object={member}
-            propertySelectorPath={'propertyAddress.city'}
-            editing={editing}
-            onChange={(text) => {
-                member.propertyAddress.city = text;
-                this.setState({member: member});
-              }
-            }
-          />
+            object={member} propertySelectorPath={'propertyAddress.city'} editing={editing}
+            onChange={(newMember) => this.handlePropertyChange(newMember)} />
+
           <span style={{marginRight:'5px'}}>,</span>
           <PropertyTextInput
-            object={member}
-            propertySelectorPath={'propertyAddress.state'}
-            editing={editing}
-            onChange={(text) => {
-                member.propertyAddress.state = text;
-                this.setState({member: member});
-              }
-            }
-          />
+            object={member} propertySelectorPath={'propertyAddress.state'} editing={editing}
+            onChange={(newMember) => this.handlePropertyChange(newMember)} />
+
           <PropertyTextInput
             object={member}
             propertySelectorPath={'propertyAddress.zip'}
             editing={editing}
-            onChange={(text) => {
-                member.propertyAddress.zip = text;
-                this.setState({member: member});
-              }
-            }
+            onChange={(newMember) => this.handlePropertyChange(newMember)} 
             style={{marginLeft:'8px'}}
           />
         </div>
