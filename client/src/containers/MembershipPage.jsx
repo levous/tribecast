@@ -18,6 +18,7 @@ class MembershipPage extends Component {
 
   handleUpdate(member){
     console.log('handleUpdate', member );
+    this.props.actions.updateMember(member);
   }
 
   render() {

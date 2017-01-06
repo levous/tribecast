@@ -5,7 +5,6 @@ class Member {
     this.id = id;
     this.firstName = fname;
     this.lastName = lname;
-    this.fullName = fname + ' ' + lname;
     this.propertyAddress = {
       street: street,
       city: city,
@@ -14,6 +13,7 @@ class Member {
     }
   }
 }
+
 
 const members = [
   new Member(666, 'Rusty', 'Brontobones', '3 Swann Rdg','Palmetto', 'GA', '30268'),
@@ -78,6 +78,9 @@ const initialState = {
   selectedMember: undefined
 };
 
+// to start over...
+//localStorage.clear();
+
 let memberApp = function(state = initialState, action) {
 
   switch (action.type) {
@@ -95,6 +98,20 @@ let memberApp = function(state = initialState, action) {
           }
         ]
       });
+    case MEMBER_ACTION_TYPES.UPDATE:
+      // find the index by id
+      const actionIndex = state.members.map(function(m) {return m.id; }).indexOf(action.member.id);
+      // create a new array, containing updated item, using spread and slice
+      return Object.assign({}, state,
+        {
+          members: [
+            ...state.members.slice(0, actionIndex),
+            // ensure unspecified props are not accidentally discarded and that stored object is not mutated
+            Object.assign({}, state.members[actionIndex], action.member),
+            ...state.members.slice(actionIndex + 1)
+          ]
+        }
+     );
     default:
       return state;
   }

@@ -27,10 +27,21 @@ class PropertyTextInput extends Component {
     for(let idx=0;idx<selectorPaths.length-1;idx++){
       targetObject = targetObject[selectorPaths[idx]];
     }
-  
+
     console.log(targetObject);
     console.log(value);
     console.log(propertyName);
+
+
+
+    //TODO Use ObjectAssign on the hierarchy to return a copy.  This is mutating the original object which is not allowed.
+    /*
+    // better way than this?
+    const newObject = {};
+    newObject[propertyName] = value;
+    // now iterate back up the chain to merge updated replacements?
+    */
+
     targetObject[propertyName] = value;
   }
 

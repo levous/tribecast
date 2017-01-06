@@ -35,7 +35,6 @@ export default class Member extends Component {
 
         </h2>
 
-        {member.propertyAddress ? <Address address={member.propertyAddress}/> : <div>missing property address</div>}
         <div>
           <PropertyTextInput
             object={member} propertySelectorPath={'propertyAddress.street'} editing={editing}
@@ -56,7 +55,7 @@ export default class Member extends Component {
             object={member}
             propertySelectorPath={'propertyAddress.zip'}
             editing={editing}
-            onChange={(newMember) => this.handlePropertyChange(newMember)} 
+            onChange={(newMember) => this.handlePropertyChange(newMember)}
             style={{marginLeft:'8px'}}
           />
         </div>

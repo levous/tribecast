@@ -35,8 +35,8 @@ export default class MemberList extends Component {
           {
             this.props.members.map((member, i) =>
               <ListItem key={`mem${i}`}
-                primaryText={member.fullName}
-                secondaryText={member.propertyAddress.street}
+                primaryText={`${member.firstName} ${member.lastName}`}
+                secondaryText={member.propertyAddress && member.propertyAddress.street}
                 onTouchTap={() => this.handleItemTouchTap(member)}
                 style={(this.state.activeItem === member.id) ? styles.selectedRow : {}}
               />
