@@ -24,7 +24,7 @@ export default class MemberList extends Component {
         border: '1px solid #00bcd4'
       },
       listStyle: {
-        maxHeight: 320,
+        maxHeight: 300,
         overflow: 'scroll'
       }
     };

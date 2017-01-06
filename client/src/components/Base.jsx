@@ -7,7 +7,7 @@ import Auth from '../modules/Auth';
 
 const Base = ({ children }) => (
 
-  <div className="container">
+  <div>
 
     <Navbar inverse collapseOnSelect>
       <Navbar.Header>
@@ -24,7 +24,7 @@ const Base = ({ children }) => (
             </LinkContainer>
           )}
         </Nav>
-        <Nav pullRight style={{marginRight: '10px'}}>
+        <Nav pullRight>
           {Auth.isUserAuthenticated() && (
             <LinkContainer to="/logout">
               <NavItem eventKey={1}>Log Out</NavItem>
@@ -50,9 +50,10 @@ const Base = ({ children }) => (
 
 
 
-
-    <div className="jumbotron">
-      {children}
+    <div className="container">
+      <div className="jumbotron">
+        {children}
+      </div>
     </div>
   </div>
 );

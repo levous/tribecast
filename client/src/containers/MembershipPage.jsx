@@ -28,7 +28,7 @@ class MembershipPage extends Component {
         <h2 className="text-center">Members</h2>
         <Grid>
           <Row className="show-grid">
-            <Col xs={6} md={4}>
+            <Col xs={12} md={4}>
               <MemberList members={members} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8}>
