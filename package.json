@@ -48,6 +48,7 @@
     "html-webpack-plugin": "^2.25.0",
     "node-sass": "^4.1.1",
     "nodemon": "^1.11.0",
+    "react-addons-css-transition-group": "^15.4.2",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Grid, Row, Col } from 'react-bootstrap'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
 import * as memberActions from '../actions/member-actions'
@@ -33,7 +34,13 @@ class MembershipPage extends Component {
               <MemberList members={members} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8}>
-              {selectedMember && <Member member={selectedMember} onUpdate={(member) => this.handleUpdate(member)}/> }
+              <ReactCSSTransitionGroup
+                transitionName="example"
+                transitionEnterTimeout={500}
+                transitionLeaveTimeout={300}>
+                {selectedMember && <Member key={`member${selectedMember.id}`} member={selectedMember} onUpdate={(member) => this.handleUpdate(member)}/> }
+              </ReactCSSTransitionGroup>
+
             </Col>
           </Row>
         </Grid>

@@ -11,6 +11,13 @@ export default class Member extends Component {
 		};
   }
 
+  componentWillEnter(callback){
+    callback();
+  }
+
+  componentWillLeave(callback){
+    callback();
+  }
   handleEditButtonTouchTap(){
     this.setState({editing: !this.state.editing});
   }
