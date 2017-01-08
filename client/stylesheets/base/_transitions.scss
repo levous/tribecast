@@ -2,7 +2,7 @@
   opacity: 0.01;
 }
 
-.example-enter.example-enter-active {
+.example-enter-active {
   opacity: 1;
   background-color:red;
   transition: opacity 500ms ease-in;
@@ -12,7 +12,7 @@
   opacity: 1;
 }
 
-.example-leave.example-leave-active {
+.example-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
 }
