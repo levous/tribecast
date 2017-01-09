@@ -16,11 +16,11 @@ export default class Member extends Component {
 
   componentDidMount() {
     const el = ReactDOM.findDOMNode(this);
-    TweenMax.fromTo(el, 0.3, {y: -100, opacity: 1}, {y: 0, opacity: 1});
+    TweenMax.fromTo(el, 0.3, {y: 300, opacity: 1}, {y: 0, opacity: 1});
   }
   componentWillUnmount() {
     const el = ReactDOM.findDOMNode(this);
-    TweenMax.fromTo(el, 0.3, {y: 0, opacity: 1}, {y: 150, opacity: 0});
+    TweenMax.fromTo(el, 0.3, {y: 0, opacity: 1, backgroundColor: '#000000'}, {y: -300, opacity: 0});
   }
 
   handleEditButtonTouchTap(){
