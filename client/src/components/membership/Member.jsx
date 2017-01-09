@@ -31,25 +31,29 @@ export default class Member extends Component {
     this.props.onUpdate(member);
   }
 
+
+
   render() {
     const member = this.props.member;
     const editing = this.state.editing;
     const editButtonText = editing ? 'Done': 'Edit'
-
+    const styledLabel = (htmlFor, text) => <label htmlFor={htmlFor} style={{display: 'block'}}>{text}</label>;
     return (
-      <div key={`member${member.id}`} style={{position: 'relative'}}>
+      <div key={`member${member.id}`} style={{marginTop: '20px'}}>
         <FlatButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>
-        <h2>
+        {styledLabel('firstName', 'name')}
+        <h2 style={{marginTop: 0}}>
           <PropertyTextInput object={member} propertySelectorPath={'firstName'} editing={editing}
-            onChange={(newMember) => this.handlePropertyChange(newMember)} />
+            onChange={(newMember) => this.handlePropertyChange(newMember)} id='firstName'/>
           <PropertyTextInput object={member} propertySelectorPath={'lastName'} editing={editing} style={{marginLeft:'10px'}}
             onChange={(newMember) => this.handlePropertyChange(newMember)} />
         </h2>
 
         <div>
+          {styledLabel('address', 'property address')}
           <PropertyTextInput
             object={member} propertySelectorPath={'propertyAddress.street'} editing={editing}
-            onChange={(newMember) => this.handlePropertyChange(newMember)} />
+            onChange={(newMember) => this.handlePropertyChange(newMember)} id='address'/>
 
         </div>
         <div>
