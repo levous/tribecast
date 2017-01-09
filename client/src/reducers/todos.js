@@ -1,4 +1,4 @@
-import {ADD_TODO, DELETE_TODO, EDIT_TODO, COMPLETE_TODO, COMPLETE_ALL_TODOS, CLEAR_COMPLETED_TODOS} from '../constants/TodoActionTypes';
+import {TODO_ACTION_TYPES} from '../actions/todo-actions.js'
 
 const initialState = [
   {
@@ -10,7 +10,7 @@ const initialState = [
 
 export default function todos(state = initialState, action) {
   switch (action.type) {
-    case ADD_TODO:
+    case TODO_ACTION_TYPES.ADD_TODO:
       return [
         {
           id: state.reduce((maxId, todo) => Math.max(todo.id, maxId), -1) + 1,
@@ -20,33 +20,33 @@ export default function todos(state = initialState, action) {
         ...state
       ];
 
-    case DELETE_TODO:
+    case TODO_ACTION_TYPES.DELETE_TODO:
       return state.filter(todo =>
         todo.id !== action.id
       );
 
-    case EDIT_TODO:
+    case TODO_ACTION_TYPES.EDIT_TODO:
       return state.map(todo =>
         todo.id === action.id ?
           Object.assign({}, todo, {text: action.text}) :
           todo
       );
 
-    case COMPLETE_TODO:
+    case TODO_ACTION_TYPES.COMPLETE_TODO:
       return state.map(todo =>
         todo.id === action.id ?
           Object.assign({}, todo, {completed: !todo.completed}) :
           todo
       );
 
-    case COMPLETE_ALL_TODOS: {
+    case TODO_ACTION_TYPES.COMPLETE_ALL_TODOS: {
       const areAllMarked = state.every(todo => todo.completed);
       return state.map(todo => Object.assign({}, todo, {
         completed: !areAllMarked
       }));
     }
 
-    case CLEAR_COMPLETED_TODOS:
+    case TODO_ACTION_TYPES.CLEAR_COMPLETED_TODOS:
       return state.filter(todo => todo.completed === false);
 
     default:

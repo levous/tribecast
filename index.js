@@ -1,8 +1,9 @@
 const express = require('express');
-const path = require('path')
+const path = require('path');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./config');
+const fs = require('fs');
 
 //HACK:
 //if(process.env.NODE_ENV === 'production'){
@@ -28,15 +29,26 @@ const localLoginStrategy = require('./server/passport/local-login');
 passport.use('local-signup', localSignupStrategy);
 passport.use('local-login', localLoginStrategy);
 
-// pass the authorization checker middleware
-const authCheckMiddleware = require('./server/middleware/auth-check');
-app.use('/api', authCheckMiddleware);
+function setupRoutes(basepath, app){
+  // load each file in the routes dir
+  // dynamically include routes (Controllers)
+  fs.readdirSync(basepath).forEach(function (fileOrDir){
+    const fullPath = path.join(basepath, fileOrDir);
+    if(fullPath.substr(-3) === '.js') {
+      let route = require(fullPath);
+      console.log('Setup Route', fullPath);
+      route.setup(app);
+    }else{
+      let pathStat = fs.statSync(fullPath)
+      console.log('HERE ' + fullPath, pathStat.isDirectory);
+      if(pathStat.isDirectory){
+        setupRoutes(fullPath, app);
+      }
+    }
+  });
+}
 
-// routes
-const authRoutes = require('./server/routes/auth');
-const apiRoutes = require('./server/routes/api');
-app.use('/auth', authRoutes);
-app.use('/api', apiRoutes);
+setupRoutes(path.join(__dirname, './server/routes'), app);
 
 // handle every other route with index.html, which will run react front end
 app.get('*', function (request, response){

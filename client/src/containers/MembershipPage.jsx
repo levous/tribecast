@@ -32,7 +32,7 @@ class MembershipPage extends Component {
             <Col xs={12} md={4}>
               <MemberList members={members} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
             </Col>
-            <Col xs={12} md={8}>
+            <Col xs={12} md={8} style={{overflow: 'hidden'}}>
               {selectedMember && <Member key={`memberdiv${selectedMember.id}`} member={selectedMember} style={{postion: 'relative'}} onUpdate={(member) => this.handleUpdate(member)}/> }
             </Col>
           </Row>
