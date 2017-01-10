@@ -1,12 +1,12 @@
 
 const validator = require('validator');
 const passport = require('passport');
-
+const express = require('express');
 
 //TODO: Convert all to promises
 //TODO: Move logic out of routes.  I like routes to be clean and simple.  Create controllers that do not care about pathing.  AuthController should return a Promise and that is all that should be handled here
 
-exports.setup = function (app) {
+exports.setup = function (basePath, app) {
   /**
    * Validate the sign up form
    *
@@ -78,7 +78,9 @@ exports.setup = function (app) {
     };
   }
 
-  app.post('/auth/signup', (req, res, next) => {
+  const router = express.Router();
+
+  router.post('/signup', (req, res, next) => {
     const validationResult = validateSignupForm(req.body);
     if (!validationResult.success) {
       return res.status(400).json({
@@ -116,7 +118,7 @@ exports.setup = function (app) {
     })(req, res, next);
   });
 
-  app.post('/auth/login', (req, res, next) => {
+  router.post('/login', (req, res, next) => {
     const validationResult = validateLoginForm(req.body);
     if (!validationResult.success) {
       return res.status(400).json({
@@ -151,4 +153,6 @@ exports.setup = function (app) {
       });
     })(req, res, next);
   });
+
+  app.use(basePath, router);
 }

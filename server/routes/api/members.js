@@ -1,45 +1,44 @@
-
+var express = require('express');
 const memberController = require('../../controllers/memberController');
 
-exports.setup = function (app) {
+exports.setup = function (basePath, app) {
   //TODO: should we infer the web path based on the directory path?  Could be sent in as a param or computed using __dirname
-
+  const router = express.Router();
   /**
    * Create new Member - POST
    * @param {object} member - JSON representation of a Member
    * @returns "201 Created" upon success with a location header where the new object can be retrieved
    */
-  app.post('/api/members', function(req, res){
+  router.post('/', function(req, res, next){
     const newMember = req.body.data;
     //TODO: Validate this shit!
     memberController.create(newMember)
       .then(function(member){
-        res.location = 'hello';
-        res.json(newMember)
-        console.log('Aw Yah', member);
+        // set location header for new resource
+        res.location(`${req.baseUrl}/members/${member.id}`);
+        // Set "Created" status
+        res.status(201);
+        res.json({data:member});
       })
-      .catch(function(error){
-        console.log('Aw Crap', error);
-      });
-
+      .catch(next);
   });
 
-  app.get('/api/members', function(req, res){
+  router.get('/', function(req, res, next){
     memberController.getAll()
     .then((members) => {
-      res.json({'members': members});
+      res.json({data: {members}});
     })
-    .catch((error) => {
-      console.log('CRAP');
-    });
+    .catch(next);
 
   });
 
-  app.get('/api/members/:id',function(req, res){
+  router.get('/:id',function(req, res, next){
     res.json({'message': 'member ${id}'});
   });
 
-  app.put('/api/members/:id',function(req, res){
+  router.put('/:id',function(req, res, next){
     res.json({'message': 'update member ${id}'});
   });
+
+  app.use(basePath, router);
 }

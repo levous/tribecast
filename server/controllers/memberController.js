@@ -9,12 +9,13 @@ Mongoose.Promise = Promise;
  * @returns (Promise) [Member]
  */
 exports.getAll = function(){
+  throw new Error('Son of a bitch');
   return Member.find().exec();
 }
 
 /**
  * Create new Members
- * @param {Member} member 
+ * @param {Member} member
  * @returns (Promise) new {Member}
  */
 exports.create = function(member){

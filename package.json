@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production webpack --progress && NODE_ENV=production node index.js",
-    "startdev": "nodemon --use-strict index.js",
+    "startdev": "NODE_ENV=development nodemon --use-strict index.js",
     "bundle": "webpack",
     "bundledev": "webpack -w",
     "test": "mocha --recursive -w --name *.spec.js --compilers js:babel-core/register ./client/src ./server"
@@ -37,7 +37,8 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
     "redux-localstorage": "^1.0.0-rc5",
-    "validator": "^6.2.0"
+    "validator": "^6.2.0",
+    "winston": "^2.3.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.6.0",
