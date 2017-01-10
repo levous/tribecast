@@ -1,6 +1,6 @@
-import Mongoose from 'mongoose';
-import Promise from 'bluebird';
-import AddressSchema from './address';
+const Mongoose      = require('mongoose');
+const Promise       = require('bluebird');
+const AddressSchema = require('./address');
 
 // Use bluebird promises
 Mongoose.Promise = Promise;

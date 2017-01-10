@@ -1,5 +1,6 @@
 class Auth {
 
+//TODO: fix this shit.  Totally hackable.  
   /**
    * Authenticate a user. Save a token string in Local Storage
    *

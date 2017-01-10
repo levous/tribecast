@@ -1,11 +1,11 @@
-import Mongoose from 'mongoose';
+const Mongoose = require('mongoose');
 
-let AddressSchema = new Mongoose.Schema({
+let AddressSchema = {
     street: String,
     street2: String,
     city: String,
     state: String,
     zip: String,
-});
+};
 
-export default AddressSchema;
+module.exports = AddressSchema;
