@@ -10,27 +10,32 @@ const finalCreateStore = compose(
 )(createStore);
 
 export default function configureStore(initialState) {
-    /*const reducer = compose(
-        mergePersistedState()
-    )(rootReducer, initialState);
+  const reducer = compose(
+      mergePersistedState()
+  )(rootReducer, initialState);
 
-    const storage = adapter(window.localStorage);
+  const storage = adapter(window.localStorage);
 
-    const createPersistentStore = compose(
-        persistState(storage, 'state')
-    )(createStore);
+  const createPersistentStore = compose(
+      persistState(storage, 'state'),
+      applyMiddleware(thunk, promiseMiddleware)
+  )(createStore);
 
-    const store = createPersistentStore(reducer);
-    if (module.hot) {
-        // Enable Webpack hot module replacement for reducers
-        module.hot.accept('../reducers', () => {
-          const nextReducer = require('../reducers').default;
-          store.replaceReducer(nextReducer);
-        });
-    }*/
+  const store = createPersistentStore(reducer);
+
+  if (module.hot) {
+      // Enable Webpack hot module replacement for reducers
+      module.hot.accept('../reducers', () => {
+        const nextReducer = require('../reducers').default;
+        store.replaceReducer(nextReducer);
+      });
+  }
+
+  return store;
+
 
 // bail
-    const store = finalCreateStore(rootReducer, initialState);
+  /*  const store = finalCreateStore(rootReducer, initialState);
 
     if (module.hot) {
       // Enable Webpack hot module replacement for reducers
@@ -40,5 +45,5 @@ export default function configureStore(initialState) {
       });
     }
 
-    return store;
+    return store;*/
 }
