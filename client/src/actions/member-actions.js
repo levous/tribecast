@@ -25,7 +25,7 @@ export function selectMember(member){
 
 export function createMember(member) {
   return dispatch => {
-    debugger;
+
     dispatch(addMember(member));
     const auth_token = Auth.getToken();
 
@@ -39,7 +39,7 @@ export function createMember(member) {
     })
     .then(result => {
       console.log(result);
-      debugger;
+    
     }) //TODO: remove this "then()"
     .catch(error => {throw error});
   }
