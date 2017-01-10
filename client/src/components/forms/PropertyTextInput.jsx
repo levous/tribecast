@@ -74,11 +74,13 @@ class PropertyTextInput extends Component {
   render() {
     const text = this.state.text;
     const className = classnames('property-text', this.props.className)
+    const {placeholder, editing} = this.props;
     let element;
-    if(this.state.editing || this.props.editing){
+    if(this.state.editing || editing){
       element = (
         <TextInput
           text={text}
+          placeholder={placeholder}
           editing={this.state.editing}
           onChange={(text) => this.handleChange(text)}
           className={className}
@@ -98,6 +100,7 @@ class PropertyTextInput extends Component {
 PropertyTextInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   propertySelectorPath: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   object: PropTypes.object.isRequired
 };
 

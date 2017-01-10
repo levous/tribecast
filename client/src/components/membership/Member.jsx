@@ -43,32 +43,38 @@ export default class Member extends Component {
         <FlatButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>
         {styledLabel('firstName', 'name')}
         <h2 style={{marginTop: 0}}>
-          <PropertyTextInput object={member} propertySelectorPath={'firstName'} editing={editing}
+          <PropertyTextInput object={member} propertySelectorPath='firstName'
+            placeholder='First Name' editing={editing}
             onChange={(newMember) => this.handlePropertyChange(newMember)} id='firstName'/>
-          <PropertyTextInput object={member} propertySelectorPath={'lastName'} editing={editing} style={{marginLeft:'10px'}}
+          <PropertyTextInput object={member} propertySelectorPath='lastName'
+            placeholder='Last Name' editing={editing} style={{marginLeft:'10px'}}
             onChange={(newMember) => this.handlePropertyChange(newMember)} />
         </h2>
 
         <div>
           {styledLabel('address', 'property address')}
           <PropertyTextInput
-            object={member} propertySelectorPath={'propertyAddress.street'} editing={editing}
+            object={member} propertySelectorPath='propertyAddress.street'
+            placeholder='123 Storybook Ln.' editing={editing}
             onChange={(newMember) => this.handlePropertyChange(newMember)} id='address'/>
 
         </div>
         <div>
           <PropertyTextInput
-            object={member} propertySelectorPath={'propertyAddress.city'} editing={editing}
+            object={member} propertySelectorPath='propertyAddress.city'
+            placeholder='Vacationville' editing={editing}
             onChange={(newMember) => this.handlePropertyChange(newMember)} />
 
           <span style={{marginRight:'5px'}}>,</span>
           <PropertyTextInput
-            object={member} propertySelectorPath={'propertyAddress.state'} editing={editing}
+            object={member} propertySelectorPath='propertyAddress.state'
+            placeholder='GA' editing={editing}
             onChange={(newMember) => this.handlePropertyChange(newMember)} />
 
           <PropertyTextInput
             object={member}
-            propertySelectorPath={'propertyAddress.zip'}
+            propertySelectorPath='propertyAddress.zip'
+            placeholder='30268'
             editing={editing}
             onChange={(newMember) => this.handlePropertyChange(newMember)}
             style={{marginLeft:'8px'}}
