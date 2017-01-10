@@ -10,3 +10,8 @@ body{
     background-size: 130%;
   }
 }
+
+.touch-scroll {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}

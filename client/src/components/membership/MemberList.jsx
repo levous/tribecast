@@ -25,7 +25,8 @@ export default class MemberList extends Component {
       },
       listStyle: {
         maxHeight: 300,
-        overflow: 'scroll'
+        overflow: 'scroll',
+        WebkitOverflowScrolling: 'touch'
       }
     };
 
