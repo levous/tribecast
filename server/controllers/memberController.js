@@ -24,8 +24,18 @@ exports.create = function(member){
   return newMember.save();
 }
 
-/*  var body = req.body;
-  req.pet.name = body.pet.name;
-  res.message('Information updated!');
-  res.redirect('/pet/' + req.pet.id);
-};*/
+/**
+ * Update existing Member
+ * @param {Member} member
+ * @returns (Promise) updated {Member}
+ */
+exports.update = function(member){
+  //TODO: validate member
+  const query = {'_id': member.id }
+  //TODO: convert to promise
+  MyModel.findOneAndUpdate(query, member, {upsert:false}, function(err, doc){
+    if (err) return res.send(500, { error: err });
+    return doc
+  });
+}
+
