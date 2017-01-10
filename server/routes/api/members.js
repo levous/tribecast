@@ -10,7 +10,9 @@ exports.setup = function (basePath, app) {
    * @returns "201 Created" upon success with a location header where the new object can be retrieved
    */
   router.post('/', function(req, res, next){
+    console.log('post member', req.body);
     const newMember = req.body.data;
+
     //TODO: Validate this shit!
     memberController.create(newMember)
       .then(function(member){

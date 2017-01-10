@@ -9,7 +9,7 @@ Mongoose.Promise = Promise;
  * @returns (Promise) [Member]
  */
 exports.getAll = function(){
-  throw new Error('Son of a bitch');
+  
   return Member.find().exec();
 }
 

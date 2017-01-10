@@ -1,4 +1,4 @@
-import {MEMBER_ACTION_TYPES} from '../actions/member-actions.js'
+import {member_action_types} from '../actions/member-actions.js'
 
 class Member {
   constructor(id, fname, lname, street, city, state, zip){
@@ -13,7 +13,6 @@ class Member {
     }
   }
 }
-
 
 const members = [
   new Member(666, 'Rusty', 'Brontobones', '3 Swann Rdg','Palmetto', 'GA', '30268'),
@@ -84,21 +83,18 @@ const initialState = {
 let memberApp = function(state = initialState, action) {
 
   switch (action.type) {
-    case MEMBER_ACTION_TYPES.SELECT_MEMBER:
+    case member_action_types.SELECT_MEMBER:
       return Object.assign({}, state, {
         selectedMember: action.member
       });
-    case MEMBER_ACTION_TYPES.ADD:
+    case member_action_types.ADD:
       return Object.assign({}, state, {
         members: [
           ...state.members,
-          {
-            text: action.member,
-            completed: false
-          }
+          action.member
         ]
       });
-    case MEMBER_ACTION_TYPES.UPDATE:
+    case member_action_types.UPDATE:
       // find the index by id
       const actionIndex = state.members.map(function(m) {return m.id; }).indexOf(action.member.id);
       // create a new array, containing updated item, using spread and slice

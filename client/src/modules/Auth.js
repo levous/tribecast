@@ -1,6 +1,6 @@
 class Auth {
 
-//TODO: fix this shit.  Totally hackable.  
+//TODO: fix this shit.  Totally hackable.
   /**
    * Authenticate a user. Save a token string in Local Storage
    *
@@ -33,7 +33,7 @@ class Auth {
    * @returns {string}
    */
 
-  static getToken() {
+  static getToken () {
     return localStorage.getItem('token');
   }
 
