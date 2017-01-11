@@ -44,7 +44,7 @@ export default class Member extends Component {
         {styledLabel('firstName', 'name')}
         <h2 style={{marginTop: 0}}>
           <PropertyTextInput object={member} propertySelectorPath='firstName'
-            placeholder='First Name' editing={editing}
+            placeholder='First Name' editing={editing} autoFocus={true}
             onChange={(newMember) => this.handlePropertyChange(newMember)} id='firstName'/>
           <PropertyTextInput object={member} propertySelectorPath='lastName'
             placeholder='Last Name' editing={editing} style={{marginLeft:'10px'}}

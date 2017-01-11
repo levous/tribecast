@@ -48,11 +48,12 @@ class PropertyTextInput extends Component {
   constructor(props, context) {
     super(props, context);
     const text = this.getPropertyValue(props.object, props.propertySelectorPath);
-    const editing = props.editing;
+    const {editing, autoFocus} = props;
 
     this.state = {
-      editing: props.editing,
-      text: text
+      editing: editing,
+      text: text,
+      autoFocus: autoFocus
     };
   }
 
@@ -67,7 +68,10 @@ class PropertyTextInput extends Component {
   }
 
   handleDoubleClick(e){
-    this.setState({editing: true});
+    this.setState({
+      editing: true,
+      autoFocus: true
+    });
   }
 
 
@@ -83,6 +87,7 @@ class PropertyTextInput extends Component {
           placeholder={placeholder}
           editing={this.state.editing}
           onChange={(text) => this.handleChange(text)}
+          autoFocus={this.state.autoFocus}
           className={className}
           style={this.props.style}
         />
@@ -101,7 +106,8 @@ PropertyTextInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   propertySelectorPath: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
-  object: PropTypes.object.isRequired
+  object: PropTypes.object.isRequired,
+  autoFocus: PropTypes.bool
 };
 
 export default PropertyTextInput;

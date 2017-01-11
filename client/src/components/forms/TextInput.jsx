@@ -12,6 +12,17 @@ class TextInput extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  componentWillUnmount() {
+    // ensure the input field releases focus.  iOS is leaving the keyboard presented and then sh%# gets real!
+    this.textInput.blur();
+  }
+
+  componentDidMount() {
+    if(this.props.autoFocus){
+      this.textInput.focus();
+    }
+  }
+
   onChange(e){
     const text = e.target.value.trim();
     this.props.onChange(e.target.value);
@@ -36,11 +47,14 @@ class TextInput extends Component {
       <input
         type="text"
         placeholder={this.props.placeholder}
-        autoFocus="true"
         value={this.state.text}
         onBlur={this.handleBlur}
         onChange={this.handleChange}
         onKeyDown={this.handleKeyDown}
+        ref={input => {
+            this.textInput = input;
+          }
+        }
       />
     );
   }
