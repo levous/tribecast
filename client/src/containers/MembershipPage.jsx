@@ -3,9 +3,12 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { Grid, Row, Col } from 'react-bootstrap'
 import FlatButton from 'material-ui/FlatButton';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
 import * as memberActions from '../actions/member-actions'
+
+import 'react-notifications/lib/notifications.css';
 
 class MembershipPage extends Component {
 
@@ -21,6 +24,7 @@ class MembershipPage extends Component {
   handleUpdate(member){
     console.log('handleUpdate', member );
     this.props.actions.saveMember(member);
+    NotificationManager.success(`${member.firstName} ${member.lastName} server saved!`);
   }
 
   handleEditButtonTouchTap() {
@@ -57,6 +61,7 @@ class MembershipPage extends Component {
             </Col>
           </Row>
         </Grid>
+        <NotificationContainer />
       </div>
     );
   }

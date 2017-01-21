@@ -13,7 +13,10 @@ module.exports = {
     filename: 'app.js',
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.css', '.scss']
+    extensions: ['', '.js', '.jsx', '.css', '.scss'],
+    modulesDirectories: [
+      'node_modules'
+    ]
   },
   module: {
     // apply loaders to files that meet given conditions
@@ -32,7 +35,11 @@ module.exports = {
           'style?sourceMap',
           'css?modules&importLoaders=1&localIdentName=[name]--[local]',
           'sass?sourceMap'
-        ],
+        ]
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\S+)?$/,
+        loader: 'file-loader?publicPath=/&name=fonts/[name].[ext]'
       },
       { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' }
     ],

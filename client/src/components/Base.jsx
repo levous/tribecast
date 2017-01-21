@@ -4,7 +4,6 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
 import Auth from '../modules/Auth';
 
-
 const Base = ({ children }) => (
 
   <div>
@@ -45,16 +44,12 @@ const Base = ({ children }) => (
       </Navbar.Collapse>
     </Navbar>
 
-
-
-
-
-
     <div className="container">
       <div className="jumbotron">
         {children}
       </div>
     </div>
+
   </div>
 );
 
