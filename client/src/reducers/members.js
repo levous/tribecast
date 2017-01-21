@@ -96,7 +96,7 @@ let memberApp = function(state = initialState, action) {
         ]
       });
 
-    case member_action_types.UPDATE_SUCCESS_RECEIVED:  
+    case member_action_types.UPDATE_SUCCESS_RECEIVED:
       NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
       //fall through
     case member_action_types.UPDATE:
@@ -118,6 +118,8 @@ let memberApp = function(state = initialState, action) {
     case member_action_types.MEMBER_DATA_RECEIVED:
       NotificationManager.success('Server data loaded');
       //TODO: look for local records that are not on the server.  support offline edits
+      // copy server _id to local id
+      action.members.forEach(member => member.id = member._id);
       return Object.assign({}, state, {members: action.members});
     default:
       return state;

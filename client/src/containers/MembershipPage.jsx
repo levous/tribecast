@@ -23,12 +23,12 @@ class MembershipPage extends Component {
 
   handleUpdate(member){
     console.log('handleUpdate', member );
-    this.props.actions.saveMember(member);
+    this.props.actions.updateMember(member);
   }
 
-  handleEditButtonTouchTap() {
+  handleAddButtonTouchTap() {
     let temp = {
-      id   : 6767,
+      id: Math.floor(Date.now() / 1000),
       firstName: '$$$$$$$$$$$$$Super',
       lastName: 'Man',
       propertyAddress: {
@@ -39,7 +39,7 @@ class MembershipPage extends Component {
       }
     };
 
-    this.props.actions.createMember(temp);
+    this.props.actions.addMember(temp);
   }
 
   render() {
@@ -47,7 +47,7 @@ class MembershipPage extends Component {
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     return (
       <div>
-        <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()} />
+        <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
         <h2 className="text-center">Members</h2>
 
         <Grid>

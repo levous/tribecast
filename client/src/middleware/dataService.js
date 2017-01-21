@@ -52,21 +52,54 @@ const dataService = store => next => action => {
         });
       });
       break;
+
+    case member_action_types.ADD:
+      //TODO: Discuss: Should this instead just be an origin_id?  Persist that with the document?  tempId works but smells funny
+      const tempId = action.member.id;
+      return fetch('/api/members', {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify(action.member)
+      })
+      .then(response => {
+        if (response.status >= 400) {
+          return next({
+            type: member_action_types.UPDATE_FAILURE_RECEIVED,
+            err: response.json()
+          });
+        }
+        //dispatch(addMember(newMember));
+        return response.json();
+      })
+      .then(responseJson => {
+        let newMember = responseJson.data;
+        console.log('update', newMember);
+        return next({
+          type: member_action_types.UPDATE_SUCCESS_RECEIVED,
+          id: tempId,
+          member: newMember
+        });
+      })
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+
     case member_action_types.UPDATE:
       const member = action.member;
       return fetch(`/api/members/${member._id}`, {
         method: 'put',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + auth_token
-        },
+        headers: authHeaders,
         body: JSON.stringify(member)
       })
       .then(response => {
         if (response.status >= 400) {
-          NotificationManager.error(`${member.firstName} ${member.lastName} server save failed!`);
-          console.log(response.json());
-          throw new Error("Bad response from server");
+          return next({
+            type: member_action_types.UPDATE_FAILURE_RECEIVED,
+            err: response.json() //TODO: this is a promise and probably not gonna worky
+          });
         }
         return response.json();
       })
@@ -78,7 +111,12 @@ const dataService = store => next => action => {
           member: updatedMember
         });
       })
-      .catch(error => {throw error});
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
 
       // Default case allows all other actions to pass through...
     default:
