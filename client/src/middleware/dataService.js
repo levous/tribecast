@@ -52,6 +52,34 @@ const dataService = store => next => action => {
         });
       });
       break;
+    case member_action_types.UPDATE:
+      const member = action.member;
+      return fetch(`/api/members/${member._id}`, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + auth_token
+        },
+        body: JSON.stringify(member)
+      })
+      .then(response => {
+        if (response.status >= 400) {
+          NotificationManager.error(`${member.firstName} ${member.lastName} server save failed!`);
+          console.log(response.json());
+          throw new Error("Bad response from server");
+        }
+        return response.json();
+      })
+      .then(responseJson => {
+        let updatedMember = responseJson.data;
+        return next({
+          type: member_action_types.UPDATE_SUCCESS_RECEIVED,
+          id: updatedMember._id,
+          member: updatedMember
+        });
+      })
+      .catch(error => {throw error});
+
       // Default case allows all other actions to pass through...
     default:
       break;

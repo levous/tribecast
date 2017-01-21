@@ -1,4 +1,5 @@
 import {member_action_types} from '../actions/member-actions.js'
+import {NotificationManager} from 'react-notifications';
 
 class Member {
   constructor(id, fname, lname, street, city, state, zip){
@@ -94,9 +95,15 @@ let memberApp = function(state = initialState, action) {
           action.member
         ]
       });
+
+    case member_action_types.UPDATE_SUCCESS_RECEIVED:  
+      NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
+      //fall through
     case member_action_types.UPDATE:
+
+      const memberId = action.id || action.member.id;
       // find the index by id
-      const actionIndex = state.members.map(function(m) {return m.id; }).indexOf(action.member.id);
+      const actionIndex = state.members.map(function(m) {return m.id; }).indexOf(memberId);
       // assign _id to id if present.  Server is source of record
       if(action.member._id) action.member.id = action.member._id;
       // create a new array, containing updated item, using spread and slice
@@ -109,7 +116,8 @@ let memberApp = function(state = initialState, action) {
         ]
       });
     case member_action_types.MEMBER_DATA_RECEIVED:
-      //TODO: send notification action that data is loaded
+      NotificationManager.success('Server data loaded');
+      //TODO: look for local records that are not on the server.  support offline edits
       return Object.assign({}, state, {members: action.members});
     default:
       return state;
