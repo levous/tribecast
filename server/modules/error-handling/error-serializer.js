@@ -6,7 +6,7 @@ const serializeErrors = (errors) => {
   console.log('*** *** *** *** *** serializeErrors', errors);
   let errorsJson = errors.map(error => {
     let errJson = {
-      "status": error.status || 500,
+      "status": error.status || error.statusCode || 500,
       "source": error.pointer ? { "pointer": error.pointer} : {},
       "title":  error.name,
       "detail": error.message
@@ -20,7 +20,7 @@ const serializeErrors = (errors) => {
   const json = {
     errors: errorsJson
   };
-  
+
   return json;
 };
 

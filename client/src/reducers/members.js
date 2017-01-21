@@ -97,6 +97,8 @@ let memberApp = function(state = initialState, action) {
     case member_action_types.UPDATE:
       // find the index by id
       const actionIndex = state.members.map(function(m) {return m.id; }).indexOf(action.member.id);
+      // assign _id to id if present.  Server is source of record
+      if(action.member._id) action.member.id = action.member._id;
       // create a new array, containing updated item, using spread and slice
       return Object.assign({}, state,
         {

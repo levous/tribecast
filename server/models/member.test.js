@@ -1,9 +1,9 @@
-import Mongoose from 'mongoose';
 import chai from 'chai';
+chai.should(); // Tell chai th  at we'll be using the "should" style assertions
+
+import Mongoose from 'mongoose';
 import MemberSchema from './member';
 
-// Tell chai that we'll be using the "should" style assertions.
-chai.should();
 
 describe('Member', () => {
   describe('new member', () => {
@@ -14,7 +14,12 @@ describe('Member', () => {
       done();
     });
 
-  
+    after(() => {
+      // clear mongoose models to avoid >> MongooseError: Cannot overwrite `Member` model once compiled.
+      Mongoose.models = {};
+      Mongoose.modelSchemas = {};
+      return Mongoose.connection.close();
+    });
 
     it('should be invalid if mobile phone is not a phone number', () => {
       member.mobilePhone = '12345678901';
