@@ -24,7 +24,6 @@ class MembershipPage extends Component {
   handleUpdate(member){
     console.log('handleUpdate', member );
     this.props.actions.saveMember(member);
-    NotificationManager.success(`${member.firstName} ${member.lastName} server saved!`);
   }
 
   handleEditButtonTouchTap() {

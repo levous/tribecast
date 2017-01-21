@@ -1,5 +1,6 @@
 
 import fetch from 'isomorphic-fetch';
+import {NotificationManager} from 'react-notifications';
 import Auth from '../modules/Auth';
 
 export const member_action_types = {
@@ -39,7 +40,9 @@ export function createMember(member) {
     })
     .then(response => {
       if (response.status >= 400) {
-           throw new Error("Bad response from server");
+        NotificationManager.error(`${member.firstName} ${member.lastName} server save failed!`);
+        console.log(response.json());
+        throw new Error("Bad response from server");
       }
       //dispatch(addMember(newMember));
       return response.json();
@@ -49,8 +52,11 @@ export function createMember(member) {
       console.log('update', newMember);
       if(!newMember.id) newMember.id = tempId;
       dispatch(updateMember(newMember));
+      NotificationManager.success(`${member.firstName} ${member.lastName} server saved!`);
     })
-    .catch(error => {throw error});
+    .catch(error => {
+      throw error;
+    });
   }
 }
 
@@ -67,10 +73,19 @@ export function saveMember(member) {
       },
       body: JSON.stringify(member)
     })
-    .then(result => {
-      console.log(result);
-
-    }) //TODO: remove this "then()"
+    .then(response => {
+      if (response.status >= 400) {
+        NotificationManager.error(`${member.firstName} ${member.lastName} server save failed!`);
+        console.log(response.json());
+        throw new Error("Bad response from server");
+      }
+      return response.json();
+    })
+    .then(responseJson => {
+      let newMember = responseJson.data;
+      dispatch(updateMember(newMember));
+      NotificationManager.success(`${member.firstName} ${member.lastName} server saved!`);
+    })
     .catch(error => {throw error});
   }
 }
