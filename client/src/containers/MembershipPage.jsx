@@ -15,11 +15,12 @@ class MembershipPage extends Component {
 
   handleMemberItemSelection(member){
     this.props.actions.selectMember(member);
+    console.log(member);
   }
 
   handleUpdate(member){
     console.log('handleUpdate', member );
-    this.props.actions.updateMember(member);
+    this.props.actions.saveMember(member);
   }
 
   handleEditButtonTouchTap() {

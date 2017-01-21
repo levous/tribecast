@@ -34,9 +34,9 @@ function setupRoutes(directoryPath, app){
 }
 
 //HACK:
-//if(process.env.NODE_ENV === 'production'){
+if(process.env.NODE_ENV === 'production'){
   config.dbUri = "mongodb://heroku:s3renBE@ds151008.mlab.com:51008/tribecast"
-//}
+}
 // connect to the database and load models
 require('./server/models').connect(config.dbUri);
 
@@ -83,10 +83,10 @@ app.get('/break',function(req,res) {
 // Error Handlers
 // only use this error handler middleware in "/api" based routes
 app.use('/api', function(err, req, res, next){
-
+  const statusCode = err.status || err.statusCode || 500;
   log.error(err.stack);
   let errorJson = errorSerializer.serializeErrors(err);
-  res.status(500).json(errorJson);
+  res.status(statusCode).json(errorJson);
 });
 // catch the rest
 app.use(function(err, req, res, next){
@@ -98,12 +98,13 @@ app.use(function(err, req, res, next){
     return next(err)
   }
 
+  const statusCode = err.status || err.statusCode || 500;
   if(req.accepts('html','json') === 'json'){
-    let errorJson = errorSerializer.serializeErrors(err);
-    res.status(500).json(errorJson);
+    const errorJson = errorSerializer.serializeErrors(err);
+    res.status(statusCode).json(errorJson);
   } else {
     //TODO: send as a formatted error page
-    res.status(500).send('<h2 style="color:#aa0000">Sorry, an unhandled error has done happened</h2><div style="color:#555555">' + err.stack + '</div><br /><br /><i style="color:#ff0055">When you talk to support, tell the developers this is pretty pathetic - RZ (it ws on my TODO list)</i>');
+    res.status(statusCode).send('<h2 style="color:#aa0000">Sorry, an unhandled error has done happened</h2><div style="color:#555555">' + err.stack + '</div><br /><br /><i style="color:#ff0055">When you talk to support, tell the developers this is pretty pathetic - RZ (it ws on my TODO list)</i>');
   }
 });
 
