@@ -73,7 +73,7 @@ const members = [
 ];
 
 const initialState = {
-  members: members,
+  members: [members],
   selectedMember: undefined
 };
 
@@ -100,16 +100,17 @@ let memberApp = function(state = initialState, action) {
       // assign _id to id if present.  Server is source of record
       if(action.member._id) action.member.id = action.member._id;
       // create a new array, containing updated item, using spread and slice
-      return Object.assign({}, state,
-        {
-          members: [
-            ...state.members.slice(0, actionIndex),
-            // ensure unspecified props are not accidentally discarded and that stored object is not mutated
-            Object.assign({}, state.members[actionIndex], action.member),
-            ...state.members.slice(actionIndex + 1)
-          ]
-        }
-     );
+      return Object.assign({}, state, {
+        members: [
+          ...state.members.slice(0, actionIndex),
+          // ensure unspecified props are not accidentally discarded and that stored object is not mutated
+          Object.assign({}, state.members[actionIndex], action.member),
+          ...state.members.slice(actionIndex + 1)
+        ]
+      });
+    case member_action_types.MEMBER_DATA_RECEIVED:
+      //TODO: send notification action that data is loaded
+      return Object.assign({}, state, {members: action.members});
     default:
       return state;
   }

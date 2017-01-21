@@ -6,7 +6,10 @@ import Auth from '../modules/Auth';
 export const member_action_types = {
   ADD: 'ADD_MEMBER',
   UPDATE: 'UPDATE_MEMBER',
-  SELECT_MEMBER: 'SELECT_MEMBER'
+  GET_ALL: 'GET_MEMBERS',
+  SELECT_MEMBER: 'SELECT_MEMBER',
+  MEMBER_DATA_RECEIVED: 'MEMBER_DATA_RECEIVED',
+  MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED'
 };
 
 function addMember(member) {
@@ -26,6 +29,7 @@ export function selectMember(member){
 
 export function createMember(member) {
   return dispatch => {
+    //TODO: Discuss: Should this instead just be an origin_id?  Persist that with the document?  tempId works but smells funny
     const tempId = member.id;
     dispatch(addMember(member));
     const auth_token = Auth.getToken();

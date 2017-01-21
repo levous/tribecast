@@ -1,10 +1,10 @@
-import Base from './components/Base.jsx';
-import HomePage from './components/HomePage.jsx';
+import Base from './containers/Base.jsx';
+import HomePage from './containers/HomePage.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
 import LoginPage from './containers/LoginPage.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
 import MembershipPage from './containers/MembershipPage.jsx';
-import NotFound from './components/NotFound.jsx';
+import NotFound from './containers/NotFound.jsx';
 import Auth from './modules/Auth';
 //TODO: convert to use https://medium.com/the-many/adding-login-and-authentication-sections-to-your-react-or-react-native-app-7767fd251bd1#.huz2nvz0j
 

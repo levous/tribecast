@@ -1,27 +1,44 @@
 import {compose, createStore, combineReducers, applyMiddleware} from 'redux';
 import rootReducer from '../reducers';
 import persistState, {mergePersistedState} from 'redux-localstorage';
+// import filter from 'redux-localstorage-filter';
 import adapter from 'redux-localstorage/lib/adapters/localStorage';
 import thunk from 'redux-thunk';
 import promiseMiddleware from '../middleware/promiseMiddleware'
+import dataService from '../middleware/dataService';
 
-const finalCreateStore = compose(
-  applyMiddleware(thunk, promiseMiddleware)
-)(createStore);
+export default function configureStore() {
 
-export default function configureStore(initialState) {
+  /*
+    Store
+    Redux apps have a single store which takes
+    1. All Reducers which we combined into `rootReducer`
+    2. An optional starting state - similar to React's getInitialState
+  */
+
+  //TODO: helful to add Chrome dev tools?
+  /*
+  // Chrome dev tools
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+  */
+
+  // use local storage for locally persisted state
   const reducer = compose(
       mergePersistedState()
-  )(rootReducer, initialState);
+  )(rootReducer); // no initial state needed
 
-  const storage = adapter(window.localStorage);
+  const storage = compose()(adapter(window.localStorage));
 
-  const createPersistentStore = compose(
-      persistState(storage, 'state'),
-      applyMiddleware(thunk, promiseMiddleware)
-  )(createStore);
+  const enhancers = compose(
+    applyMiddleware(dataService, thunk, promiseMiddleware),
+    persistState(storage, 'redux-localstorage')
+  );
 
-  const store = createPersistentStore(reducer);
+  const store = createStore(
+    reducer,
+    {},
+    enhancers
+  );
 
   if (module.hot) {
       // Enable Webpack hot module replacement for reducers
@@ -33,17 +50,4 @@ export default function configureStore(initialState) {
 
   return store;
 
-
-// bail
-  /*  const store = finalCreateStore(rootReducer, initialState);
-
-    if (module.hot) {
-      // Enable Webpack hot module replacement for reducers
-      module.hot.accept('../reducers', () => {
-        const nextRootReducer = require('../reducers');
-        store.replaceReducer(nextRootReducer);
-      });
-    }
-
-    return store;*/
 }
