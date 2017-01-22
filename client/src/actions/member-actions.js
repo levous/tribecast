@@ -33,3 +33,9 @@ export function selectMember(member){
 export function importCsv(data){
   return {type: member_action_types.UPLOAD_DATA_RECEIVED, data};
 }
+
+export function refreshMembersFromServer() {
+  return {
+    type: member_action_types.GET_ALL
+  };
+}

@@ -42,12 +42,17 @@ class MembershipPage extends Component {
     this.props.actions.addMember(temp);
   }
 
+  handleRefreshButtonTouchTap() {
+    this.props.actions.refreshMembersFromServer();
+  }
+
   render() {
     const {members, selectedMember} = this.props;
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     return (
       <div>
         <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
+        <FlatButton primary={false} label='refresh' style={{float:'right'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
         <h2 className="text-center">Members</h2>
 
         <Grid>
