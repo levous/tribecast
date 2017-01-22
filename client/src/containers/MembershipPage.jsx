@@ -6,7 +6,8 @@ import FlatButton from 'material-ui/FlatButton';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
-import * as memberActions from '../actions/member-actions'
+import SearchField from '../components/forms/SearchField.jsx';
+import * as memberActions from '../actions/member-actions';
 
 import 'react-notifications/lib/notifications.css';
 
@@ -14,8 +15,9 @@ class MembershipPage extends Component {
 
   constructor(props, context) {
     super(props, context);
-
-
+    this.state = {
+      filteredList: props.members
+    }
   }
 
   componentDidMount(){
@@ -54,19 +56,34 @@ class MembershipPage extends Component {
     this.props.actions.refreshMembersFromServer();
   }
 
+  handleFuzzySelected(item){
+    console.log(item);
+  }
+
+  handleFilteredChanged(results){
+    const filteredList = results || this.props.members;
+    this.setState({filteredList: filteredList});
+  }
+
   render() {
-    const {members, selectedMember} = this.props;
+    const {selectedMember} = this.props;
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     return (
       <div>
         <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
         <FlatButton primary={false} label='refresh' style={{float:'right'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
         <h2 className="text-center">Members</h2>
-
         <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>
-              <MemberList {...this.props} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
+              <SearchField
+                list={this.props.members}
+                keys={['firstName', 'lastName', 'propertyAddress.street', 'neighborhood', 'email']}
+                placeholder='fuzzy search'
+                style={{width:'100%', border: 'solid 1px rgb(0, 188, 212)', padding: '3px', borderRadius: '5px'}}
+                onChange={filteredList => this.handleFilteredChanged(filteredList)} />
+              <br/>
+              <MemberList {...this.props} members={this.state.filteredList} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
               {selectedMember && <Member key={`memberdiv${selectedMember.id}`} member={selectedMember} style={{postion: 'relative'}} onUpdate={(member) => this.handleUpdate(member)}/> }
