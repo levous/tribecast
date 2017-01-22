@@ -14,6 +14,7 @@ class PropertyTextInput extends Component {
     const selectorPaths = propertySelectorPath.split('.');
     let targetObject = object;
     selectorPaths.forEach(function(propertyName){
+      if(!targetObject) return;
       targetObject = targetObject[propertyName];
     });
     return targetObject;

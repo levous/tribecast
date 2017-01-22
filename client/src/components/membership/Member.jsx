@@ -142,7 +142,7 @@ export default class Member extends Component {
                 object={member} propertySelectorPath='alternateAddress.street'
                 placeholder='977 Hollywood Blvd.' editing={editing}
                 onChange={(newMember) => this.handlePropertyChange(newMember)} id='alt-address'/>
-              {member.alternateAddress.street2 && <span style={{marginRight:'5px'}}>,</span>}
+              {member.alternateAddress && member.alternateAddress.street2 && <span style={{marginRight:'5px'}}>,</span>}
               <PropertyTextInput
                 object={member} propertySelectorPath='alternateAddress.street2'
                 placeholder='street 2' editing={editing}
@@ -154,7 +154,7 @@ export default class Member extends Component {
                 placeholder='Los Angeles' editing={editing}
                 onChange={(newMember) => this.handlePropertyChange(newMember)} />
 
-              {member.alternateAddress.street && <span style={{marginRight:'5px'}}>,</span>}
+              {member.alternateAddress && member.alternateAddress.street && <span style={{marginRight:'5px'}}>,</span>}
               <PropertyTextInput
                 object={member} propertySelectorPath='alternateAddress.state'
                 placeholder='CA' editing={editing}
