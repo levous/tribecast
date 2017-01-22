@@ -13,6 +13,10 @@ class UploadPage extends React.Component {
       complete: results => {
         console.log("Finished:", results.data);
         this.props.actions.importCsv(results.data);
+        this.props.router.push({
+          pathname: '/membership',
+          query: { notification: `Now viewing ${results.data.length} imported members` }
+        })
       }
     });
   }

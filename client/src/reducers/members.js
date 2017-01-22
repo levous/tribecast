@@ -1,5 +1,7 @@
 import {member_action_types} from '../actions/member-actions.js'
 import {NotificationManager} from 'react-notifications';
+import ParseAddress from 'parse-address';
+import communityDefaults from '../../../config/community-defaults';
 
 class Member {
   constructor(id, fname, lname, street, city, state, zip){
@@ -147,19 +149,47 @@ let memberApp = function(state = initialState, action) {
         Profession
         Website
         */
+        let altAddress = record['Alternate Address'];
+        if(altAddress) {
+          const parsedAddress = ParseAddress.parseLocation(altAddress);
+          /* //Parsed address: '1005 N Gravenstein Hwy Suite 500 Sebastopol, CA'
+           { number: '1005',
+             prefix: 'N',
+             street: 'Gravenstein',
+             type: 'Hwy',
+             sec_unit_type: 'Suite',
+             sec_unit_num: '500',
+             city: 'Sebastopol',
+             state: 'CA'
+           } */
+          const street = parsedAddress.prefix ? `${parsedAddress.number} ${parsedAddress.prefix} ${parsedAddress.street} ${parsedAddress.type}` : `${parsedAddress.number} ${parsedAddress.street} ${parsedAddress.type}`
+          altAddress = {
+            street : street,
+            street2: parsedAddress.sec_unit_num ? `${parsedAddress.sec_unit_type} ${parsedAddress.sec_unit_num}` : undefined,
+            city   : parsedAddress.city,
+            state  : parsedAddress.state,
+            zip    : parsedAddress.zip
+          };
+        }
+
+        ParseAddress
         const member = {
           id: ++tempId,
-          firstName: record['First name'],
-          lastName: record['Last name'],
+          firstName:    record['First name'],
+          lastName:     record['Last name'],
+          homePhone:    record['Home Phone'],
+          mobilePhone:  record['Mobile Phone'],
+          email:        record['Email'],
+          neighborhood: record['Neighborhood'],
           propertyAddress: {
             street: record['Address'],
-            city : 'Palmetto',
-            state: 'GA',
-            zip  :  '30268'
+            city :  communityDefaults.location.city,
+            state:  communityDefaults.location.state,
+            zip  :  communityDefaults.location.zip
           },
-          homePhone: record['Home Phone'],
-          mobilePhone: record['Mobile Phone'],
-          optIn: record['Opt-In Directory']
+          alternateAddress: altAddress,
+
+          optIn:        record['Opt-In Directory']
         };
 
         members.push(member);

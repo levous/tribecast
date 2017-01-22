@@ -14,6 +14,14 @@ class MembershipPage extends Component {
 
   constructor(props, context) {
     super(props, context);
+
+
+  }
+
+  componentDidMount(){
+    if(this.props.location.query.notification){
+      NotificationManager.info(this.props.location.query.notification);
+    }
   }
 
   handleMemberItemSelection(member){
