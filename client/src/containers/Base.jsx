@@ -22,6 +22,11 @@ const Base = ({ children }) => (
               <NavItem eventKey={1}>Members</NavItem>
             </LinkContainer>
           )}
+          {Auth.isUserAuthenticated() && (
+            <LinkContainer to="/upload">
+              <NavItem eventKey={1}>Upload CSV</NavItem>
+            </LinkContainer>
+          )}
         </Nav>
         <Nav pullRight>
           {Auth.isUserAuthenticated() && (

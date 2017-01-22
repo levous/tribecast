@@ -121,6 +121,54 @@ let memberApp = function(state = initialState, action) {
       // copy server _id to local id
       action.members.forEach(member => member.id = member._id);
       return Object.assign({}, state, {members: action.members});
+    case member_action_types.UPLOAD_DATA_RECEIVED:
+      NotificationManager.success('Imported data loaded!');
+      let members = [];
+      const importData = action.data;
+      let tempId =  Math.floor(Date.now()/1000);
+
+      importData.forEach(record => {
+        /*
+
+        Address
+        Adult Residents
+        Alternate Address
+        Children
+        Email
+        First name
+        Hobbies
+        Home Phone
+        Last name
+        Mobile Phone
+        Neighborhood
+        Opt-In Directory
+        Originally From
+        Passions/Interests
+        Profession
+        Website
+        */
+        const member = {
+          id: ++tempId,
+          firstName: record['First name'],
+          lastName: record['Last name'],
+          propertyAddress: {
+            street: record['Address'],
+            city : 'Palmetto',
+            state: 'GA',
+            zip  :  '30268'
+          },
+          homePhone: record['Home Phone'],
+          mobilePhone: record['Mobile Phone'],
+          optIn: record['Opt-In Directory']
+        };
+
+        members.push(member);
+
+      });
+
+      return Object.assign({}, state, {members: members});
+
+
     default:
       return state;
   }

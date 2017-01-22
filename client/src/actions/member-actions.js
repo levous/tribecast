@@ -9,6 +9,7 @@ export const member_action_types = {
   SELECT_MEMBER: 'SELECT_MEMBER',
   GET_ALL: 'GET_MEMBERS',
   MEMBER_DATA_RECEIVED: 'MEMBER_DATA_RECEIVED',
+  UPLOAD_DATA_RECEIVED: 'UPLOAD_DATA_RECEIVED',
   MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED',
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE'
@@ -27,4 +28,8 @@ export function updateMember(member){
 
 export function selectMember(member){
   return {type: member_action_types.SELECT_MEMBER, member};
+}
+
+export function importCsv(data){
+  return {type: member_action_types.UPLOAD_DATA_RECEIVED, data};
 }

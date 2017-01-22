@@ -7,7 +7,7 @@ import configureStore from '../store/configureStore';
 import routes from '../routes';
 
 const store = configureStore();
-store.dispatch({ type: member_action_types.GET_ALL });
+//store.dispatch({ type: member_action_types.GET_ALL });
 
 export default class Root extends Component {
   render() {
