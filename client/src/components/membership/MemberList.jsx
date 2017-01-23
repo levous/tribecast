@@ -24,14 +24,15 @@ export default class MemberList extends Component {
         border: '1px solid #00bcd4'
       },
       listStyle: {
-        maxHeight: 300,
         overflow: 'scroll',
         WebkitOverflowScrolling: 'touch'
       }
     };
 
+    const className = this.state.activeItem ? 'member-list-container squeeze' : 'member-list-container'
+
     return (
-      <div style={styles.listStyle}>
+      <div style={styles.listStyle} className={className}>
         <List>
           {
             this.props.members.map((member, i) =>

@@ -24,24 +24,23 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: path.join(__dirname, '/client/src'),
-        loader: 'babel',
-        query: {
-          presets: ["react", "es2015"]
-        }
+        loaders: ['react-hot', 'babel']
       },
       {
         test: /\.(css|scss)$/,
-        loaders: [
+        loader: "style!css!sass"
+        //loader: ExtractTextPlugin.extract('css!sass')
+        /*loaders: [
           'style?sourceMap',
           'css?modules&importLoaders=1&localIdentName=[name]--[local]',
           'sass?sourceMap'
-        ]
+        ]*/
       },
       {
         test: /\.(ttf|eot|svg|woff(2)?)(\S+)?$/,
         loader: 'file-loader?publicPath=/&name=fonts/[name].[ext]'
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' }
+      { test: /\.(png|svg)$/, loader: 'url-loader?limit=100000' }
     ],
   },
 
@@ -53,7 +52,8 @@ module.exports = {
       inject: true
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin("styles.css")
+    new ExtractTextPlugin('styles/main.css', {allChunks: true})
+    //new ExtractTextPlugin("styles.css")
   ],
   postcss: () => [autoprefixer],
   debug: true,

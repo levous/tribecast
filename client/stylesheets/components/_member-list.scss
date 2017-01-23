@@ -1,0 +1,13 @@
+
+.member-list-container, .member-list-container.squeeze{
+  max-height: 600px;
+}
+
+@media only screen and (max-width : 991px) {
+  .member-list-container {
+    max-height: 300px;
+  }
+  .member-list-container.squeeze {
+    max-height: 220px;
+  }
+}

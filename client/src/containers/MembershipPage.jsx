@@ -72,7 +72,6 @@ class MembershipPage extends Component {
       <div>
         <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
         <FlatButton primary={false} label='refresh' style={{float:'right'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
-        <h2 className="text-center">Members</h2>
         <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>
@@ -86,7 +85,13 @@ class MembershipPage extends Component {
               <MemberList {...this.props} members={this.state.filteredList} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
-              {selectedMember && <Member key={`memberdiv${selectedMember.id}`} member={selectedMember} style={{postion: 'relative'}} onUpdate={(member) => this.handleUpdate(member)}/> }
+              {selectedMember && (
+                <Member key={`memberdiv${selectedMember.id}`}
+                  member={selectedMember}
+                  style={{postion: 'relative'}}
+                  onUpdate={(member) => this.handleUpdate(member)}
+                />
+              )}
             </Col>
           </Row>
         </Grid>

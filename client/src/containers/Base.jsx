@@ -3,6 +3,7 @@ import { Link, IndexLink } from 'react-router';
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
 import Auth from '../modules/Auth';
+import communityDefaults from '../../../config/community-defaults';
 
 const Base = ({ children }) => (
 
@@ -11,7 +12,7 @@ const Base = ({ children }) => (
     <Navbar inverse collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <IndexLink className="navbar-brand page-scroll" to="/">Dashboard</IndexLink>
+          <IndexLink className="navbar-brand page-scroll" to="/">{communityDefaults.name}</IndexLink>
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>

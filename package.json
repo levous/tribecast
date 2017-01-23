@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production webpack --progress && NODE_ENV=production node index.js",
     "startdev": "NODE_ENV=development nodemon --use-strict index.js",
-    "bundle": "webpack",
+    "bundle": "webpack -p",
     "bundledev": "webpack -w",
     "test": "NODE_ENV=development mocha --recursive -w --name *.test.js --compilers js:babel-core/register ./server"
   },
@@ -72,6 +72,7 @@
     "node-sass": "^4.1.1",
     "nodemon": "^1.11.0",
     "react-addons-css-transition-group": "^15.4.2",
+    "react-hot-loader": "^1.3.1",
     "sass-loader": "^4.1.1",
     "sinon": "^1.17.7",
     "style-loader": "^0.13.1",

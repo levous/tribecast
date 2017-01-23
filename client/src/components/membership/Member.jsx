@@ -45,7 +45,7 @@ export default class Member extends Component {
     const member = this.props.member;
     const editing = this.state.editing;
     const editButtonText = editing ? 'Done': 'Edit'
-    const styledLabel = (htmlFor, text) => <label htmlFor={htmlFor} style={{display: 'block', paddingTop: '10px'}}>{text}</label>;
+    const styledLabel = (htmlFor, text) => <label htmlFor={htmlFor} style={{display: 'block', paddingTop: '5px'}}>{text}</label>;
 
     const styles = {
       headline: {
@@ -60,7 +60,7 @@ export default class Member extends Component {
     };
 
     return (
-      <div key={`member${member.id}`} style={{marginTop: '20px'}}>
+      <div key={`member${member.id}`} style={{}}>
         <FlatButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>
         {styledLabel('first-name', 'name')}
         <h2 style={{marginTop: 0}}>

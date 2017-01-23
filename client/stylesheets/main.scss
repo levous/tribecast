@@ -8,11 +8,9 @@
 
 // 2. Vendors
 @import
-'vendor/react-notifications'; //GRRRRRR!  not working
-// css is being processed because it blows up when bad font refs are included
-// but nothing applies to dom
-// tried using import 'path/to/module.css' and that also blew up but then did nothing.
-// something wrong with webpack
+'vendor/react-notifications',
+'vendor/bootstrap-overrides';
+
 
 // 3. Base stuff
 @import
@@ -23,13 +21,15 @@
 
 // 4. Layout-related sections
 @import
-'layout/header';
+'layout/header',
+'layout/margin-padding';
 //'layout/footer';
 
 // 5. Components
 @import
 'components/property-text-input',
-'components/member';
+'components/member',
+'components/member-list';
 
 // 6. Page-specific styles
 //@import
