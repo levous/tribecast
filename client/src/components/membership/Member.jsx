@@ -84,14 +84,14 @@ export default class Member extends Component {
               <PropertyTextInput
                 object={member} propertySelectorPath='mobilePhone'
                 placeholder='404-555-1212' editing={editing}
-                onChange={(newMember) => this.handlePropertyChange(newMember)} id='mobile-phone'/>
+                onChange={(newMember) => this.handlePropertyChange(newMember)} link='phone' id='mobile-phone'/>
             </div>
             <div>
               {styledLabel('home-phone', 'home')}
               <PropertyTextInput
                 object={member} propertySelectorPath='homePhone'
                 placeholder='404-555-1212' editing={editing}
-                onChange={(newMember) => this.handlePropertyChange(newMember)} id='home-phone'/>
+                onChange={(newMember) => this.handlePropertyChange(newMember)} link='phone' id='home-phone'/>
 
             </div>
             <div style={{clear: 'both'}}>
@@ -99,7 +99,7 @@ export default class Member extends Component {
               <PropertyTextInput
                 object={member} propertySelectorPath='email'
                 placeholder='some@such.com' editing={editing}
-                onChange={(newMember) => this.handlePropertyChange(newMember)} id='email'/>
+                onChange={(newMember) => this.handlePropertyChange(newMember)} link='email' id='email'/>
 
             </div>
             <div>

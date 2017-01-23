@@ -94,8 +94,23 @@ class PropertyTextInput extends Component {
         />
       );
     }else{
+      let linkOrText = text;
+      if(this.props.link) {
+        switch(this.props.link) {
+          case 'phone':
+            linkOrText = <a href={`tel:${text}`}>{text}</a>
+            break;
+          case 'email':
+            linkOrText = <a href={`mailto:${text}`}>{text}</a>
+            break;
+          default:
+            break;
+        }
+      }
       element = (
-        <span onDoubleClick={() => this.handleDoubleClick()} className={className} style={this.props.style}>{text}</span>
+        <span onDoubleClick={() => this.handleDoubleClick()} className={className} style={this.props.style}>
+          {linkOrText}
+        </span>
       );
     }
 
@@ -108,7 +123,8 @@ PropertyTextInput.propTypes = {
   propertySelectorPath: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   object: PropTypes.object.isRequired,
-  autoFocus: PropTypes.bool
+  autoFocus: PropTypes.bool,
+  link: PropTypes.string
 };
 
 export default PropertyTextInput;
