@@ -53,7 +53,6 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('styles/main.css', {allChunks: true})
-    //new ExtractTextPlugin("styles.css")
   ],
   postcss: () => [autoprefixer],
   debug: true,

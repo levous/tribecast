@@ -117,12 +117,14 @@ let memberApp = function(state = initialState, action) {
           ...state.members.slice(actionIndex + 1)
         ]
       });
+
     case member_action_types.MEMBER_DATA_RECEIVED:
       NotificationManager.success('Server data loaded');
       //TODO: look for local records that are not on the server.  support offline edits
       // copy server _id to local id
       action.members.forEach(member => member.id = member._id);
       return Object.assign({}, state, {members: action.members});
+
     case member_action_types.UPLOAD_DATA_RECEIVED:
       NotificationManager.success('Imported data loaded!');
       let members = [];
@@ -199,6 +201,14 @@ let memberApp = function(state = initialState, action) {
       return Object.assign({}, state, {members: members});
 
 
+    case member_action_types.UPDATE_FAILURE_RECEIVED:
+      NotificationManager.error('Update failed with error');
+      // slows the notification so that it flashes too fast console.log(action.err);
+      return state;
+    case member_action_types.MEMBER_DATA_FAILED:
+      NotificationManager.error('Server data load failed with error');
+      // slows the notification so that it flashes too fast console.log(action.err);
+      return state;
     default:
       return state;
   }

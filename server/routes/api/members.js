@@ -2,6 +2,8 @@ const express = require('express');
 const errors = require('restify-errors');
 const memberController = require('../../controllers/memberController');
 const log = require('../../modules/log')(module);
+const MongooseObjectId = require('mongoose').Types.ObjectId;
+
 exports.setup = function (basePath, app) {
   //TODO: should we infer the web path based on the directory path?  Could be sent in as a param or computed using __dirname
   const router = express.Router();
@@ -41,7 +43,9 @@ exports.setup = function (basePath, app) {
 
   router.get('/:id',function(req, res, next){
     const memberId = req.params.id;
-    if (!memberId) return next(new errors.MissingParameterError('id not provided'));
+    // validate id
+    if (!MongooseObjectId.isValid(memberId)) return next(new errors.ResourceNotFoundError('Provided id not valid'));
+
     memberController.get(memberId)
       .then(member => {
         if(!member) return next(new errors.ResourceNotFoundError('Provided id resulted in no matching record'));
@@ -55,10 +59,14 @@ exports.setup = function (basePath, app) {
   });
 
   router.put('/:id',function(req, res, next){
-    // verify that req.params.id == req.body.id
+
     const updatedMember = req.body;
     const memberId = req.params.id;
+    // validate id
+    if (!MongooseObjectId.isValid(memberId)) return next(new errors.ResourceNotFoundError('Provided id not valid'));
+    // validate id === member._id if member._id was provided
     if (updatedMember._id && updatedMember._id !== memberId) return next(new errors.InvalidArgumentError('Member._id did not match id at location'));
+
     // pass to controller.update
     memberController.update(memberId, updatedMember)
       .then(function(member){

@@ -3,6 +3,7 @@
 
 import fetch from 'isomorphic-fetch';
 import Auth from '../modules/Auth';
+import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types} from '../actions/member-actions';
 
 const membersApiURL = '/api/members';
@@ -25,16 +26,7 @@ const dataService = store => next => action => {
         headers: authHeaders
       })
       .then(response => {
-        if (response.status >= 400) {
-          // send get members failed action
-          //TODO: response.json() is a promise.  No worky... Need to think this through :)
-          const err = response.json();
-          console.log(err);
-          return next({
-            type: member_action_types.MEMBER_DATA_FAILED,
-            err
-          });
-        }
+        ApiResponseHandler.errorReportedByResponse(response, err => {if (err) throw err});
         return response.json();
       })
       .then(responseJson => {
@@ -62,13 +54,7 @@ const dataService = store => next => action => {
         body: JSON.stringify(action.member)
       })
       .then(response => {
-        if (response.status >= 400) {
-          return next({
-            type: member_action_types.UPDATE_FAILURE_RECEIVED,
-            err: response.json()
-          });
-        }
-        //dispatch(addMember(newMember));
+        ApiResponseHandler.errorReportedByResponse(response, err => {if (err) throw err});
         return response.json();
       })
       .then(responseJson => {
@@ -88,6 +74,7 @@ const dataService = store => next => action => {
       });
 
     case member_action_types.UPDATE:
+
       const member = action.member;
       return fetch(`/api/members/${member._id}`, {
         method: 'put',
@@ -95,12 +82,7 @@ const dataService = store => next => action => {
         body: JSON.stringify(member)
       })
       .then(response => {
-        if (response.status >= 400) {
-          return next({
-            type: member_action_types.UPDATE_FAILURE_RECEIVED,
-            err: response.json() //TODO: this is a promise and probably not gonna worky
-          });
-        }
+        ApiResponseHandler.errorReportedByResponse(response, err => {if (err) throw err});
         return response.json();
       })
       .then(responseJson => {
