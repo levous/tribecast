@@ -25,9 +25,10 @@ const dataService = store => next => action => {
         method: 'get',
         headers: authHeaders
       })
-      .then(response => {
-        ApiResponseHandler.errorReportedByResponse(response, err => {if (err) throw err});
-        return response.json();
+      .then(ApiResponseHandler.handleFetchResponse)
+      .then(apiResponse => {
+        if(apiResponse.error) return Promise.reject(apiResponse.error);
+        return apiResponse.json;
       })
       .then(responseJson => {
         const members = responseJson.data;
@@ -38,6 +39,7 @@ const dataService = store => next => action => {
         });
       })
       .catch(err => {
+        console.log(err);
         return next({
           type: member_action_types.MEMBER_DATA_FAILED,
           err
@@ -53,9 +55,10 @@ const dataService = store => next => action => {
         headers: authHeaders,
         body: JSON.stringify(action.member)
       })
-      .then(response => {
-        ApiResponseHandler.errorReportedByResponse(response, err => {if (err) throw err});
-        return response.json();
+      .then(ApiResponseHandler.handleFetchResponse)
+      .then(apiResponse => {
+        if(apiResponse.error) return Promise.reject(apiResponse.error);
+        return apiResponse.json;
       })
       .then(responseJson => {
         let newMember = responseJson.data;
@@ -81,9 +84,10 @@ const dataService = store => next => action => {
         headers: authHeaders,
         body: JSON.stringify(member)
       })
-      .then(response => {
-        ApiResponseHandler.errorReportedByResponse(response, err => {if (err) throw err});
-        return response.json();
+      .then(ApiResponseHandler.handleFetchResponse)
+      .then(apiResponse => {
+        if(apiResponse.error) return Promise.reject(apiResponse.error);
+        return apiResponse.json;
       })
       .then(responseJson => {
         let updatedMember = responseJson.data;

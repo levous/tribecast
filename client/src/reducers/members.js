@@ -197,17 +197,17 @@ let memberApp = function(state = initialState, action) {
         members.push(member);
 
       });
-
       return Object.assign({}, state, {members: members});
 
-
     case member_action_types.UPDATE_FAILURE_RECEIVED:
-      NotificationManager.error('Update failed with error');
-      // slows the notification so that it flashes too fast console.log(action.err);
+      const uppErr = action.err;
+      console.log(uppErr);
+      // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
+      NotificationManager.error(uppErr.message, 'Update failed with error', 15000);
       return state;
     case member_action_types.MEMBER_DATA_FAILED:
-      NotificationManager.error('Server data load failed with error');
-      // slows the notification so that it flashes too fast console.log(action.err);
+      // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
+      NotificationManager.error(action.err.message, 'Server data load failed with error', 15000);
       return state;
     default:
       return state;
