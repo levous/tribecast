@@ -23,7 +23,6 @@ class ApiResponseHandler {
 
     return new Promise((resolve, reject) => {
 
-    
       let apiResponse = {
         status: fetchResponse.status || 500,
         statusText: fetchResponse.statusText || 'Unknown Response',
@@ -36,25 +35,46 @@ class ApiResponseHandler {
         return reject(new Error('Invalid fetch response'));
       }
 
-      fetchResponse.json()
-        .then(responseJson => {
-          apiResponse.json = responseJson;
-          // if error response, parse error
-          if(fetchResponse.status >= 400) {
+      // default error
+      if(fetchResponse.status >= 400) {
+        apiResponse.error = errors.makeErrFromCode(fetchResponse.status, fetchResponse.statusText);
+      }
+
+      // read response body as text
+      fetchResponse.text()
+        .then(responseText => {
+          // if no body sent
+          if(!responseText) {
+            // reject if error present and requested to do so
+            if (rejectOnError && apiResponse.error) return reject(apiResponse.error);
+            // resole with api response package
+            return resolve(apiResponse);
+          }
+
+          // parse body text into JSON
+          try{
+            apiResponse.json = JSON.parse(responseText);
+          }
+          catch(err){
+            console.log('fetchResponse sent body text that was not JSON.  Ignoring...');
+          }
+
+          // if error response, parse error from JSON
+          if(fetchResponse.status >= 400)
+            if(apiResponse.json) {
             try{
-              const errorsJson = responseJson.errors;
+              const errorsJson = apiResponse.json.errors;
               // first error is intended reported error
               const errorJson = errorsJson[0];
               //TODO: loop all errors and create inner errors
               // create an error from the provided response code
-              apiResponse.error = errors.makeErrFromCode(fetchResponse.status, errorJson.detail);;
+              apiResponse.error = errors.makeErrFromCode(fetchResponse.status, errorJson.detail);
             }
             catch(err){
               console.log('errorReportedByResponse', 'could not parse the response json');
               console.log('errorReportedByResponse', err);
-              apiResponse.error = errors.makeErrFromCode(fetchResponse.status);
+              // use default error
             }
-
             if (rejectOnError) return reject(apiResponse.error);
           }
           return resolve(apiResponse);

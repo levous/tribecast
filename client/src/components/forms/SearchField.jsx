@@ -6,12 +6,17 @@ class SearchField extends Component {
   constructor(props, context) {
     super(props, context);
 
-    const options = this.getFuseOptions();
-    this.fuse = new Fuse(props.list, options);
+    // things got a little confusing when the list changed.
+    // copy the list to state and pass to Fuse ctor.
+    // See componentWillReceiveProps, executeSearch, and render
+    //     to see how this is used
     this.state = {
-      searchText: props.text || '',
-      results: null
+      searchText: props.text || ''
     };
+  }
+
+  getFuseInstance(list){
+    return new Fuse(list, this.getFuseOptions());
   }
 
   getFuseOptions() {
@@ -48,29 +53,47 @@ class SearchField extends Component {
 
   componentWillUnmount() {
     // ensure the input field releases focus.  iOS is leaving the keyboard presented and then sh%# gets real!
-    this.textInput.blur();
+    this.searchField.blur();
   }
 
   componentDidMount() {
     if(this.props.autoFocus){
-      this.textInput.focus();
+      this.searchField.focus();
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.list !== this.props.list){
+      if(this.state.searchText) this.executeSearch(this.state.searchText);
+
     }
   }
 
   handleChange(e) {
-    const value = e.target.value || '';
-    const results = e.target.value ? this.fuse.search(e.target.value) : null;
-
-    this.setState({
-      searchText: value,
-      results: results
-    });
-
-    this.onChange(results);
+    const searchText = this.searchField.value || '';
+    this.setState({searchText: searchText});
+    this.executeSearch(searchText);
   }
 
-  onChange(results){
-    this.props.onChange(results);
+  executeSearch(searchText) {
+    let results = this.props.list;
+    try{
+      // results using search string if has value
+      if(searchText && searchText.trim().length){
+        const fuse = this.getFuseInstance(this.props.list);
+        results = this.fuse.search(searchText.trim());
+      }
+    }
+    catch(err){
+      console.log('executeSearch/fuse', err);
+    }
+
+    this.onSearch(results);
+  }
+
+  onSearch(results){
+
+    this.props.onSearch(results);
   }
 
   handleKeyPress(e) {
@@ -96,7 +119,7 @@ class SearchField extends Component {
 }
 
 SearchField.propTypes = {
-  onChange: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
   text: PropTypes.string,
   caseSensitive: PropTypes.bool,
   className: PropTypes.string,

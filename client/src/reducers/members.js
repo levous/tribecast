@@ -17,7 +17,7 @@ class Member {
   }
 }
 
-const members = [
+const seedMembers = [
   new Member(666, 'Rusty', 'Brontobones', '3 Swann Rdg','Palmetto', 'GA', '30268'),
   new Member(1,'Fred','Flintstone','34 Swann Rdg', 'Palmetto','GA','30268'),
   new Member(2, 'Barney', 'Rubble', '23 Serenbe Ln', 'Palmetto','GA','30268'),
@@ -76,7 +76,7 @@ const members = [
 ];
 
 const initialState = {
-  members: [members],
+  members: seedMembers,
   selectedMember: undefined
 };
 
@@ -119,11 +119,13 @@ let memberApp = function(state = initialState, action) {
       });
 
     case member_action_types.MEMBER_DATA_RECEIVED:
+
       NotificationManager.success('Server data loaded');
       //TODO: look for local records that are not on the server.  support offline edits
       // copy server _id to local id
-      action.members.forEach(member => member.id = member._id);
-      return Object.assign({}, state, {members: action.members});
+      const patchedMembers = action.members.map(member => Object.assign(member, {id: member._id}));
+      console.log('MEMBER_DATA_RECEIVED member count', patchedMembers.length);
+      return Object.assign({}, state, {members: patchedMembers});
 
     case member_action_types.UPLOAD_DATA_RECEIVED:
       NotificationManager.success('Imported data loaded!');

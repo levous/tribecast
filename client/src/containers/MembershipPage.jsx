@@ -16,22 +16,30 @@ class MembershipPage extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filteredList: props.members
+      filteredList: props.members,
     }
+    console.log('ctor', 'members');
   }
 
-  componentDidMount(){
+  componentDidMount() {
     if(this.props.location.query.notification){
       NotificationManager.info(this.props.location.query.notification);
     }
+
     if(this.props.location.query.clearLocalStorage){
-      debugger;
       localStorage.clear();
     }
 
   }
 
-  handleMemberItemSelection(member){
+  componentWillReceiveProps(nextProps){
+    if(nextProps.members !== this.props.members){
+      console.log('MPg componentWillReceiveProps count ', nextProps.members.length);
+      this.setState({filteredList: nextProps.members});
+    }
+  }
+
+  handleMemberItemSelection(member) {
     this.props.actions.selectMember(member);
     console.log(member);
   }
@@ -61,18 +69,14 @@ class MembershipPage extends Component {
     this.props.actions.refreshMembersFromServer();
   }
 
-  handleFuzzySelected(item){
-    console.log(item);
-  }
-
-  handleFilteredChanged(results){
-    const filteredList = results || this.props.members;
-    this.setState({filteredList: filteredList});
+  handleSearch(results) {
+    this.setState({filteredList: results});
   }
 
   render() {
     const {selectedMember} = this.props;
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
+    console.log('render mpage listcount:', this.state.filteredList.length);
     return (
       <div>
         <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
@@ -85,9 +89,11 @@ class MembershipPage extends Component {
                 keys={['firstName', 'lastName', 'propertyAddress.street', 'neighborhood', 'email']}
                 placeholder='fuzzy search'
                 style={{width:'100%', border: 'solid 1px rgb(0, 188, 212)', padding: '3px', borderRadius: '5px'}}
-                onChange={filteredList => this.handleFilteredChanged(filteredList)} />
+                onSearch={filteredList => this.handleSearch(filteredList)} />
               <br/>
-              <MemberList {...this.props} members={this.state.filteredList} onSelectItem={(member) => this.handleMemberItemSelection(member)} selectedMemberId={selectedMemberId}/>
+              <MemberList members={this.state.filteredList}
+                onSelectItem={(member) => this.handleMemberItemSelection(member)}
+                selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
               {selectedMember && (

@@ -108,7 +108,7 @@ export default class Member extends Component {
                 object={member} propertySelectorPath='propertyAddress.street'
                 placeholder='123 Storybook Ln.' editing={editing}
                 onChange={(newMember) => this.handlePropertyChange(newMember)} id='address'/>
-              {member.propertyAddress.street2 && <span style={{marginRight:'5px'}}>,</span>}
+              {member.propertyAddress && member.propertyAddress.street2 && <span style={{marginRight:'5px'}}>,</span>}
               <PropertyTextInput
                 object={member} propertySelectorPath='propertyAddress.street2'
                 placeholder='street 2' editing={editing}

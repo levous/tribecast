@@ -39,7 +39,8 @@ const dataService = store => next => action => {
         });
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
+
         return next({
           type: member_action_types.MEMBER_DATA_FAILED,
           err

@@ -21,7 +21,7 @@ exports.setup = function (basePath, app) {
 
     if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
       isFormValid = false;
-      errors.email = 'Please provide a correct email address.';
+      errors.email = 'Please provide a valid email address.';
     }
 
     if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
@@ -68,7 +68,7 @@ exports.setup = function (basePath, app) {
     }
 
     if (!isFormValid) {
-      message = 'Check the form for errors.';
+      message = 'Unable to login.  Please review problems.';
     }
 
     return {

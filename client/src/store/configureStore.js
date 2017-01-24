@@ -31,7 +31,8 @@ export default function configureStore() {
 
   const enhancers = compose(
     applyMiddleware(dataService, thunk, promiseMiddleware),
-    persistState(storage, 'redux-localstorage')
+    persistState(storage, 'redux-localstorage'),
+    (process.env.NODE_ENV !== 'production' && window.devToolsExtension) ? window.devToolsExtension() : f => f
   );
 
   const store = createStore(
