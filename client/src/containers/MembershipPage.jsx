@@ -18,7 +18,7 @@ class MembershipPage extends Component {
     this.state = {
       filteredList: props.members,
     }
-    console.log('ctor', 'members');
+
   }
 
   componentDidMount() {
@@ -34,18 +34,18 @@ class MembershipPage extends Component {
 
   componentWillReceiveProps(nextProps){
     if(nextProps.members !== this.props.members){
-      console.log('MPg componentWillReceiveProps count ', nextProps.members.length);
+
       this.setState({filteredList: nextProps.members});
     }
   }
 
   handleMemberItemSelection(member) {
     this.props.actions.selectMember(member);
-    console.log(member);
+
   }
 
   handleUpdate(member){
-    console.log('handleUpdate', member );
+
     this.props.actions.updateMember(member);
   }
 
@@ -76,7 +76,7 @@ class MembershipPage extends Component {
   render() {
     const {selectedMember} = this.props;
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
-    console.log('render mpage listcount:', this.state.filteredList.length);
+    
     return (
       <div>
         <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />

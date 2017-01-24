@@ -11,7 +11,7 @@ class UploadPage extends React.Component {
     PapaParse.parse(file, {
       header: true,
       complete: results => {
-        console.log("Finished:", results.data);
+
         this.props.actions.importCsv(results.data);
         this.props.router.push({
           pathname: '/membership',
@@ -22,8 +22,7 @@ class UploadPage extends React.Component {
   }
 
   onDrop(acceptedFiles, rejectedFiles) {
-    console.log('Accepted files: ', acceptedFiles);
-    console.log('Rejected files: ', rejectedFiles);
+    
     if(acceptedFiles.length === 1 && acceptedFiles[0].type == 'text/csv'){
       this.parseCsvFile(acceptedFiles[0]);
     } else {

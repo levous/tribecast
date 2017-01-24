@@ -29,9 +29,7 @@ class PropertyTextInput extends Component {
       targetObject = targetObject[selectorPaths[idx]];
     }
 
-    console.log(targetObject);
-    console.log(value);
-    console.log(propertyName);
+    
 
 
 

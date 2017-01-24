@@ -32,14 +32,13 @@ const dataService = store => next => action => {
       })
       .then(responseJson => {
         const members = responseJson.data;
-        console.log(members);
+
         return next({
           type: member_action_types.MEMBER_DATA_RECEIVED,
           members
         });
       })
       .catch(err => {
-        console.log(err.message);
 
         return next({
           type: member_action_types.MEMBER_DATA_FAILED,
@@ -63,7 +62,7 @@ const dataService = store => next => action => {
       })
       .then(responseJson => {
         let newMember = responseJson.data;
-        console.log('update', newMember);
+        
         return next({
           type: member_action_types.UPDATE_SUCCESS_RECEIVED,
           id: tempId,

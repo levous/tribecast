@@ -124,7 +124,7 @@ let memberApp = function(state = initialState, action) {
       //TODO: look for local records that are not on the server.  support offline edits
       // copy server _id to local id
       const patchedMembers = action.members.map(member => Object.assign(member, {id: member._id}));
-      console.log('MEMBER_DATA_RECEIVED member count', patchedMembers.length);
+
       return Object.assign({}, state, {members: patchedMembers});
 
     case member_action_types.UPLOAD_DATA_RECEIVED:
