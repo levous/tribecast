@@ -24,6 +24,11 @@ class MembershipPage extends Component {
     if(this.props.location.query.notification){
       NotificationManager.info(this.props.location.query.notification);
     }
+    if(this.props.location.query.clearLocalStorage){
+      debugger;
+      localStorage.clear();
+    }
+
   }
 
   handleMemberItemSelection(member){
