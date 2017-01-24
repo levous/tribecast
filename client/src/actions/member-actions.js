@@ -15,6 +15,12 @@ export const member_action_types = {
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE'
 };
 
+export const member_data_sources = {
+  SEED: 'SEED',
+  CSV_IMPORT: 'IMPORT',
+  API: 'API'
+}
+
 export function addMember(member) {
   return {
     type: member_action_types.ADD,

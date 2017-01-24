@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { Grid, Row, Col } from 'react-bootstrap'
+import {Grid, Row, Col} from 'react-bootstrap'
 import FlatButton from 'material-ui/FlatButton';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
+import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
 
@@ -18,7 +19,6 @@ class MembershipPage extends Component {
     this.state = {
       filteredList: props.members,
     }
-
   }
 
   componentDidMount() {
@@ -29,7 +29,6 @@ class MembershipPage extends Component {
     if(this.props.location.query.clearLocalStorage){
       localStorage.clear();
     }
-
   }
 
   componentWillReceiveProps(nextProps){
@@ -73,12 +72,23 @@ class MembershipPage extends Component {
     this.setState({filteredList: results});
   }
 
+  handleDataSourceModeAccept(dataSource) {
+    alert(`Execute ${dataSource} publish here`);
+  }
+
+  handleDataSourceModeCancel(dataSource){
+    alert(`Execute ${dataSource} cancel here`);
+  }
+
   render() {
     const {selectedMember} = this.props;
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
-    
+
     return (
       <div>
+        <DataSourceModePanel dataSource={this.props.dataSource}
+          onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
+          onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
         <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
         <FlatButton primary={false} label='refresh' style={{float:'right'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
         <Grid>
@@ -116,6 +126,7 @@ function mapStateToProps(state) {
   return {
     members: state.memberApp.members,
     selectedMember: state.memberApp.selectedMember,
+    dataSource: state.memberApp.dataSource,
     dispatch: PropTypes.func.isRequired,
   };
 }

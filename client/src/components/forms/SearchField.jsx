@@ -80,8 +80,9 @@ class SearchField extends Component {
     try{
       // results using search string if has value
       if(searchText && searchText.trim().length){
+        
         const fuse = this.getFuseInstance(this.props.list);
-        results = this.fuse.search(searchText.trim());
+        results = fuse.search(searchText.trim());
       }
     }
     catch(err){

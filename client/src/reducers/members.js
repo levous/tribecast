@@ -1,4 +1,4 @@
-import {member_action_types} from '../actions/member-actions.js'
+import {member_action_types, member_data_sources} from '../actions/member-actions.js'
 import {NotificationManager} from 'react-notifications';
 import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
@@ -75,9 +75,12 @@ const seedMembers = [
   new Member(64,'Lourie', 'Sytsma','9785 Harvey Lane', 'Riverview', 'FL', '33569')
 ];
 
+
+
 const initialState = {
   members: seedMembers,
-  selectedMember: undefined
+  selectedMember: undefined,
+  dataSource: member_data_sources.SEED
 };
 
 // to start over...
@@ -125,7 +128,10 @@ let memberApp = function(state = initialState, action) {
       // copy server _id to local id
       const patchedMembers = action.members.map(member => Object.assign(member, {id: member._id}));
 
-      return Object.assign({}, state, {members: patchedMembers});
+      return Object.assign({}, state, {
+        members: patchedMembers,
+        dataSource: member_data_sources.API
+      });
 
     case member_action_types.UPLOAD_DATA_RECEIVED:
       NotificationManager.success('Imported data loaded!');
@@ -199,7 +205,10 @@ let memberApp = function(state = initialState, action) {
         members.push(member);
 
       });
-      return Object.assign({}, state, {members: members});
+      return Object.assign({}, state, {
+        members: members,
+        dataSource: member_data_sources.CSV_IMPORT
+      });
 
     case member_action_types.UPDATE_FAILURE_RECEIVED:
       const uppErr = action.err;
