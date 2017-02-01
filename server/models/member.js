@@ -29,7 +29,7 @@ let MemberSchema = new Mongoose.Schema({
     type: String,
     validate: {
       validator: (value) => {
-        /blue|green|white|red|orange|periwinkle/i.test(value);
+        /farmette|mado|selborne|grange|swann ridge/i.test(value);
       },
       message: 'Invalid neighborhood'
     }

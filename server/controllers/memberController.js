@@ -3,7 +3,7 @@ const Mongoose = require('mongoose');
 const Member = require('../models/member');
 const errors = require('restify-errors');
 // Use bluebird promises
-//Mongoose.Promise = Promise;
+Mongoose.Promise = Promise;
 
 /**
  * Get all Members
@@ -24,7 +24,7 @@ exports.get = function(id){
 }
 
 /**
- * Create new Members
+ * Create new Member
  * @param {Member} member
  * @returns (Promise) new {Member}
  */
@@ -32,6 +32,37 @@ exports.create = function(member){
   if(member._id) return Promise.reject(new errors.InvalidContentError('Cannot create member using provided "_id".  It is system a generated property.'));
   let newMember = new Member(member);
   return newMember.save();
+}
+
+/**
+ * publish Members
+ * @param [{Member}] members
+ * @returns (Promise) array of save results [{
+ *          statusCode: Integer,
+ *          statusMessage: String,
+ *          errors: [err, ...]
+ *          member:{JSON representation of member}
+ *        }, ...]
+ */
+exports.publish = function(members){
+  if(!Array.isArray(members)) return Promise.reject(new errors.InvalidArgumentError('Expected an array of members'));
+
+  let batch = [];
+  //TODO: this might need to be a bulk op in order to perform well.  Trying it the simple way to see if that is good enough for occassional import
+  //TODO: runValidators? Mongoose docs say it has caveats but not exactly what
+  //TODO: consider splitting into updates and inserts, then use: Model.insertMany
+  members.forEach(member => {
+    //TODO: check for matching email?
+    if(member._id) {
+      batch.push(Member.findOneAndUpdate({'_id': member._id }, member, {upsert:false, new: true, runValidators: true}).exec());
+    } else {
+      batch.push(Member.create(member));
+    }
+  });
+  //TODO: exec the promises and then evaluate results.  Even though the promises execute async,
+  //  the array was constructed in the same ordinality as the members argument.  So nulls should correspond to
+  //  the originating record.  Construct a not found error if the indexed result was null for a member with an _id
+  return Promise.all(batch);
 }
 
 /**
@@ -46,5 +77,5 @@ exports.update = function(id, member){
   if(member._id && member._id != id) return Promise.reject(new errors.InvalidArgumentError('id did not match member._id'));
 
   const query = {'_id': id };
-  return Member.findOneAndUpdate(query, member, {upsert:false, new: true}).exec();
+  return Member.findOneAndUpdate(query, member, {upsert:false, new: true, runValidators: true}).exec();
 }

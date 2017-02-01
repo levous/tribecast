@@ -5,7 +5,6 @@ const log = require('../../modules/log')(module);
 const MongooseObjectId = require('mongoose').Types.ObjectId;
 
 exports.setup = function (basePath, app) {
-  //TODO: should we infer the web path based on the directory path?  Could be sent in as a param or computed using __dirname
   const router = express.Router();
   /**
    * Create new Member - POST
@@ -26,6 +25,41 @@ exports.setup = function (basePath, app) {
         const responseBody = {
           message: `successfully created member ${member._id}`,
           data: member
+        }
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
+  /**
+   * publish 1-n Members - POST
+   * @param [{object},...] members - Array of a Members
+   * @returns Array of results:
+   *        [{
+   *          statusCode: Integer,
+   *          statusMessage: String,
+   *          errors: [err, ...]
+   *          member:{JSON representation of member}
+   *        }, ...]
+   */
+  router.post('/publish', function(req, res, next){
+    console.log('post member', req.body);
+    const members = req.body;
+
+    //TODO: Validate this shit!
+    memberController.publish(members)
+      .then(function(memberResults){
+        let statusCode = 200;
+        let message = `published ${memberResults.length} members`;
+      
+        if(-1 < memberResults.findIndex(m => m === null || (m.errors && m.errors.length))){
+          message += ' with errors';
+          statusCode = 207;
+        }
+        res.status(statusCode);
+        const responseBody = {
+          message: message,
+          data: memberResults
         }
         res.json(responseBody);
       })
