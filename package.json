@@ -17,6 +17,7 @@
   "author": "Rusty Zarse",
   "license": "Private",
   "dependencies": {
+    "awesome-phonenumber": "^1.2.0",
     "babel-preset-stage-0": "^6.16.0",
     "bcrypt": "^1.0.1",
     "bluebird": "^3.4.7",

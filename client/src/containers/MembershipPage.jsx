@@ -44,7 +44,6 @@ class MembershipPage extends Component {
   }
 
   handleUpdate(member){
-
     this.props.actions.updateMember(member);
   }
 
@@ -73,7 +72,11 @@ class MembershipPage extends Component {
   }
 
   handleDataSourceModeAccept(dataSource) {
-    alert(`Execute ${dataSource} publish here`);
+    if(this.props.dataSource !== memberActions.member_data_sources.CSV_IMPORT) {
+      alert('ERROR: Cannot publish unless it\'s a csv import');
+      return;
+    }
+    this.props.actions.publishMembers(this.props.members);
   }
 
   handleDataSourceModeCancel(dataSource){

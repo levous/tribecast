@@ -2,6 +2,7 @@ import {member_action_types, member_data_sources} from '../actions/member-action
 import {NotificationManager} from 'react-notifications';
 import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
+import PhoneNumber from 'awesome-phonenumber';
 
 class Member {
   constructor(id, fname, lname, street, city, state, zip){
@@ -182,13 +183,16 @@ let memberApp = function(state = initialState, action) {
           };
         }
 
-        ParseAddress
+        //TODO: log/report bad phone numbers
+        let mobilePhone = new PhoneNumber(record['Mobile Phone'], 'US');
+        let homePhone = new PhoneNumber(record['Home Phone'], 'US');
+
         const member = {
           id: ++tempId,
           firstName:    record['First name'],
           lastName:     record['Last name'],
-          homePhone:    record['Home Phone'],
-          mobilePhone:  record['Mobile Phone'],
+          homePhone:    homePhone.isValid() ? homePhone.getNumber( 'national' ): '',
+          mobilePhone:  mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): '',
           email:        record['Email'],
           neighborhood: record['Neighborhood'],
           propertyAddress: {
@@ -209,6 +213,7 @@ let memberApp = function(state = initialState, action) {
         members: members,
         dataSource: member_data_sources.CSV_IMPORT
       });
+
 
     case member_action_types.UPDATE_FAILURE_RECEIVED:
       const uppErr = action.err;

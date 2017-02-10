@@ -4,7 +4,7 @@
 import fetch from 'isomorphic-fetch';
 import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
-import {member_action_types} from '../actions/member-actions';
+import {member_action_types, member_data_sources} from '../actions/member-actions';
 
 const membersApiURL = '/api/members';
 
@@ -62,7 +62,7 @@ const dataService = store => next => action => {
       })
       .then(responseJson => {
         let newMember = responseJson.data;
-        
+
         return next({
           type: member_action_types.UPDATE_SUCCESS_RECEIVED,
           id: tempId,
@@ -77,6 +77,12 @@ const dataService = store => next => action => {
       });
 
     case member_action_types.UPDATE:
+    //TODO: Fix this so it works.  Only update when datasource is API
+      /*if(action.member_data_sources !== member_data_sources.API){
+        return Promise.resolve().then({
+          return next();
+        });
+      }*/
 
       const member = action.member;
       return fetch(`/api/members/${member._id}`, {
@@ -103,7 +109,30 @@ const dataService = store => next => action => {
           err
         });
       });
+    case member_action_types.UPLOAD_PUBLISH:
 
+      return fetch(`/api/members/publish`, {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify(action.members)
+      })
+      .then(ApiResponseHandler.handleFetchResponse)
+      .then(apiResponse => {
+        if(apiResponse.error) return Promise.reject(apiResponse.error);
+        return apiResponse.json;
+      })
+      .then(responseJson => {
+        let updatedMember = responseJson.data;
+        return next({
+          type: member_action_types.GET_ALL
+        });
+      })
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
       // Default case allows all other actions to pass through...
     default:
       break;

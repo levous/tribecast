@@ -10,6 +10,7 @@ export const member_action_types = {
   GET_ALL: 'GET_MEMBERS',
   MEMBER_DATA_RECEIVED: 'MEMBER_DATA_RECEIVED',
   UPLOAD_DATA_RECEIVED: 'UPLOAD_DATA_RECEIVED',
+  UPLOAD_PUBLISH: 'UPLOAD_PUBLISH',
   MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED',
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE'
@@ -38,6 +39,10 @@ export function selectMember(member){
 
 export function importCsv(data){
   return {type: member_action_types.UPLOAD_DATA_RECEIVED, data};
+}
+
+export function publishMembers(members){
+  return {type: member_action_types.UPLOAD_PUBLISH, members};
 }
 
 export function refreshMembersFromServer() {
