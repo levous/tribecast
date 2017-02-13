@@ -3,7 +3,7 @@ const validator = require('validator');
 const passport = require('passport');
 const express = require('express');
 
-//TODO: Convert all to promises (modify to conform to response/error response protocol)
+//TODO: Convert all to promises
 //TODO: Move logic out of routes.  I like routes to be clean and simple.  Create controllers that do not care about pathing.  AuthController should return a Promise and that is all that should be handled here
 
 exports.setup = function (basePath, app) {
@@ -91,7 +91,7 @@ exports.setup = function (basePath, app) {
     }
 
 
-    return passport.authenticate('local-signup', (err) => {
+    return passport.authenticate('local-signup', (err, token, userData) => {
       if (err) {
         if (err.name === 'MongoError' && err.code === 11000) {
           // the 11000 Mongo code is for a duplication email error
@@ -111,14 +111,13 @@ exports.setup = function (basePath, app) {
         });
       }
 
-      return passport.authenticate('local-login', (err, token, userData) => {
-        return res.json({
-          success: true,
-          message: 'You have successfully signed up, I automatically logged you in!',
-          token,
-          user: userData
-        });
-      })(req, res, next);
+      return res.status(200).json({
+        success: true,
+        message: 'You have successfully signed up!',
+        token,
+        user: userData
+      });
+
     })(req, res, next);
   });
 
@@ -149,12 +148,13 @@ exports.setup = function (basePath, app) {
       }
 
 
-      return res.json({
+      return res.status(200).json({
         success: true,
         message: 'You have successfully logged in!',
         token,
         user: userData
       });
+
     })(req, res, next);
   });
 
