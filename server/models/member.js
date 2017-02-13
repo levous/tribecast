@@ -14,6 +14,7 @@ const phoneValidator = {
 
 // define the Member model schema
 let MemberSchema = new Mongoose.Schema({
+  memberUserKey: String,
   email: String,
   firstName: String,
   lastName: String,

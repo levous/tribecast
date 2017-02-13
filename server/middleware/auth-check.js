@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const config = require('../../config');
 
+//TODO: Shouldn't this just use the passport middleware?
 
 /**
  *  The Auth Checker middleware function.
@@ -26,7 +27,7 @@ module.exports = (req, res, next) => {
       if (userErr || !user) {
         return res.status(401).end();
       }
-
+      req.user = user;
       return next();
     });
   });

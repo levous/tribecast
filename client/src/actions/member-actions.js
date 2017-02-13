@@ -13,7 +13,9 @@ export const member_action_types = {
   UPLOAD_PUBLISH: 'UPLOAD_PUBLISH',
   MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED',
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
-  UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE'
+  UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE',
+  CACHE_USER_DATA: 'CACHE_USER_DATA',
+  ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER'
 };
 
 export const member_data_sources = {
@@ -49,4 +51,16 @@ export function refreshMembersFromServer() {
   return {
     type: member_action_types.GET_ALL
   };
+}
+
+//TODO: should this really be in member actions?
+export function cacheUserData(userData) {
+  return {
+    type: member_action_types.CACHE_USER_DATA,
+    userData
+  };
+}
+
+export function assignUserMember(member){
+  return {type: member_action_types.ASSIGN_USER_MEMBER, member};
 }

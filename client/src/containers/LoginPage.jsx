@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/auth/LoginForm.jsx';
+import * as memberActions from '../actions/member-actions';
+
 
 
 class LoginPage extends React.Component {
@@ -64,9 +68,11 @@ class LoginPage extends React.Component {
 
         // save the token
         Auth.authenticateUser(xhr.response.token);
+        // save user data
+        this.props.actions.cacheUserData(xhr.response.user);
 
         // change the current URL to /
-        this.context.router.replace('/');
+        this.context.router.replace('/membership');
       } else {
         // failure
 
@@ -118,4 +124,10 @@ LoginPage.contextTypes = {
   router: PropTypes.object.isRequired
 };
 
-export default LoginPage;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(memberActions, dispatch)
+  };
+}
+
+export default connect(null, mapDispatchToProps)(LoginPage);

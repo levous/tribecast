@@ -54,6 +54,7 @@
     "restify-errors": "^4.3.0",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
+    "uuid": "^3.0.1",
     "validator": "^6.2.0",
     "winston": "^2.3.0"
   },

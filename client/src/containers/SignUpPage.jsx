@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as memberActions from '../actions/member-actions';
 import SignUpForm from '../components/auth/SignUpForm.jsx';
-
+import Auth from '../modules/Auth';
 
 class SignUpPage extends React.Component {
 
@@ -56,8 +59,15 @@ class SignUpPage extends React.Component {
         // set a message
         localStorage.setItem('successMessage', xhr.response.message);
 
-        // make a redirect
-        this.context.router.replace('/login');
+        //TODO: dup code fomr LoginPage.jsx   fix all that
+        // save the token
+        Auth.authenticateUser(xhr.response.token);
+        // save user data
+        this.props.actions.cacheUserData(xhr.response.user);
+
+        // change the current URL to /
+        this.context.router.replace('/membership');
+
       } else {
         // failure
 
@@ -107,4 +117,10 @@ SignUpPage.contextTypes = {
   router: PropTypes.object.isRequired
 };
 
-export default SignUpPage;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(memberActions, dispatch)
+  };
+}
+
+export default connect(null, mapDispatchToProps)(SignUpPage);

@@ -51,7 +51,7 @@ exports.setup = function (basePath, app) {
       .then(function(memberResults){
         let statusCode = 200;
         let message = `published ${memberResults.length} members`;
-      
+
         if(-1 < memberResults.findIndex(m => m === null || (m.errors && m.errors.length))){
           message += ' with errors';
           statusCode = 207;
@@ -112,11 +112,11 @@ exports.setup = function (basePath, app) {
         const responseBody = {
           message: `successfully updated member ${memberId}`,
           data: member
-        }
+        };
         res.json(responseBody);
       })
       .catch(next);
   });
 
   app.use(basePath, router);
-}
+};

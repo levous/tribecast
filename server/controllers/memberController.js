@@ -1,7 +1,10 @@
 const Mongoose = require('mongoose');
-//const Promise = require ('bluebird');
+const Promise = require ('bluebird');
 const Member = require('../models/member');
+const User = require('../models/user');
 const errors = require('restify-errors');
+const uuidV1 = require('uuid/v1');
+
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
@@ -78,4 +81,28 @@ exports.update = function(id, member){
 
   const query = {'_id': id };
   return Member.findOneAndUpdate(query, member, {upsert:false, new: true, runValidators: true}).exec();
+}
+
+/**
+ * Associate the user account with the member record
+ * @param ObjectId userId
+ * @param ObjectId memberId
+ * @returns (Promise) success or failure
+ */
+exports.assignUserMember = function(userId, memberId){
+
+  if(!userId) return Promise.reject(new errors.MissingParameterError('user id was not provided'));
+  if(!memberId) return Promise.reject(new errors.MissingParameterError('member id was not provided'));
+
+  const key = uuidV1();
+  debugger;
+  const update = { '$set': { 'memberUserKey': key } }
+  return Member.findOneAndUpdate({'_id': memberId }, update).exec()
+  .then(member => {
+    if(!member) throw new errors.InvalidArgumentError('No member found using provided memberId');
+    return User.findOneAndUpdate({'_id': userId }, update);
+  })
+  .then(user => {
+    if(!user) throw new errors.InvalidArgumentError('No user found using provided userId');
+  });
 }

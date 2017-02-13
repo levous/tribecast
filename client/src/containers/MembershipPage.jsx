@@ -80,7 +80,7 @@ class MembershipPage extends Component {
   }
 
   handleDataSourceModeCancel(dataSource){
-    alert(`Execute ${dataSource} cancel here`);
+    this.handleRefreshButtonTouchTap();
   }
 
   render() {

@@ -5,6 +5,7 @@ import fetch from 'isomorphic-fetch';
 import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types, member_data_sources} from '../actions/member-actions';
+import errors from 'restify-errors';
 
 const membersApiURL = '/api/members';
 
@@ -77,12 +78,11 @@ const dataService = store => next => action => {
       });
 
     case member_action_types.UPDATE:
-    //TODO: Fix this so it works.  Only update when datasource is API
-      /*if(action.member_data_sources !== member_data_sources.API){
-        return Promise.resolve().then({
-          return next();
-        });
-      }*/
+
+      // only dispatch api call if data source is API
+      if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+        return Promise.resolve();
+      }
 
       const member = action.member;
       return fetch(`/api/members/${member._id}`, {
@@ -133,7 +133,38 @@ const dataService = store => next => action => {
           err
         });
       });
-      // Default case allows all other actions to pass through...
+
+      case member_action_types.ASSIGN_USER_MEMBER:
+
+        // only dispatch api call if data source is API
+        if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+          const unpublishedMembersError = new errors.PreconditionFailedError('Cannot assign a member to a user using unpublished member.  Publish or cancel any imports first or refresh members from the server.');
+          return Promise.reject(unpublishedMembersError);
+        }
+
+        const userMember = action.member;
+        return fetch(`/api/me/assign-user-member`, {
+          method: 'post',
+          headers: authHeaders,
+          body: {memberId: userMember.id}
+        })
+        .then(ApiResponseHandler.handleFetchResponse)
+        .then(apiResponse => {
+          if(apiResponse.error) return Promise.reject(apiResponse.error);
+          return apiResponse.json;
+        })
+        .then(responseJson => {
+          // nothing to do
+          return next();
+        })
+        .catch(err => {
+          // need something more specific?
+          return next({
+            type: member_action_types.UPDATE_FAILURE_RECEIVED,
+            err
+          });
+        });
+    // Default case allows all other actions to pass through...
     default:
       break;
   }
