@@ -42,7 +42,7 @@ module.exports = new PassportLocalStrategy({
 
       const authData = new AuthData(user);
 
-      return done(null, authData.token, authData.data);
+      return done(null, authData.token, authData.userData);
 
 
     });

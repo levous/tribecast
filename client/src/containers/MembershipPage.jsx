@@ -9,6 +9,7 @@ import Member from '../components/membership/Member.jsx';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
+import Auth from '../modules/Auth'
 
 import 'react-notifications/lib/notifications.css';
 
@@ -84,7 +85,8 @@ class MembershipPage extends Component {
   }
 
   render() {
-    const {selectedMember} = this.props;
+    const {selectedMember, userData} = this.props;
+    const isAdmin = Auth.userIsInRole(userData, [Auth.ROLES.ADMIN])
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
 
     return (
@@ -92,7 +94,7 @@ class MembershipPage extends Component {
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
-        <FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />
+        {isAdmin && (<FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />)}
         <FlatButton primary={false} label='refresh' style={{float:'right'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
         <Grid>
           <Row className="show-grid">
@@ -129,6 +131,7 @@ function mapStateToProps(state) {
   return {
     members: state.memberApp.members,
     selectedMember: state.memberApp.selectedMember,
+    userData: state.memberApp.userData,
     dataSource: state.memberApp.dataSource,
     dispatch: PropTypes.func.isRequired,
   };

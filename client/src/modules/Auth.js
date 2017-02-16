@@ -32,11 +32,37 @@ class Auth {
    *
    * @returns {string}
    */
-
   static getToken () {
     return localStorage.getItem('token');
   }
+  /**
+   * Check whether a user is in any of the listed roles
+   *
+   * @param {User} user
+   * @param [string] roles
+   * @returns {bool} if the user is in any of the roles
+   */
+  static userIsInRole(user, roles) {
+    debugger;
+    // sanity check roles (no roles then not secured)
+    if(!roles || roles.length === 0) return true;
+    // sanity check user and roles (no user or roles than not authorized)
+    if(!user || !user.roles || user.roles.length === 0) return false;
 
+    for(let roleIdx = 0; roleIdx < roles.length; roleIdx++) {
+      for(let userRoleIdx = 0; userRoleIdx < user.roles.length; userRoleIdx++) {
+        // matching role / user role
+        if(user.roles[userRoleIdx] === roles[roleIdx]) return true;
+      }
+    }
+    // no match
+    return false;
+  }
+
+}
+
+Auth.ROLES = {
+  ADMIN: 'administrator'
 }
 
 export default Auth;

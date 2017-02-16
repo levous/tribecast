@@ -1,5 +1,5 @@
 const Mongoose = require('mongoose');
-const Promise = require ('bluebird');
+//const Promise = require ('bluebird');
 const Member = require('../models/member');
 const User = require('../models/user');
 const errors = require('restify-errors');

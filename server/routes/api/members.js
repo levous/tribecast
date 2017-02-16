@@ -56,12 +56,12 @@ exports.setup = function (basePath, app) {
           message += ' with errors';
           statusCode = 207;
         }
-        res.status(statusCode);
+
         const responseBody = {
           message: message,
           data: memberResults
         }
-        res.json(responseBody);
+        res.status(statusCode).json(responseBody);
       })
       .catch(next);
   });

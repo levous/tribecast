@@ -1,0 +1,6 @@
+[
+  {
+    "route": "/api/members/publish",
+    "roles": ["administrator"]
+  }
+]

@@ -4,15 +4,17 @@ const config = require('../../config');
 class AuthData{
   constructor(user) {
 
+    //TODO: create a uuid key and store with user account rather than using user id directly.
     const payload = {
       sub: user._id
     };
 
     this.token = jwt.sign(payload, config.jwtSecret);
-
+    debugger;
     this.userData = {
       name: user.name,
-      memberUserKey: user.memberUserKey
+      memberUserKey: user.memberUserKey,
+      roles: user.roles
     };
   }
 }
