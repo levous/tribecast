@@ -1,6 +1,3 @@
-
-import fetch from 'isomorphic-fetch';
-import {NotificationManager} from 'react-notifications';
 import Auth from '../modules/Auth';
 
 export const member_action_types = {
@@ -14,7 +11,6 @@ export const member_action_types = {
   MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED',
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE',
-  CACHE_USER_DATA: 'CACHE_USER_DATA',
   ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER'
 };
 
@@ -50,14 +46,6 @@ export function publishMembers(members){
 export function refreshMembersFromServer() {
   return {
     type: member_action_types.GET_ALL
-  };
-}
-
-//TODO: should this really be in member actions?
-export function cacheUserData(userData) {
-  return {
-    type: member_action_types.CACHE_USER_DATA,
-    userData
   };
 }
 

@@ -95,7 +95,6 @@ exports.assignUserMember = function(userId, memberId){
   if(!memberId) return Promise.reject(new errors.MissingParameterError('member id was not provided'));
 
   const key = uuidV1();
-  debugger;
   const update = { '$set': { 'memberUserKey': key } }
   return Member.findOneAndUpdate({'_id': memberId }, update).exec()
   .then(member => {

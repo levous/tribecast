@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as memberActions from '../actions/member-actions';
+import * as userAppActions from '../actions/user-actions';
 import SignUpForm from '../components/auth/SignUpForm.jsx';
 import Auth from '../modules/Auth';
 
@@ -119,7 +119,7 @@ SignUpPage.contextTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(memberActions, dispatch)
+    actions: bindActionCreators(userActions, dispatch)
   };
 }
 

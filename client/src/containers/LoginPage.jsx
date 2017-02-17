@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/auth/LoginForm.jsx';
-import * as memberActions from '../actions/member-actions';
+import * as userActions from '../actions/user-actions';
 
 
 
@@ -126,7 +126,7 @@ LoginPage.contextTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(memberActions, dispatch)
+    actions: bindActionCreators(userActions, dispatch)
   };
 }
 

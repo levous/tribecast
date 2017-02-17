@@ -77,7 +77,6 @@ const seedMembers = [
 ];
 
 
-
 const initialState = {
   members: seedMembers,
   //TODO: change this to an id so that it's not retained when data is refreshed
@@ -227,10 +226,6 @@ let memberApp = function(state = initialState, action) {
       // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
       NotificationManager.error(action.err.message, 'Server data load failed with error', 15000);
       return state;
-    case member_action_types.CACHE_USER_DATA:
-      return Object.assign({}, state, {
-        userData: action.userData
-      });
     default:
       return state;
   }

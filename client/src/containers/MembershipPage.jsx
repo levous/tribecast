@@ -10,6 +10,8 @@ import DataSourceModePanel from '../components/membership/DataSourceModePanel.js
 import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
 import Auth from '../modules/Auth'
+import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
+
 
 import 'react-notifications/lib/notifications.css';
 
@@ -86,17 +88,18 @@ class MembershipPage extends Component {
 
   render() {
     const {selectedMember, userData} = this.props;
-    const isAdmin = Auth.userIsInRole(userData, [Auth.ROLES.ADMIN])
+    const isAdmin = Auth.userIsInRole(userData, [Auth.ROLES.ADMIN]);
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
-
+    const canEditSelectedMember = Auth.userCanEditMember(userData, selectedMember);
     return (
       <div>
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
-        {isAdmin && (<FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />)}
-        <FlatButton primary={false} label='refresh' style={{float:'right'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
-        <Grid>
+          <FlatButton primary={false} label='' style={{float:'right'}} icon={<IconRefresh />} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
+          {isAdmin && (<FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />)}
+
+          <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>
               <SearchField
@@ -114,6 +117,7 @@ class MembershipPage extends Component {
               {selectedMember && (
                 <Member key={`memberdiv${selectedMember.id}`}
                   member={selectedMember}
+                  canEdit={canEditSelectedMember}
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
                 />
@@ -131,8 +135,8 @@ function mapStateToProps(state) {
   return {
     members: state.memberApp.members,
     selectedMember: state.memberApp.selectedMember,
-    userData: state.memberApp.userData,
     dataSource: state.memberApp.dataSource,
+    userData: state.userApp.userData,
     dispatch: PropTypes.func.isRequired,
   };
 }

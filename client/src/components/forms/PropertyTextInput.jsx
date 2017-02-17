@@ -29,7 +29,7 @@ class PropertyTextInput extends Component {
       targetObject = targetObject[selectorPaths[idx]];
     }
 
-    
+
 
 
 
@@ -67,6 +67,7 @@ class PropertyTextInput extends Component {
   }
 
   handleDoubleClick(e){
+    if(!this.props.canEdit) return;
     this.setState({
       editing: true,
       autoFocus: true

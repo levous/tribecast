@@ -43,7 +43,7 @@ class Auth {
    * @returns {bool} if the user is in any of the roles
    */
   static userIsInRole(user, roles) {
-    debugger;
+
     // sanity check roles (no roles then not secured)
     if(!roles || roles.length === 0) return true;
     // sanity check user and roles (no user or roles than not authorized)
@@ -56,6 +56,12 @@ class Auth {
       }
     }
     // no match
+    return false;
+  }
+
+  static userCanEditMember(userData, member) {
+    if(this.userIsInRole(userData, [this.ROLES.ADMIN])) return true;
+    if(userData.memberUserKey && userData.memberUserKey === member.memberUserKey) return true;
     return false;
   }
 
