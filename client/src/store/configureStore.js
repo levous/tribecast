@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import promiseMiddleware from '../middleware/promiseMiddleware'
 import dataService from '../middleware/dataService';
 
+ 
 export default function configureStore() {
 
   /*

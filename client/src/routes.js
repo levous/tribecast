@@ -7,7 +7,10 @@ import MembershipPage from './containers/MembershipPage.jsx';
 import UploadPage from './containers/UploadPage.jsx';
 import NotFound from './containers/NotFound.jsx';
 import Auth from './modules/Auth';
+import configureStore from './store/configureStore';
+
 //TODO: convert to use https://medium.com/the-many/adding-login-and-authentication-sections-to-your-react-or-react-native-app-7767fd251bd1#.huz2nvz0j
+const auth = new Auth(configureStore());
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -16,7 +19,7 @@ const routes = {
     {
       path: '/',
       getComponent: (location, callback) => {
-        if (Auth.isUserAuthenticated()) {
+        if (auth.isUserAuthenticated()) {
           callback(null, DashboardPage);
         } else {
           callback(null, HomePage);
@@ -34,7 +37,7 @@ const routes = {
     {
       path: '/logout',
       onEnter: (nextState, replace) => {
-        Auth.deauthenticateUser();
+        auth.deauthenticateUser();
 
         // change the current URL to /
         replace('/');

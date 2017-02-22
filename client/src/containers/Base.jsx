@@ -4,9 +4,13 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
+import configureStore from '../store/configureStore';
 
-const Base = ({ children }) => (
-
+const Base = ({ children }) => {
+  const auth = new Auth(configureStore());
+  const userIsAuthenticated = auth.isUserAuthenticated();
+  const userName = auth.loggedInUserName() || 'what?';
+  return (
   <div>
 
     <Navbar inverse collapseOnSelect>
@@ -18,29 +22,29 @@ const Base = ({ children }) => (
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav>
-          {Auth.isUserAuthenticated() && (
+          {userIsAuthenticated && (
             <LinkContainer to="/membership">
               <NavItem eventKey={1}>Members</NavItem>
             </LinkContainer>
           )}
-          {Auth.isUserAuthenticated() && (
+          {userIsAuthenticated && (
             <LinkContainer to="/upload">
               <NavItem eventKey={1}>Upload CSV</NavItem>
             </LinkContainer>
           )}
         </Nav>
         <Nav pullRight>
-          {Auth.isUserAuthenticated() && (
+          {userIsAuthenticated && (
             <LinkContainer to="/logout">
-              <NavItem eventKey={1}>Log Out</NavItem>
+              <NavItem eventKey={1}>Log Out, {userName}</NavItem>
             </LinkContainer>
           )}
-          {!Auth.isUserAuthenticated() && (
+          {!userIsAuthenticated && (
             <LinkContainer to="/signup">
               <NavItem eventKey={1}>Sign Up</NavItem>
             </LinkContainer>
           )}
-          {!Auth.isUserAuthenticated() && (
+          {!userIsAuthenticated && (
             <LinkContainer to="/login">
               <NavItem eventKey={2}>Log In</NavItem>
             </LinkContainer>
@@ -57,7 +61,8 @@ const Base = ({ children }) => (
     </div>
 
   </div>
-);
+  );
+};
 
 Base.propTypes = {
   children: PropTypes.object.isRequired

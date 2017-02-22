@@ -13,15 +13,19 @@ const dataService = store => next => action => {
   // Pass all actions through by default
   next(action);
 
-  const authToken = Auth.getToken();
+  const auth = new Auth(store);
+
+  const authToken = auth.getToken();
   const authHeaders = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + authToken
   };
 
   switch (action.type) {
+
     // Get all members
     case member_action_types.GET_ALL:
+
       return fetch('/api/members', {
         method: 'get',
         headers: authHeaders
@@ -123,9 +127,9 @@ const dataService = store => next => action => {
       })
       .then(responseJson => {
         let updatedMember = responseJson.data;
-        return next({
-          type: member_action_types.GET_ALL
-        });
+        
+        store.dispatch({type: member_action_types.GET_ALL})
+        return next(action);
       })
       .catch(err => {
         return next({
@@ -155,7 +159,7 @@ const dataService = store => next => action => {
         })
         .then(responseJson => {
           // nothing to do
-          return next();
+          return next(action);
         })
         .catch(err => {
           // need something more specific?
@@ -166,7 +170,7 @@ const dataService = store => next => action => {
         });
     // Default case allows all other actions to pass through...
     default:
-      break;
+      return next(action);
   }
 
 };

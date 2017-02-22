@@ -47,7 +47,7 @@ export default class Member extends Component {
     const editButtonText = editing ? 'Done': 'Edit'
     const styledLabel = (htmlFor, text) => <label htmlFor={htmlFor} style={{display: 'block', paddingTop: '5px'}}>{text}</label>;
     const canEdit = this.props.canEdit;
-    
+
     const styles = {
       headline: {
         fontSize: 24,
@@ -64,7 +64,7 @@ export default class Member extends Component {
       <div key={`member${member.id}`} style={{}}>
         {canEdit && (<FlatButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
         {styledLabel('first-name', 'name')}
-        <p>can edit: {`${canEdit}`}</p>
+        
         <h2 style={{marginTop: 0}}>
           <PropertyTextInput object={member} propertySelectorPath='firstName'
             placeholder='First Name' editing={editing} canEdit={canEdit} autoFocus={true}

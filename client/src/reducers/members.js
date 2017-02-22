@@ -81,8 +81,8 @@ const initialState = {
   members: seedMembers,
   //TODO: change this to an id so that it's not retained when data is refreshed
   selectedMember: undefined,
-  userData: undefined,
-  dataSource: member_data_sources.SEED
+  dataSource: member_data_sources.SEED,
+  loading: false
 };
 
 // to start over...
@@ -129,10 +129,11 @@ let memberApp = function(state = initialState, action) {
       //TODO: look for local records that are not on the server.  support offline edits
       // copy server _id to local id
       const patchedMembers = action.members.map(member => Object.assign(member, {id: member._id}));
-
+      console.log('MEMBER_DATA_RECEIVED');
       return Object.assign({}, state, {
         members: patchedMembers,
-        dataSource: member_data_sources.API
+        dataSource: member_data_sources.API,
+        loading: false
       });
 
     case member_action_types.UPLOAD_DATA_RECEIVED:
@@ -215,6 +216,17 @@ let memberApp = function(state = initialState, action) {
         dataSource: member_data_sources.CSV_IMPORT
       });
 
+    case member_action_types.UPLOAD_PUBLISH:
+      console.log('UPLOAD_PUBLISH received...  setting loading to true');
+      return Object.assign({}, state, {
+        loading: true
+      });
+      // pass through
+    case member_action_types.GET_ALL:
+      console.log('GET_ALL received...  setting loading to true');
+      return Object.assign({}, state, {
+        loading: true
+      });
 
     case member_action_types.UPDATE_FAILURE_RECEIVED:
       const uppErr = action.err;
@@ -225,7 +237,9 @@ let memberApp = function(state = initialState, action) {
     case member_action_types.MEMBER_DATA_FAILED:
       // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
       NotificationManager.error(action.err.message, 'Server data load failed with error', 15000);
-      return state;
+      return Object.assign({}, state, {
+        loading: false
+      });
     default:
       return state;
   }

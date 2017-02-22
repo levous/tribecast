@@ -1,10 +1,9 @@
 import React from 'react';
 import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
-
+import configureStore from '../store/configureStore';
 
 class DashboardPage extends React.Component {
-
   /**
    * Class constructor.
    */
@@ -14,6 +13,8 @@ class DashboardPage extends React.Component {
     this.state = {
       secretData: ''
     };
+
+    this.auth = new Auth(configureStore());
   }
 
   /**
@@ -24,7 +25,7 @@ class DashboardPage extends React.Component {
     xhr.open('get', '/api/dashboard');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     // set the authorization HTTP header
-    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+    xhr.setRequestHeader('Authorization', `bearer ${this.auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {

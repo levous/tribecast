@@ -1,12 +1,19 @@
+import * as userActions from '../actions/user-actions';
+import * as memberActions from '../actions/member-actions';
+
 class Auth {
 
 //TODO: fix this shit.  Totally hackable.
+
+  constructor(store) {
+    this.store = store;
+  }
   /**
    * Authenticate a user. Save a token string in Local Storage
    *
    * @param {string} token
    */
-  static authenticateUser(token) {
+  authenticateUser(token) {
     localStorage.setItem('token', token);
   }
 
@@ -15,16 +22,27 @@ class Auth {
    *
    * @returns {boolean}
    */
-  static isUserAuthenticated() {
+  isUserAuthenticated() {
     return localStorage.getItem('token') !== null;
+  }
+
+  /**
+   * Return the name of a user if authenticated.  Null if not authenticated.
+   *
+   * @returns {string}
+   */
+  loggedInUserName() {
+    if (!this.isUserAuthenticated()) return null;
+    return this.store.getState().userApp.userData.name;
   }
 
   /**
    * Deauthenticate a user. Remove a token from Local Storage.
    *
    */
-  static deauthenticateUser() {
+  deauthenticateUser() {
     localStorage.removeItem('token');
+    this.store.dispatch(userActions.cacheUserData(null));
   }
 
   /**
@@ -32,7 +50,7 @@ class Auth {
    *
    * @returns {string}
    */
-  static getToken () {
+  getToken () {
     return localStorage.getItem('token');
   }
   /**
@@ -42,7 +60,7 @@ class Auth {
    * @param [string] roles
    * @returns {bool} if the user is in any of the roles
    */
-  static userIsInRole(user, roles) {
+  userIsInRole(user, roles) {
 
     // sanity check roles (no roles then not secured)
     if(!roles || roles.length === 0) return true;
@@ -59,8 +77,9 @@ class Auth {
     return false;
   }
 
-  static userCanEditMember(userData, member) {
-    if(this.userIsInRole(userData, [this.ROLES.ADMIN])) return true;
+  userCanEditMember(userData, member) {
+    if(this.store.getState().memberApp.dataSource !== memberActions.member_data_sources.API) return false;
+    if(this.userIsInRole(userData, [Auth.ROLES.ADMIN])) return true;
     if(userData.memberUserKey && userData.memberUserKey === member.memberUserKey) return true;
     return false;
   }

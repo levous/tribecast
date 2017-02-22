@@ -3,6 +3,8 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap'
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
+import Dialog from 'material-ui/Dialog';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
@@ -11,7 +13,7 @@ import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
-
+import configureStore from '../store/configureStore';
 
 import 'react-notifications/lib/notifications.css';
 
@@ -22,6 +24,8 @@ class MembershipPage extends Component {
     this.state = {
       filteredList: props.members,
     }
+
+    this.auth = new Auth(configureStore());
   }
 
   componentDidMount() {
@@ -31,6 +35,10 @@ class MembershipPage extends Component {
 
     if(this.props.location.query.clearLocalStorage){
       localStorage.clear();
+    }
+
+    if(this.props.location.query.refresh){
+      this.props.actions.refreshMembersFromServer();
     }
   }
 
@@ -87,12 +95,24 @@ class MembershipPage extends Component {
   }
 
   render() {
-    const {selectedMember, userData} = this.props;
-    const isAdmin = Auth.userIsInRole(userData, [Auth.ROLES.ADMIN]);
+    const {selectedMember, userData, auth, loading} = this.props;
+    const isAdmin = this.auth.userIsInRole(userData, [Auth.ROLES.ADMIN]);
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
-    const canEditSelectedMember = Auth.userCanEditMember(userData, selectedMember);
+    const canEditSelectedMember = this.auth.userCanEditMember(userData, selectedMember);
     return (
       <div>
+        {loading && (
+          <div>
+            Hello
+            <Dialog
+              title="Fetching from API"
+              modal={true}
+              open={true} >
+              ...loading <CircularProgress />
+            </Dialog>
+            {`${loading}`}
+          </div>
+        )}
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
@@ -137,7 +157,7 @@ function mapStateToProps(state) {
     selectedMember: state.memberApp.selectedMember,
     dataSource: state.memberApp.dataSource,
     userData: state.userApp.userData,
-    dispatch: PropTypes.func.isRequired,
+    loading: state.memberApp.loading
   };
 }
 

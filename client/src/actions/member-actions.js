@@ -1,4 +1,3 @@
-import Auth from '../modules/Auth';
 
 export const member_action_types = {
   ADD: 'ADD_MEMBER',

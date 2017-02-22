@@ -4,8 +4,7 @@ import {connect} from 'react-redux';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/auth/LoginForm.jsx';
 import * as userActions from '../actions/user-actions';
-
-
+import configureStore from '../store/configureStore';
 
 class LoginPage extends React.Component {
 
@@ -35,6 +34,7 @@ class LoginPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
+
   }
 
   /**
@@ -66,8 +66,9 @@ class LoginPage extends React.Component {
           errors: {}
         });
 
+        const auth = new Auth(configureStore());
         // save the token
-        Auth.authenticateUser(xhr.response.token);
+        auth.authenticateUser(xhr.response.token);
         // save user data
         this.props.actions.cacheUserData(xhr.response.user);
 
