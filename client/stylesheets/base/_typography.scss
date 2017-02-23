@@ -5,6 +5,7 @@ body {
   color: $text-color;
   font: $text-font-stack;
   font-size: $text-font-size;
+  font-weight: $text-font-weight;
 }
 
 label {
@@ -16,6 +17,11 @@ label {
 
 a {
   color: #1f5a8c;
+}
+
+h2{
+  font-weight: 300;
+  font-size:1.3em
 }
 
 H2 ::-webkit-input-placeholder {

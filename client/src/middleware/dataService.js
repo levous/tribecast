@@ -127,15 +127,14 @@ const dataService = store => next => action => {
       })
       .then(responseJson => {
         let updatedMember = responseJson.data;
-        
+
         store.dispatch({type: member_action_types.GET_ALL})
         return next(action);
       })
       .catch(err => {
-        return next({
-          type: member_action_types.UPDATE_FAILURE_RECEIVED,
-          err
-        });
+        //TODO: this can't be right.  Desired result: stop current action and dispatch the failure action immediately
+        store.dispatch({type: member_action_types.UPDATE_FAILURE_RECEIVED, err});
+        return Promise.reject(err)
       });
 
       case member_action_types.ASSIGN_USER_MEMBER:

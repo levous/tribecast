@@ -55,9 +55,9 @@ const Base = ({ children }) => {
     </Navbar>
 
     <div className="container">
-      <div className="jumbotron">
-        {children}
-      </div>
+
+      {children}
+
     </div>
 
   </div>

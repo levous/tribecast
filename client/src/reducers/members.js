@@ -233,7 +233,9 @@ let memberApp = function(state = initialState, action) {
       console.log(uppErr);
       // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
       NotificationManager.error(uppErr.message, 'Update failed with error', 15000);
-      return state;
+      return Object.assign({}, state, {
+        loading: false
+      });
     case member_action_types.MEMBER_DATA_FAILED:
       // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
       NotificationManager.error(action.err.message, 'Server data load failed with error', 15000);

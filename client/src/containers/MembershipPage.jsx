@@ -100,7 +100,7 @@ class MembershipPage extends Component {
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = this.auth.userCanEditMember(userData, selectedMember);
     return (
-      <div>
+      <div className="jumbotron">
         {loading && (
           <div>
             Hello
