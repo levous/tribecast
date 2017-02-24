@@ -16,7 +16,7 @@ const MemberContactView = ({
         placeholder='404-555-1212' editing={editing} canEdit={canEdit}
         onChange={onPropertyChange} link='phone' id='mobile-phone'/>
     </div>
-    <div>
+    <div style={{display:'inline-block'}}>
       <StyledLabel htmlFor='home-phone' text='home' />
       <PropertyTextInput
         object={member} propertySelectorPath='homePhone'
@@ -46,13 +46,6 @@ const MemberContactView = ({
         onChange={onPropertyChange}/>
     </div>
     <div>
-      <StyledLabel htmlFor='neighborhood' text='neighborhood' />
-      <PropertyTextInput
-        object={member} propertySelectorPath='neighborhood'
-        placeholder='Swann Ridge' editing={editing} canEdit={canEdit}
-        onChange={onPropertyChange} id='neighborhood'/>
-    </div>
-    <div>
       <PropertyTextInput
         object={member} propertySelectorPath='propertyAddress.city'
         placeholder='Vacationville' editing={editing} canEdit={canEdit}
@@ -72,6 +65,13 @@ const MemberContactView = ({
         onChange={onPropertyChange}
         style={{marginLeft:'8px'}}
       />
+    </div>
+    <div>
+      <StyledLabel htmlFor='neighborhood' text='neighborhood' />
+      <PropertyTextInput
+        object={member} propertySelectorPath='neighborhood'
+        placeholder='Swann Ridge' editing={editing} canEdit={canEdit}
+        onChange={onPropertyChange} id='neighborhood'/>
     </div>
     <div>
       <StyledLabel htmlFor='alt-address' text='alternate address' />
