@@ -42,7 +42,7 @@ let MemberSchema = new Mongoose.Schema({
   passionsInterests:String,
   hobbies:String,
   children: String,
-  adultResident: String,
+  adultResidents: String,
   websiteURL: String,
   optIn: Boolean,
   directorySubscription: Boolean

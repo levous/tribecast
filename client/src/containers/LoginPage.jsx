@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Auth from '../modules/Auth';
+import { Card, CardActions, CardHeader, CardMedia, CardText, CardTitle } from 'material-ui/Card';
 import LoginForm from '../components/auth/LoginForm.jsx';
 import * as userActions from '../actions/user-actions';
 import configureStore from '../store/configureStore';
+import communityDefaults from '../../../config/community-defaults';
 
 class LoginPage extends React.Component {
 
@@ -109,13 +111,24 @@ class LoginPage extends React.Component {
    */
   render() {
     return (
-      <LoginForm
-        onSubmit={this.processForm}
-        onChange={this.changeUser}
-        errors={this.state.errors}
-        successMessage={this.state.successMessage}
-        user={this.state.user}
-      />
+      <Card>
+        <CardMedia
+          overlay={<CardTitle title={communityDefaults.name} subtitle="Welcome!" />}
+        >
+          <img src="/images/serenbe-farm.jpg" />
+        </CardMedia>
+        <CardActions>
+          <LoginForm
+            onSubmit={this.processForm}
+            onChange={this.changeUser}
+            errors={this.state.errors}
+            successMessage={this.state.successMessage}
+            user={this.state.user}
+          />
+        </CardActions>
+      </Card>
+
+
     );
   }
 
