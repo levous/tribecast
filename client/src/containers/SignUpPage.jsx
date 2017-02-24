@@ -116,7 +116,8 @@ class SignUpPage extends React.Component {
 }
 
 SignUpPage.contextTypes = {
-  router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired
 };
 
 function mapDispatchToProps(dispatch) {

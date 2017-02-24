@@ -25,7 +25,12 @@ const dataService = store => next => action => {
 
     // Get all members
     case member_action_types.GET_ALL:
-
+      if(!auth.isUserAuthorizedToView()){
+        return next({
+          type: member_action_types.MEMBER_DATA_FAILED,
+          err: new errors.NotAuthorizedError('Sorry, you aren\'t authorized to view the server records.')
+        });
+      }
       return fetch('/api/members', {
         method: 'get',
         headers: authHeaders

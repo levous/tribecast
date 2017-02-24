@@ -7,6 +7,7 @@ class Auth {
 
   constructor(store) {
     this.store = store;
+    this.userData = store.getState().userApp.userData;
   }
   /**
    * Authenticate a user. Save a token string in Local Storage
@@ -27,6 +28,26 @@ class Auth {
   }
 
   /**
+   * Check if a user is authorized to view the directory
+   *
+   * @returns {boolean}
+   */
+  isUserAuthorizedToView() {
+    //TODO: use roles to grant access to 'Read' directory.  Perhaps 'Reader'?
+    return this.isUserAuthenticated();
+  }
+
+  /**
+   * Check if a user is an administrator
+   *
+   * @returns {boolean}
+   */
+  isUserAdmin() {
+    return this.userIsInRole(this.userData, [Auth.ROLES.ADMIN]);
+  }
+
+
+  /**
    * Return the name of a user if authenticated.  Null if not authenticated.
    *
    * @returns {string}
@@ -34,7 +55,7 @@ class Auth {
   loggedInUserName() {
     if (!this.isUserAuthenticated()) return null;
     try {
-      return this.store.getState().userApp.userData.name
+      return this.userData.name
     }catch(err){
       return null
     };

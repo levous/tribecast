@@ -95,9 +95,9 @@ class MembershipPage extends Component {
   render() {
     const {selectedMember, userData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
-    const isAdmin = isLoggedIn && this.auth.userIsInRole(userData, [Auth.ROLES.ADMIN]);
+    const isAdmin = isLoggedIn && this.auth.isUserAdmin();
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
-    const canEditSelectedMember = isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
+    const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     return (
       <div className="jumbotron">
         {loading && (
