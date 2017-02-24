@@ -15,3 +15,9 @@ body{
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
 }
+
+input[type=text] {
+    border: 1px solid #888888;
+    border-radius: 4px;
+    margin: 2px;
+}
