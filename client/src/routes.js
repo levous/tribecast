@@ -20,7 +20,7 @@ const routes = store => {
         path: '/',
         getComponent: (location, callback) => {
           if (auth.isUserAuthenticated()) {
-            callback(null, DashboardPage);
+            callback(null, MembershipPage);
           } else {
             callback(null, HomePage);
           }
