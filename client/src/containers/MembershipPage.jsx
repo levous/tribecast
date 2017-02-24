@@ -123,7 +123,7 @@ class MembershipPage extends Component {
               <SearchField
                 list={this.props.members}
                 keys={['firstName', 'lastName', 'propertyAddress.street', 'neighborhood', 'email']}
-                placeholder='fuzzy search'
+                placeholder='fuzzy finder'
                 style={{width:'100%', border: 'solid 1px rgb(0, 188, 212)', padding: '3px', borderRadius: '5px'}}
                 onSearch={filteredList => this.handleSearch(filteredList)} />
               <br/>
