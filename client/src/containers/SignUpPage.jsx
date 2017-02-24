@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
-import SignUpForm from '../components/auth/SignUpForm.jsx';
-import configureStore from '../store/configureStore';
+import SignUpForm from '../components/auth/SignUpForm';
 import Auth from '../modules/Auth';
 
 class SignUpPage extends React.Component {
@@ -23,6 +22,8 @@ class SignUpPage extends React.Component {
         password: ''
       }
     };
+
+    this.auth = new Auth(context.store);
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
@@ -60,10 +61,9 @@ class SignUpPage extends React.Component {
         // set a message
         localStorage.setItem('successMessage', xhr.response.message);
 
-        const auth = new Auth(configureStore());
         //TODO: dup code fomr LoginPage.jsx   fix all that
         // save the token
-        auth.authenticateUser(xhr.response.token);
+        this.auth.authenticateUser(xhr.response.token);
         // save user data
         this.props.actions.cacheUserData(xhr.response.user);
 

@@ -4,10 +4,9 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
-import configureStore from '../store/configureStore';
 
-const Base = ({ children }) => {
-  const auth = new Auth(configureStore());
+const Base = ({ children }, {store}) => {
+  const auth = new Auth(store);
   const userIsAuthenticated = auth.isUserAuthenticated();
   const userName = auth.loggedInUserName() || 'what?';
   return (
@@ -67,5 +66,7 @@ const Base = ({ children }) => {
 Base.propTypes = {
   children: PropTypes.object.isRequired
 };
+
+Base.contextTypes = { store: PropTypes.object };
 
 export default Base;

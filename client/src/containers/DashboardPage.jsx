@@ -1,20 +1,19 @@
 import React from 'react';
 import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
-import configureStore from '../store/configureStore';
 
 class DashboardPage extends React.Component {
   /**
    * Class constructor.
    */
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
 
     this.state = {
       secretData: ''
     };
 
-    this.auth = new Auth(configureStore());
+    this.auth = new Auth(context.store);
   }
 
   /**
@@ -45,5 +44,7 @@ class DashboardPage extends React.Component {
   }
 
 }
+
+DashboardPage.contextTypes = {store: React.PropTypes.object};
 
 export default DashboardPage;

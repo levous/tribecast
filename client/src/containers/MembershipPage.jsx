@@ -13,8 +13,6 @@ import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
-import configureStore from '../store/configureStore';
-
 import 'react-notifications/lib/notifications.css';
 
 class MembershipPage extends Component {
@@ -25,7 +23,7 @@ class MembershipPage extends Component {
       filteredList: props.members,
     }
 
-    this.auth = new Auth(configureStore());
+    this.auth = new Auth(context.store);
   }
 
   componentDidMount() {
@@ -150,6 +148,11 @@ class MembershipPage extends Component {
     );
   }
 }
+
+MembershipPage.contextTypes = {
+  router: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
   return {

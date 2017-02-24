@@ -9,7 +9,7 @@ const MemberContactView = ({
   onPropertyChange
 }) => (
   <div>
-    <div style={{float:'left', marginRight: '10px'}}>
+    <div style={{display:'inline-block', marginRight: '10px'}}>
       <StyledLabel htmlFor='mobile-phone' text='mobile' />
       <PropertyTextInput
         object={member} propertySelectorPath='mobilePhone'

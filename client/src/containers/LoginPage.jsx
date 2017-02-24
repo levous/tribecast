@@ -5,7 +5,6 @@ import Auth from '../modules/Auth';
 import { Card, CardActions, CardHeader, CardMedia, CardText, CardTitle } from 'material-ui/Card';
 import LoginForm from '../components/auth/LoginForm.jsx';
 import * as userActions from '../actions/user-actions';
-import configureStore from '../store/configureStore';
 import communityDefaults from '../../../config/community-defaults';
 
 class LoginPage extends React.Component {
@@ -135,7 +134,8 @@ class LoginPage extends React.Component {
 }
 
 LoginPage.contextTypes = {
-  router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired
 };
 
 function mapDispatchToProps(dispatch) {

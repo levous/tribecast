@@ -33,7 +33,11 @@ class Auth {
    */
   loggedInUserName() {
     if (!this.isUserAuthenticated()) return null;
-    return this.store.getState().userApp.userData.name;
+    try {
+      return this.store.getState().userApp.userData.name
+    }catch(err){
+      return null
+    };
   }
 
   /**
