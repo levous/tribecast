@@ -33,6 +33,8 @@ class LoginPage extends React.Component {
       }
     };
 
+    this.auth = new Auth(context.store);
+
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
 
@@ -67,9 +69,8 @@ class LoginPage extends React.Component {
           errors: {}
         });
 
-        const auth = new Auth(configureStore());
         // save the token
-        auth.authenticateUser(xhr.response.token);
+        this.auth.authenticateUser(xhr.response.token);
         // save user data
         this.props.actions.cacheUserData(xhr.response.user);
 
