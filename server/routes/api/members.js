@@ -30,6 +30,9 @@ exports.setup = function (basePath, app) {
       })
       .catch(next);
   });
+//>>>>>>>>>>>>> IMPORTANT >>>>>>>>>>>>>>>>
+//TODO: secure this to admin role only!!!
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   /**
    * publish 1-n Members - POST

@@ -13,7 +13,7 @@ Mongoose.Promise = Promise;
  * @returns (Promise) [Member]
  */
 exports.getAll = function(){
-  return Member.find().exec();
+  return Member.find().lean().exec();
 }
 
 /**
