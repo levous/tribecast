@@ -13,7 +13,7 @@ export default class Root extends Component {
     return (
       <Provider store={store}>
         <Router history={browserHistory}>
-          {routes}
+          {routes(store)}
         </Router>
       </Provider>
   );

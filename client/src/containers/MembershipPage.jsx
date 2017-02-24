@@ -94,9 +94,10 @@ class MembershipPage extends Component {
 
   render() {
     const {selectedMember, userData, auth, loading} = this.props;
-    const isAdmin = this.auth.userIsInRole(userData, [Auth.ROLES.ADMIN]);
+    const isLoggedIn = this.auth.isUserAuthenticated();
+    const isAdmin = isLoggedIn && this.auth.userIsInRole(userData, [Auth.ROLES.ADMIN]);
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
-    const canEditSelectedMember = this.auth.userCanEditMember(userData, selectedMember);
+    const canEditSelectedMember = isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     return (
       <div className="jumbotron">
         {loading && (
@@ -114,7 +115,7 @@ class MembershipPage extends Component {
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
-          <FlatButton primary={false} label='' style={{float:'right'}} icon={<IconRefresh />} onTouchTap={() => this.handleRefreshButtonTouchTap()} />
+          {isLoggedIn && (<FlatButton primary={false} label='' style={{float:'right'}} icon={<IconRefresh />} onTouchTap={() => this.handleRefreshButtonTouchTap()} />)}
           {isAdmin && (<FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />)}
 
           <Grid>
