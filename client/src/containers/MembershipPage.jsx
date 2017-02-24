@@ -98,6 +98,27 @@ class MembershipPage extends Component {
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
+    const weightedSearchKeys = [{
+      name: 'lastName',
+      weight: 0.3
+    },
+    {
+      name: 'firstName',
+      weight: 0.3
+    },
+    {
+       name: 'propertyAddress.street',
+       weight: 0.1
+    },
+    {
+       name: 'neighborhood',
+       weight: 0.1
+    },
+    {
+       name: 'email',
+       weight: 0.1
+    }];
+
     return (
       <div className="jumbotron">
         {loading && (
@@ -123,7 +144,7 @@ class MembershipPage extends Component {
             <Col xs={12} md={4}>
               <SearchField
                 list={this.props.members}
-                keys={['firstName', 'lastName', 'propertyAddress.street', 'neighborhood', 'email']}
+                keys={weightedSearchKeys}
                 placeholder='fuzzy finder'
                 style={{width:'100%', border: 'solid 1px rgb(0, 188, 212)', padding: '3px', borderRadius: '5px'}}
                 onSearch={filteredList => this.handleSearch(filteredList)} />
