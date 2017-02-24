@@ -37,7 +37,7 @@ module.exports = {
         ]*/
       },
       {
-        test: /\.(ttf|eot|svg|woff(2)?)(\?v=[a-z0-9]\.[a-z0-9]\.[a-z0-9])?$/,
+        test: /\.(ttf|eot|svg|woff(2)?)(\?v=[a-z0-9]\.[a-z0-9]\.[a-z0-9])?(\?[a-z0-9]{0,6})?$/,
         loader: 'file-loader?publicPath=/&name=fonts/[name].[ext]'
       },
       { test: /\.(png|svg)$/, loader: 'url-loader?limit=100000' }
