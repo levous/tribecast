@@ -4,10 +4,11 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const fs = require('fs');
 const compression = require('compression');
-const config = require('./config');
+const config = require('config');
 const authCheckMiddleware = require('./server/middleware/auth-check');
 const log = require('./server/modules/log')(module);
 const errorSerializer = require('./server/modules/error-handling/error-serializer')
+
 
 function setupRoutes(directoryPath, app){
   const routesBasePath = path.join(__dirname, 'server/routes');
@@ -33,12 +34,8 @@ function setupRoutes(directoryPath, app){
   });
 }
 
-//HACK:
-if(process.env.NODE_ENV === 'production'){
-  config.dbUri = "mongodb://heroku:s3renBE@ds151008.mlab.com:51008/tribecast"
-}
 // connect to the database and load models
-require('./server/models').connect(config.dbUri);
+require('./server/models').connect(config.get('dbUri'));
 
 const app = express();
 const PORT = process.env.PORT || 3000;

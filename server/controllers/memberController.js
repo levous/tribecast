@@ -23,7 +23,7 @@ exports.getAll = function(){
 exports.get = function(id){
   if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
   const query = {'_id': id };
-  return Member.findOne(query);
+  return Member.findOne(query).exec();
 }
 
 /**

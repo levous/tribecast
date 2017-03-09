@@ -23,17 +23,6 @@ describe('memberController', () => {
     it('should throw if no id is provided', () => {
       return expect(memberController.get()).to.be.rejectedWith(errors.MissingParameterError);
     });
-
-    it('should succeed if id is valid', () => {
-      memberController.get('58748d746ceaa679504d7f17')
-        .then(doc => {
-          console.log('doc', doc);
-        })
-        .catch(err => {
-          console.log('err', err);
-        });
-      return expect(memberController.get('58748d746ceaa679504d7f17')).to.eventually.have.property("firstName");
-    });
   });
 
   describe('create()', () => {
@@ -63,5 +52,20 @@ describe('memberController', () => {
     });
 
   });
+
+  describe('publish()', () => {
+
+    beforeEach((done) => {
+
+      done();
+    });
+
+    it('should replace old with new if found', (done) => {
+      //hmm
+      done();
+
+    });
+  });
+
 
 });
