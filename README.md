@@ -8,6 +8,7 @@ Uses: [lorenwest/node-config](https://github.com/lorenwest/node-config/wiki/Conf
 
 Node-config reads configuration files in the ./config directory for the running process, typically the application root.  This happens to be outside of the *server* directory.  **TODO: review whether these config files will be exposed to the React client app and fix the config strategy to correct this.**
 
+...force a git update...
 
 ## API
 
