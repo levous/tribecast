@@ -1,0 +1,6 @@
+{
+  "dbUri": "mongodb://localhost/tribecast-test",
+  "logger": {
+    "logLevel": "debug"
+  }
+}

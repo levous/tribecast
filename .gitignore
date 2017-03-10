@@ -44,4 +44,6 @@ jspm_packages
 .idea
 
 # Config Files
-stormpath.yml 
+stormpath.yml
+config/production.json
+config/local.json

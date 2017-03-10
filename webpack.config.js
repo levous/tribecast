@@ -45,6 +45,12 @@ module.exports = {
   },
 
   plugins: [
+
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
@@ -52,11 +58,20 @@ module.exports = {
       inject: true
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin('styles/main.css', {allChunks: true})
+    new ExtractTextPlugin('styles/main.css', {allChunks: true}),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        screw_ie8: true
+      },
+      comments: false,
+      sourceMap: false
+    })
+
   ],
   postcss: () => [autoprefixer],
   debug: true,
-  devtool: 'cheap-module-eval-source-map'
+  devtool: 'cheap-module-source-map'
   //,
   // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
   //watch: true

@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "Manages membership in a tribe of cool cats",
   "main": "index.js",
+  "engines" : {
+     "node" : ">=7.3.0",
+     "npm" : "~4.3.0"
+  },
   "scripts": {
-    "start": "NODE_ENV=production webpack --progress && NODE_ENV=production node index.js",
+    "postinstall": "NODE_ENV=production webpack --progress",
+    "start": "NODE_ENV=production node index.js",
     "startdev": "NODE_ENV=development nodemon --use-strict index.js",
-    "bundle": "webpack -p",
+    "bundle": "webpack",
     "bundledev": "webpack -w",
-    "test": "NODE_ENV=development mocha --recursive -w --name *.test.js --compilers js:babel-core/register ./server"
+    "test": "NODE_ENV=test mocha --recursive -w --compilers js:babel-core/register ./server/controllers/something.test.js"
   },
   "repository": {
     "type": "git",

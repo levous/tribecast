@@ -1,0 +1,4 @@
+{
+  "dbUri": "mongodb://localhost/tribecast-dev", //"mongodb://heroku:s3renBE@ds151008.mlab.com:51008/tribecast"
+  "jwtSecret": "a secret phrase!!"
+}

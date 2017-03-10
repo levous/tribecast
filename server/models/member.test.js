@@ -24,9 +24,18 @@ describe('Member', () => {
     it('should be invalid if mobile phone is not a phone number', () => {
       member.mobilePhone = '12345678901';
       member.validate(function(err) {
-          expect(err.errors.name).to.exist;
+          expect(err.errors.mobilePhone).to.exist;
           done();
       });
+    });
+
+    it('should be invalid if name is empty', () => {
+        member.lastName = ''
+
+        member.validate(function(err) {
+            expect(err.errors.name).to.exist;
+            done();
+        });
     });
 
     it('can be changed', () => {

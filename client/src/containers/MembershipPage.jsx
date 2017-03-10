@@ -77,6 +77,8 @@ class MembershipPage extends Component {
   }
 
   handleSearch(results) {
+    //TODO: use options to include score and matches to apply highlighting.  The results will come back in a modified object structure
+    // http://fusejs.io/
     this.setState({filteredList: results});
   }
 

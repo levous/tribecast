@@ -1,7 +1,7 @@
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const config = require('../../config');
+const config = require('config');
 const authorization = require('../../config/authorization');
 
 //TODO: Shouldn't this just use the passport middleware?
@@ -39,7 +39,7 @@ module.exports = (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1];
 
   // decode the token using a secret key-phrase
-  return jwt.verify(token, config.jwtSecret, (err, decoded) => {
+  return jwt.verify(token, config.get('jwtSecret'), (err, decoded) => {
     // the 401 code is for unauthorized status
     if (err) { return res.status(401).end(); }
 

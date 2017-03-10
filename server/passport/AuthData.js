@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('../../config');
+const config = require('config');
 
 class AuthData{
   constructor(user) {
@@ -9,7 +9,7 @@ class AuthData{
       sub: user._id
     };
 
-    this.token = jwt.sign(payload, config.jwtSecret);
+    this.token = jwt.sign(payload, config.get('jwtSecret'));
     this.userData = {
       name: user.name,
       memberUserKey: user.memberUserKey,
