@@ -4,7 +4,7 @@ const Member = require('../models/member');
 const User = require('../models/user');
 const errors = require('restify-errors');
 const uuidV1 = require('uuid/v1');
-
+const PhoneNumber = require('awesome-phonenumber');
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
@@ -78,6 +78,12 @@ exports.update = function(id, member){
   if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
   if(!member) return Promise.reject(new errors.MissingParameterError('member was not provided'));
   if(member._id && member._id != id) return Promise.reject(new errors.InvalidArgumentError('id did not match member._id'));
+
+  //normalize phone numbers
+  let mobilePhone = new PhoneNumber(member.mobilePhone, 'US');
+  let homePhone = new PhoneNumber(member.homePhone, 'US');
+  member.homePhone = homePhone.getNumber( 'national' );
+  member.mobilePhone = mobilePhone.getNumber( 'national' );
 
   const query = {'_id': id };
   return Member.findOneAndUpdate(query, member, {upsert:false, new: true, runValidators: true}).exec();

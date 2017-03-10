@@ -1,8 +1,8 @@
 import Base from './containers/Base';
 import HomePage from './containers/HomePage';
-import DashboardPage from './containers/DashboardPage';
 import LoginPage from './containers/LoginPage';
 import SignUpPage from './containers/SignUpPage';
+import MemberProfilePage from './containers/MemberProfilePage';
 import MembershipPage from './containers/MembershipPage';
 import UploadPage from './containers/UploadPage';
 import NotFound from './containers/NotFound';
@@ -46,6 +46,10 @@ const routes = store => {
       {
         path: '/membership',
         component: MembershipPage
+      },
+      {
+        path: '/profile',
+        component: MemberProfilePage
       },
       {
         path: '/upload',

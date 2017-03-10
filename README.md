@@ -26,6 +26,26 @@ Efforts made to RESTful but also keeping the interface and responses consistent 
  * retrieve => GET
  * delete => DELETE
 
+### User notifications
+User messages are sent using [react-notifications](https://www.npmjs.com/package/react-notifications)
+
+#### NotificationManager API
+```
+NotificationManager.info(message, title, timeOut, callback, priority);
+NotificationManager.success(message, title, timeOut, callback, priority);
+NotificationManager.warning(message, title, timeOut, callback, priority);
+NotificationManager.error(message, title, timeOut, callback, priority);
+```
+
+| name          | type          |    description                                |
+| ------------- |:--------------|:----------------------------------------------|
+| message       | string        |    The message string                         |
+| title         | string        |    The title string                           |
+| callback      | function      | The popup timeout in milliseconds             |
+| priority      | boolean       | If true, the message gets inserted at the top |
+
+
+
 ### Errors:
   Uses [restify-errors](https://github.com/restify/errors)
 

@@ -5,7 +5,7 @@ import {Grid, Row, Col} from 'react-bootstrap'
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {NotificationManager} from 'react-notifications';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
@@ -139,7 +139,7 @@ class MembershipPage extends Component {
           {isLoggedIn && (<FlatButton primary={false} label='' style={{float:'right'}} icon={<IconRefresh />} onTouchTap={() => this.handleRefreshButtonTouchTap()} />)}
           {isAdmin && (<FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />)}
 
-          <Grid>
+        <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>
               <SearchField
@@ -165,7 +165,6 @@ class MembershipPage extends Component {
             </Col>
           </Row>
         </Grid>
-        <NotificationContainer />
       </div>
     );
   }

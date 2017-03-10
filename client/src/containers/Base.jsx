@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link, IndexLink } from 'react-router';
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
+import {NotificationContainer} from 'react-notifications';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
 
@@ -24,6 +25,11 @@ const Base = ({ children }, {store}) => {
           {userIsAuthenticated && (
             <LinkContainer to="/membership">
               <NavItem eventKey={1}>Members</NavItem>
+            </LinkContainer>
+          )}
+          {userIsAuthenticated && (
+            <LinkContainer to="/profile">
+              <NavItem eventKey={1}>My Profile</NavItem>
             </LinkContainer>
           )}
           {userIsAuthenticated && (
@@ -58,7 +64,7 @@ const Base = ({ children }, {store}) => {
       {children}
 
     </div>
-
+    <NotificationContainer />
   </div>
   );
 };
