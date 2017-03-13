@@ -22,6 +22,11 @@ exports.findByEmailAddress = function(email) {
   return User.findOne({ email: email });
 };
 
+exports.findByPasswordResetKey = function(resetKey) {
+  // find a user by email address
+  return User.findOne({ passwordResetKey: resetKey });
+};
+
 exports.addUserToRole = function(user, role){
   if(!user.roles) user.roles = [];
 

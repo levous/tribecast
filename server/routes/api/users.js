@@ -42,5 +42,29 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  /**
+   * Add User to Role - POST
+   * @param {string} passwordResetKey - email address of user
+   * @returns TODO:add proper docs
+   */
+  router.get('/invite/:passwordResetKey', function(req, res, next){
+    const passwordResetKey = req.params.passwordResetKey;
+
+    userController.findByPasswordResetKey(passwordResetKey)
+      .then(user => {
+        if(!user) return next(new errors.ResourceNotFoundError('User for provided key not found'));
+
+      }).then(user => {
+
+        res.status(200);
+        const responseBody = {
+        //NO  message: `successfully added ${user.name} to ${role} role`,
+
+        }
+        return res.json(responseBody);
+      })
+      .catch(next);
+  });
+
   app.use(basePath, router);
 };
