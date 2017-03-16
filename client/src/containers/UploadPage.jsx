@@ -13,6 +13,9 @@ class UploadPage extends React.Component {
       complete: results => {
 
         this.props.actions.importCsv(results.data);
+        console.log('hello', 'bout tuh check');
+        debugger;
+        this.props.actions.apiMatchCheck();
         this.props.router.push({
           pathname: '/membership',
           query: { notification: `Now viewing ${results.data.length} imported members` }
@@ -22,7 +25,7 @@ class UploadPage extends React.Component {
   }
 
   onDrop(acceptedFiles, rejectedFiles) {
-    
+
     if(acceptedFiles.length === 1 && acceptedFiles[0].type == 'text/csv'){
       this.parseCsvFile(acceptedFiles[0]);
     } else {

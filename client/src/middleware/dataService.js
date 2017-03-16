@@ -120,7 +120,7 @@ const dataService = store => next => action => {
       });
     case member_action_types.UPLOAD_PUBLISH:
 
-      return fetch(`/api/members/publish`, {
+      return fetch('/api/members/publish', {
         method: 'post',
         headers: authHeaders,
         body: JSON.stringify(action.members)
@@ -151,7 +151,7 @@ const dataService = store => next => action => {
         }
 
         const userMember = action.member;
-        return fetch(`/api/me/assign-user-member`, {
+        return fetch('/api/me/assign-user-member', {
           method: 'post',
           headers: authHeaders,
           body: {memberId: userMember.id}
@@ -172,6 +172,34 @@ const dataService = store => next => action => {
             err
           });
         });
+    case member_action_types.UPLOAD_DATA_REQUEST_MATCH_CHECK:
+
+      const members = JSON.stringify(store.getState().memberApp.members);
+
+      return fetch('api/members/match-check', {
+        method: 'post',
+        headers: authHeaders,
+        body: members
+      })
+      .then(ApiResponseHandler.handleFetchResponse)
+      .then(apiResponse => {
+        if(apiResponse.error) return Promise.reject(apiResponse.error);
+        return apiResponse.json;
+      })
+      .then(responseJson => {
+        // nothing to do
+        console.log('response', responseJson);
+        return next(action);
+      })
+      .catch(err => {
+        // need something more specific?
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+
+      return next(action);
     // Default case allows all other actions to pass through...
     default:
       return next(action);

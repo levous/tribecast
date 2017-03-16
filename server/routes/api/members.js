@@ -69,6 +69,36 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  /**
+   * check for existing 1-n Members - POST
+   * @param [{object},...] members - Array of a Members
+   * @returns {
+   *          message:
+   *          data: [ // Array of results
+   *             {
+   *               matchingFields: ['fieldName', ...]
+   *               member: {JSON representation of member}
+   *             }, ...
+   *           ]
+   *          }
+   */
+  router.post('/match-check', function(req, res, next){
+    const members = req.body;
+    console.log('match-check - members', members);
+    memberController.checkMatches(members)
+      .then(function(matchResults){
+        let statusCode = 200;
+        let message = `checked ${matchResults.length} members`;
+
+        const responseBody = {
+          message: message,
+          data: matchResults
+        }
+        res.status(statusCode).json(responseBody);
+      })
+      .catch(next);
+  });
+
   router.get('/', function(req, res, next){
     memberController.getAll()
     .then((members) => {

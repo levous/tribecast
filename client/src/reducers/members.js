@@ -138,11 +138,11 @@ let memberApp = function(state = initialState, action) {
 
     case member_action_types.UPLOAD_DATA_RECEIVED:
       NotificationManager.success('Imported data loaded!');
-      let members = [];
+
       const importData = action.data;
       let tempId =  Math.floor(Date.now()/1000);
 
-      importData.forEach(record => {
+      let members = importData.map(record => {
         /*
 
         Address
@@ -204,13 +204,12 @@ let memberApp = function(state = initialState, action) {
             zip  :  communityDefaults.location.zip
           },
           alternateAddress: altAddress,
-
           optIn:        record['Opt-In Directory']
         };
 
-        members.push(member);
-
+        return member;
       });
+
       return Object.assign({}, state, {
         members: members,
         dataSource: member_data_sources.CSV_IMPORT

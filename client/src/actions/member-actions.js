@@ -10,7 +10,8 @@ export const member_action_types = {
   MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED',
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE',
-  ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER'
+  ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER',
+  UPLOAD_DATA_REQUEST_MATCH_CHECK: 'UPLOAD_MATCH_CHECK'
 };
 
 export const member_data_sources = {
@@ -36,6 +37,10 @@ export function selectMember(member){
 
 export function importCsv(data){
   return {type: member_action_types.UPLOAD_DATA_RECEIVED, data};
+}
+
+export function apiMatchCheck(){
+  return {type: member_action_types.UPLOAD_DATA_REQUEST_MATCH_CHECK};
 }
 
 export function publishMembers(members){

@@ -69,6 +69,69 @@ exports.publish = function(members){
 }
 
 /**
+ * check for matching Members
+ * @param [{Member}] members
+ * @returns (Promise) array of matching results [
+ *           {
+ *             matchingFields: [String],
+ *             member: {JSON representation of member}
+ *           }, ...
+ *         ]
+ */
+exports.checkMatches = function(members){
+  console.log(members);
+  if(!Array.isArray(members)) return Promise.reject(new errors.InvalidArgumentError('Expected an array of members'));
+
+  const batch = members.map(member => {
+    let queryParams = [];
+    if(member.email) queryParams.push({email: member.email});
+    if(member.propertyAddress && member.propertyAddress.street) queryParams.push({'propertyAddress.street': member.propertyAddress.street});
+    const query = {$or: queryParams};
+    return Member.findOne(query).exec()
+  });
+
+  //TODO: exec the promises and then evaluate results.  Even though the promises execute async,
+  //  the array was constructed in the same ordinality as the members argument.  So nulls should correspond to
+  //  the originating record.  Construct a not found error if the indexed result was null for a member with an _id
+  return Promise.all(batch)
+    .then(matchResults => {
+
+      let results = matchResults.map((match, i) => {
+        const member = members[i];
+        if(!match) return {matchingFields: [], newRecord:member};
+        let fieldMatches = [];
+
+
+        if(match && match.email === member.email) {
+          fieldMatches.push('email');
+        }
+
+        if(match.propertyAddress.street === member.propertyAddress.street) {
+          fieldMatches.push('propertyAddress.street');
+        }
+
+        if(match.lastName === member.lastName) {
+          fieldMatches.push('lastName');
+        }
+
+        if(match.firstName === member.firstName) {
+          fieldMatches.push('firstName');
+        }
+
+        return {
+          matchingFields: fieldMatches,
+          newRecord:member,
+          oldRecord:match
+        }
+
+      });
+
+      return results;
+    });
+}
+
+
+/**
  * Update existing Member
  * @param {Member} member
  * @returns (Promise) updated {Member}
