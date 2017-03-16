@@ -14,7 +14,7 @@ class UploadPage extends React.Component {
 
         this.props.actions.importCsv(results.data);
         console.log('hello', 'bout tuh check');
-        debugger;
+        
         this.props.actions.apiMatchCheck();
         this.props.router.push({
           pathname: '/membership',

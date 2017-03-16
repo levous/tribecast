@@ -214,7 +214,25 @@ let memberApp = function(state = initialState, action) {
         members: members,
         dataSource: member_data_sources.CSV_IMPORT
       });
-
+    case member_action_types.UPLOAD_DATA_RECEIVE_MATCH_CHECK:
+      const matchResponse = action.matchResponse;
+      debugger;
+      const decoratedMembers = state.members.map((member, i) => {
+        const match = matchResponse.data.find(m => m.newRecord.id === member.id) || { matchingFields:[], oldRecord: null};
+        return Object.assign(
+          member,
+          {
+            apiMatch: {
+              matchingFields: match.matchingFields,
+              apiRecord: match.oldRecord
+            }
+          }
+        )
+      })
+      return Object.assign({}, state, {
+        members: decoratedMembers,
+        dataSource: member_data_sources.CSV_IMPORT
+      });
     case member_action_types.UPLOAD_PUBLISH:
       console.log('UPLOAD_PUBLISH received...  setting loading to true');
       return Object.assign({}, state, {

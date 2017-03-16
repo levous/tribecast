@@ -188,7 +188,7 @@ const dataService = store => next => action => {
       })
       .then(responseJson => {
         // nothing to do
-        console.log('response', responseJson);
+        store.dispatch({type: member_action_types.UPLOAD_DATA_RECEIVE_MATCH_CHECK, matchResponse: responseJson})
         return next(action);
       })
       .catch(err => {

@@ -1,5 +1,6 @@
 const Mongoose = require('mongoose');
 //const Promise = require ('bluebird');
+const MongooseObjectId = require('mongoose').Types.ObjectId;
 const Member = require('../models/member');
 const User = require('../models/user');
 const errors = require('restify-errors');
@@ -84,10 +85,29 @@ exports.checkMatches = function(members){
 
   const batch = members.map(member => {
     let queryParams = [];
+
+    //sanity check
+    if(!member.propertyAddress) member.propertyAddress = {};
+    // MongooseObjectId.isValid returning true for almost anything.  So, have to include in the OR query because it's not reliable
+    if(member.id && MongooseObjectId.isValid(member.id)) queryParams.push({_id: MongooseObjectId(member.id)});
     if(member.email) queryParams.push({email: member.email});
-    if(member.propertyAddress && member.propertyAddress.street) queryParams.push({'propertyAddress.street': member.propertyAddress.street});
+    if(member.propertyAddress.street) queryParams.push({'propertyAddress.street': member.propertyAddress.street});
+    // query is looking for reasonable or'd matches
     const query = {$or: queryParams};
-    return Member.findOne(query).exec()
+
+    return Member.find(query).exec()
+      .then(results => {
+        let bestMatch;
+        if(results && results.length > 0) {
+          // id? > email, address, fullname? > address, fullname? > email? > first record
+          bestMatch = ( results.find(m => m._id === member.id) ) ||
+          ( member.email && member.propertyAddress.street && member.lastName && member.firstName ? results.find(m => m.email === member.email && m.propertyAddress.street === member.propertyAddress.street && m.lastName === member.lastName && m.firstName === member.firstName) : null ) ||
+          ( member.email && member.propertyAddress.street ? results.find(m => m.email === member.email && m.propertyAddress.street === member.propertyAddress.street) : null ) ||
+          ( member.propertyAddress.street && member.lastName && member.firstName ? results.find(m => m.propertyAddress.street === member.propertyAddress.street && m.lastName === member.lastName && m.firstName === member.firstName) : null ) ||
+          ( member.email ? results.find(m => m.email === member.email) : results[0] );
+        }
+        return bestMatch;
+      })
   });
 
   //TODO: exec the promises and then evaluate results.  Even though the promises execute async,

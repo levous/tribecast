@@ -27,27 +27,59 @@ export default class MemberList extends Component {
       listStyle: {
         overflow: 'scroll',
         WebkitOverflowScrolling: 'touch'
+      },
+      confidentlyMatchedRecord: {
+        backgroundColor: '#afe8b1'
+      },
+      questionablyMatchedRecord: {
+        backgroundColor: '#eb8d99'
+      },
+      verifiedNewRecord: {
+        backgroundColor: '#b1d8e7'
       }
     };
 
     const className = this.state.activeItem ? 'member-list-container squeeze' : 'member-list-container'
 
+    const computeStyle = (member => {
+      
+      let style = (this.state.activeItem === member.id) ? styles.selectedRow : {};
+      if(member.apiMatch) {
+        if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
+          style = Object.assign({}, style, styles.verifiedNewRecord);
+        }else if(member.apiMatch.apiRecord._id === member.id || member.apiMatch.matchingFields.length > 2) {
+          style = Object.assign({}, style, styles.confidentlyMatchedRecord);
+        }else{
+          style = Object.assign({}, style, styles.questionablyMatchedRecord);
+        }
+      }
+      return style;
+    });
+
+    console.log('member count',this.props.members.length);
     return (
       <div style={styles.listStyle} className={className}>
 
         <List>
           {
-            this.props.members.map((member, i) =>
+            this.props.members.map((member, i) => {
+              // sanity check
+              if(!member){
+                console.log('MemberList:props.members.map', 'member item was null');
+                return <ListItem key={`mem${i}`} primaryText='member null' secondaryText='This indicates a problem.  Please contact support.' />
+              }
+              return (
               <ListItem key={`mem${i}`}
                 leftAvatar={
-                  <Avatar md5Email={md5(member.email)} name={`${member.firstName} ${member.lastName}`} round={true} size={40} />
+                  <Avatar md5Email={member.email ? md5(member.email) : ''} name={`${member.firstName} ${member.lastName}`} round={true} size={40} />
                 }
                 primaryText={`${member.firstName} ${member.lastName}`}
                 secondaryText={member.propertyAddress && member.propertyAddress.street}
                 onTouchTap={() => this.handleItemTouchTap(member)}
-                style={(this.state.activeItem === member.id) ? styles.selectedRow : {}}
+                style={computeStyle(member)}
               />
             )
+            })
           }
         </List>
       </div>
