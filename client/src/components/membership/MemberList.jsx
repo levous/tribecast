@@ -29,20 +29,20 @@ export default class MemberList extends Component {
         WebkitOverflowScrolling: 'touch'
       },
       confidentlyMatchedRecord: {
-        backgroundColor: '#afe8b1'
+        backgroundColor: '#cdecf0'
       },
       questionablyMatchedRecord: {
-        backgroundColor: '#eb8d99'
+        backgroundColor: '#fcf8e3'
       },
       verifiedNewRecord: {
-        backgroundColor: '#b1d8e7'
+        backgroundColor: '#daf1d0'
       }
     };
 
     const className = this.state.activeItem ? 'member-list-container squeeze' : 'member-list-container'
 
     const computeStyle = (member => {
-      
+
       let style = (this.state.activeItem === member.id) ? styles.selectedRow : {};
       if(member.apiMatch) {
         if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
