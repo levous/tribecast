@@ -35,7 +35,9 @@ function setupRoutes(directoryPath, app){
 }
 
 // connect to the database and load models
-require('./server/models').connect(config.get('dbUri'));
+const dbUri = config.get('dbUri');
+console.log('dbUri', dbUri);
+require('./server/models').connect(dbUri);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
