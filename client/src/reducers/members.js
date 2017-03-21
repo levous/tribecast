@@ -270,7 +270,8 @@ let memberApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         loading: false
       });
-
+    case member_action_types.INITIALIZE_STATE:
+      return initialState;
     default:
       return state;
   }

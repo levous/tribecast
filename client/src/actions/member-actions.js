@@ -13,7 +13,8 @@ export const member_action_types = {
   ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER',
   UPLOAD_DATA_REQUEST_MATCH_CHECK: 'UPLOAD_MATCH_CHECK',
   UPLOAD_DATA_RECEIVE_MATCH_CHECK: 'UPLOAD_MATCH_CHECK_RCV',
-  CANCEL_LOADING: 'CANCEL_LOADING'
+  CANCEL_LOADING: 'CANCEL_LOADING',
+  INITIALIZE_STATE: 'INITIALIZE_STATE'
 };
 
 export const member_data_sources = {
@@ -63,4 +64,8 @@ export function cancelLoading() {
 
 export function assignUserMember(member){
   return {type: member_action_types.ASSIGN_USER_MEMBER, member};
+}
+
+export function initializeState(){
+  return {type: member_action_types.INITIALIZE_STATE};
 }

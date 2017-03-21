@@ -67,6 +67,9 @@ class Auth {
    */
   deauthenticateUser() {
     localStorage.removeItem('token');
+    // clear it all!  We were still able to view records after logging out
+    debugger;
+    this.store.dispatch(memberActions.initializeState());
     this.store.dispatch(userActions.cacheUserData(null));
   }
 
