@@ -7,7 +7,7 @@ class Auth {
 
   constructor(store) {
     this.store = store;
-    this.userData = store.getState().userApp.userData;
+    this.userData = (store && store.getState().userApp.userData) || null;
   }
   /**
    * Authenticate a user. Save a token string in Local Storage
