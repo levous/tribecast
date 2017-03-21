@@ -5,6 +5,7 @@ import fetch from 'isomorphic-fetch';
 import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types, member_data_sources} from '../actions/member-actions';
+import {user_action_types} from '../actions/user-actions';
 import errors from 'restify-errors';
 
 const membersApiURL = '/api/members';
@@ -35,14 +36,10 @@ const dataService = store => next => action => {
         method: 'get',
         headers: authHeaders
       })
-      .then(ApiResponseHandler.handleFetchResponse)
-      .then(apiResponse => {
-        if(apiResponse.error) return Promise.reject(apiResponse.error);
-        return apiResponse.json;
-      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         const members = responseJson.data;
-
+        console.log('members', members);
         return next({
           type: member_action_types.MEMBER_DATA_RECEIVED,
           members
@@ -65,11 +62,7 @@ const dataService = store => next => action => {
         headers: authHeaders,
         body: JSON.stringify(action.member)
       })
-      .then(ApiResponseHandler.handleFetchResponse)
-      .then(apiResponse => {
-        if(apiResponse.error) return Promise.reject(apiResponse.error);
-        return apiResponse.json;
-      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         let newMember = responseJson.data;
 
@@ -99,11 +92,7 @@ const dataService = store => next => action => {
         headers: authHeaders,
         body: JSON.stringify(member)
       })
-      .then(ApiResponseHandler.handleFetchResponse)
-      .then(apiResponse => {
-        if(apiResponse.error) return Promise.reject(apiResponse.error);
-        return apiResponse.json;
-      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         let updatedMember = responseJson.data;
         return next({
@@ -119,17 +108,16 @@ const dataService = store => next => action => {
         });
       });
     case member_action_types.UPLOAD_PUBLISH:
-
+      const publishMembers = action.members.map(member => {
+        if(member.apiMatch && member.apiMatch.apiRecord) return Object.assign(member, {_id: member.apiMatch.apiRecord._id, recordOriginNote: `${member.apiMatch.apiRecord.recordOriginNote}\n${member.importNote}`})
+        return Object.assign(member, {recordOriginNote: member.importNote});
+      });
       return fetch('/api/members/publish', {
         method: 'post',
         headers: authHeaders,
-        body: JSON.stringify(action.members)
+        body: JSON.stringify(publishMembers)
       })
-      .then(ApiResponseHandler.handleFetchResponse)
-      .then(apiResponse => {
-        if(apiResponse.error) return Promise.reject(apiResponse.error);
-        return apiResponse.json;
-      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         let updatedMember = responseJson.data;
 
@@ -154,13 +142,9 @@ const dataService = store => next => action => {
         return fetch('/api/me/assign-user-member', {
           method: 'post',
           headers: authHeaders,
-          body: {memberId: userMember.id}
+          body: JSON.stringify({memberId: userMember.id})
         })
-        .then(ApiResponseHandler.handleFetchResponse)
-        .then(apiResponse => {
-          if(apiResponse.error) return Promise.reject(apiResponse.error);
-          return apiResponse.json;
-        })
+        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
         .then(responseJson => {
           // nothing to do
           return next(action);
@@ -174,18 +158,14 @@ const dataService = store => next => action => {
         });
     case member_action_types.UPLOAD_DATA_REQUEST_MATCH_CHECK:
 
-      const members = JSON.stringify(store.getState().memberApp.members);
+      const members = store.getState().memberApp.members;
 
       return fetch('api/members/match-check', {
         method: 'post',
         headers: authHeaders,
-        body: members
+        body: JSON.stringify(members)
       })
-      .then(ApiResponseHandler.handleFetchResponse)
-      .then(apiResponse => {
-        if(apiResponse.error) return Promise.reject(apiResponse.error);
-        return apiResponse.json;
-      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         // nothing to do
         store.dispatch({type: member_action_types.UPLOAD_DATA_RECEIVE_MATCH_CHECK, matchResponse: responseJson})
@@ -200,6 +180,29 @@ const dataService = store => next => action => {
       });
 
       return next(action);
+
+    case user_action_types.UPDATE_PASSWORD:
+      const {password, resetToken} = action;
+      const jsonBody = {newPassword: password};
+      console.log('json', jsonBody);
+
+      return fetch(`/auth/reset/${resetToken}`, {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify(jsonBody)
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        const message = responseJson.message;
+        return next(action);
+      })
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+
     // Default case allows all other actions to pass through...
     default:
       return next(action);

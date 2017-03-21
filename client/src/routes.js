@@ -2,6 +2,7 @@ import Base from './containers/Base';
 import HomePage from './containers/HomePage';
 import LoginPage from './containers/LoginPage';
 import SignUpPage from './containers/SignUpPage';
+import PasswordResetPage from './containers/PasswordResetPage';
 import MemberProfilePage from './containers/MemberProfilePage';
 import MembershipPage from './containers/MembershipPage';
 import UploadPage from './containers/UploadPage';
@@ -33,6 +34,10 @@ const routes = store => {
       {
         path: '/signup',
         component: SignUpPage
+      },
+      {
+        path: '/reset-password',
+        component: PasswordResetPage
       },
       {
         path: '/logout',

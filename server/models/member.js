@@ -45,7 +45,8 @@ let MemberSchema = new Mongoose.Schema({
   adultResidents: String,
   websiteURL: String,
   optIn: Boolean,
-  directorySubscription: Boolean
+  directorySubscription: Boolean,
+  recordOriginNote: String
 });
 
 

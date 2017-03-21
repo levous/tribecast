@@ -140,6 +140,9 @@ let memberApp = function(state = initialState, action) {
       NotificationManager.success('Imported data loaded!');
 
       const importData = action.data;
+      const fieldMap = action.fieldMap;
+      const importNote = action.importNote;
+
       let tempId =  Math.floor(Date.now()/1000);
 
       let members = importData.map(record => {
@@ -162,7 +165,7 @@ let memberApp = function(state = initialState, action) {
         Profession
         Website
         */
-        let altAddress = record['Alternate Address'];
+        let altAddress = record[fieldMap['Alternate Address']];
         if(altAddress) {
           const parsedAddress = ParseAddress.parseLocation(altAddress);
           /* //Parsed address: '1005 N Gravenstein Hwy Suite 500 Sebastopol, CA'
@@ -186,25 +189,27 @@ let memberApp = function(state = initialState, action) {
         }
 
         //TODO: log/report bad phone numbers
-        let mobilePhone = new PhoneNumber(record['Mobile Phone'], 'US');
-        let homePhone = new PhoneNumber(record['Home Phone'], 'US');
+
+        let mobilePhone = record[fieldMap['Mobile Phone']] ? new PhoneNumber(record[fieldMap['Mobile Phone']], 'US') : null;
+        let homePhone = record[fieldMap['Home Phone']] ? new PhoneNumber(record[fieldMap[fieldMap['Home Phone']]], 'US') : null;
 
         const member = {
           id: ++tempId,
-          firstName:    record['First name'],
-          lastName:     record['Last name'],
-          homePhone:    homePhone.isValid() ? homePhone.getNumber( 'national' ): '',
-          mobilePhone:  mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): '',
-          email:        record['Email'],
-          neighborhood: record['Neighborhood'],
+          firstName:    record[fieldMap['First Name']],
+          lastName:     record[fieldMap['Last Name']],
+          homePhone:    homePhone && homePhone.isValid() ? homePhone.getNumber( 'national' ): '',
+          mobilePhone:  mobilePhone && mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): '',
+          email:        record[fieldMap['Email']],
+          neighborhood: record[fieldMap['Neighborhood']],
           propertyAddress: {
-            street: record['Address'],
+            street: record[fieldMap['Property Address']],
             city :  communityDefaults.location.city,
             state:  communityDefaults.location.state,
             zip  :  communityDefaults.location.zip
           },
           alternateAddress: altAddress,
-          optIn:        record['Opt-In Directory']
+          optIn:        record[fieldMap['Opt-In Directory']],
+          importNote:   importNote
         };
 
         return member;
@@ -212,11 +217,12 @@ let memberApp = function(state = initialState, action) {
 
       return Object.assign({}, state, {
         members: members,
-        dataSource: member_data_sources.CSV_IMPORT
+        dataSource: member_data_sources.CSV_IMPORT,
+        importNote
       });
     case member_action_types.UPLOAD_DATA_RECEIVE_MATCH_CHECK:
       const matchResponse = action.matchResponse;
-      debugger;
+
       const decoratedMembers = state.members.map((member, i) => {
         const match = matchResponse.data.find(m => m.newRecord.id === member.id) || { matchingFields:[], oldRecord: null};
         return Object.assign(
@@ -259,6 +265,12 @@ let memberApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         loading: false
       });
+    case member_action_types.CANCEL_LOADING:
+      NotificationManager.info('loading action cancelled', 'Loading cancelled', 15000);
+      return Object.assign({}, state, {
+        loading: false
+      });
+
     default:
       return state;
   }

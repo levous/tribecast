@@ -12,7 +12,8 @@ export const member_action_types = {
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE',
   ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER',
   UPLOAD_DATA_REQUEST_MATCH_CHECK: 'UPLOAD_MATCH_CHECK',
-  UPLOAD_DATA_RECEIVE_MATCH_CHECK: 'UPLOAD_MATCH_CHECK_RCV'
+  UPLOAD_DATA_RECEIVE_MATCH_CHECK: 'UPLOAD_MATCH_CHECK_RCV',
+  CANCEL_LOADING: 'CANCEL_LOADING'
 };
 
 export const member_data_sources = {
@@ -36,8 +37,8 @@ export function selectMember(member){
   return {type: member_action_types.SELECT_MEMBER, member};
 }
 
-export function importCsv(data){
-  return {type: member_action_types.UPLOAD_DATA_RECEIVED, data};
+export function importCsv(data, fieldMap, importNote){
+  return {type: member_action_types.UPLOAD_DATA_RECEIVED, data, fieldMap, importNote};
 }
 
 export function apiMatchCheck(){
@@ -51,6 +52,12 @@ export function publishMembers(members){
 export function refreshMembersFromServer() {
   return {
     type: member_action_types.GET_ALL
+  };
+}
+
+export function cancelLoading() {
+  return {
+    type: member_action_types.CANCEL_LOADING
   };
 }
 

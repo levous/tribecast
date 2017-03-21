@@ -2,6 +2,7 @@
 const validator = require('validator');
 const passport = require('passport');
 const express = require('express');
+const errors = require('restify-errors');
 const userController = require('../controllers/userController');
 
 //TODO: Convert all to promises
@@ -194,12 +195,14 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
-  router.post('/reset', function(req, res, next) {
-    const passwordResetToken = req.body.passwordResetToken;
+  router.post('/reset/:passwordResetToken', (req, res, next) => {
+
+console.log(req.body);
+    const passwordResetToken = req.params.passwordResetToken;
     const newPassword = req.body.newPassword;
 
-    if(!passwordResetToken || !passwordResetToken.length) return Promise.reject(new errors.MissingParameterError('Missing required parameter "passwordResetToken"'));
-    if(!newPassword || !newPassword.length) return Promise.reject(new errors.MissingParameterError('Missing required parameter "newPassword"'));
+    if(!passwordResetToken || !passwordResetToken.length) return next(new errors.MissingParameterError('Missing required parameter "passwordResetToken"'));
+    if(!newPassword || !newPassword.length) return next(new errors.MissingParameterError('Missing required parameter "newPassword"'));
 
 
     userController.updatePasswordUsingResetToken(passwordResetToken, newPassword)

@@ -2,6 +2,7 @@ import React, {PropTypes, Component} from 'react';
 import { List, ListItem } from 'material-ui/List';
 import Avatar from 'react-avatar';
 import md5 from 'js-md5';
+import defaults from '../../../../config/community-defaults';
 //TODO: convert styles.listStyle to className
 
 export default class MemberList extends Component {
@@ -42,6 +43,7 @@ export default class MemberList extends Component {
     const className = this.state.activeItem ? 'member-list-container squeeze' : 'member-list-container'
 
     const computeStyle = (member => {
+      //TODO: abstract this logic for determining match strength
 
       let style = (this.state.activeItem === member.id) ? styles.selectedRow : {};
       if(member.apiMatch) {

@@ -47,7 +47,6 @@ app.use(compression());
 app.use(express.static(path.join(__dirname, 'server/static/')));
 app.use(express.static('./client/dist/'));
 // tell the app to parse HTTP body messages
-
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
 // pass the passport middleware
@@ -79,8 +78,8 @@ app.get('/break',function(req,res) {
 });
 
 // Error Handlers
-// only use this error handler middleware in "/api" based routes
-app.use('/api', function(err, req, res, next){
+// only use this error handler middleware in "/api" and "/auth" based routes
+app.use('/:var(api|auth)', function(err, req, res, next){
   const statusCode = err.status || err.statusCode || 500;
   log.error(err.stack);
   let errorJson = errorSerializer.serializeErrors(err);

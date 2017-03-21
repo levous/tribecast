@@ -35,6 +35,10 @@ class MembershipPage extends Component {
       localStorage.clear();
     }
 
+    if(this.props.location.query.cancelLoading){
+      this.props.actions.cancelLoading();
+    }
+
     if(this.props.location.query.refresh){
       this.props.actions.refreshMembersFromServer();
     }
@@ -49,7 +53,6 @@ class MembershipPage extends Component {
 
   handleMemberItemSelection(member) {
     this.props.actions.selectMember(member);
-
   }
 
   handleUpdate(member){
@@ -87,7 +90,8 @@ class MembershipPage extends Component {
       alert('ERROR: Cannot publish unless it\'s a csv import');
       return;
     }
-    this.props.actions.publishMembers(this.props.members);
+    const importNote = `${this.props.userData.name} published import - ${this.props.importNote}`;
+    this.props.actions.publishMembers(this.props.members, importNote);
   }
 
   handleDataSourceModeCancel(dataSource){
@@ -182,6 +186,7 @@ function mapStateToProps(state) {
     members: state.memberApp.members,
     selectedMember: state.memberApp.selectedMember,
     dataSource: state.memberApp.dataSource,
+    importNote: state.memberApp.importNote,
     userData: state.userApp.userData,
     loading: state.memberApp.loading
   };

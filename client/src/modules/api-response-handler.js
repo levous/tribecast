@@ -19,7 +19,7 @@ class ApiResponseHandler {
                            error: an error generated using the non-success http status code and error response json, if present
                          }
    */
-  static handleFetchResponse(fetchResponse, rejectOnError=false) {
+  static handleFetchResponse(fetchResponse) {
 
     return new Promise((resolve, reject) => {
 
@@ -45,8 +45,6 @@ class ApiResponseHandler {
         .then(responseText => {
           // if no body sent
           if(!responseText) {
-            // reject if error present and requested to do so
-            if (rejectOnError && apiResponse.error) return reject(apiResponse.error);
             // resole with api response package
             return resolve(apiResponse);
           }
@@ -75,13 +73,19 @@ class ApiResponseHandler {
               console.log('errorReportedByResponse', err);
               // use default error
             }
-            if (rejectOnError) return reject(apiResponse.error);
           }
           return resolve(apiResponse);
         });
     });
-
     // returns the promise
+  }
+
+  static handleFetchResponseRejectOrJson(fetchResponse){
+    return ApiResponseHandler.handleFetchResponse(fetchResponse)
+      .then(apiResponse => {
+        if(apiResponse.error) return Promise.reject(apiResponse.error);
+        return apiResponse.json;
+      });
   }
 
 }
