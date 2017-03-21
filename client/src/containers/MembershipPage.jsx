@@ -90,7 +90,7 @@ class MembershipPage extends Component {
       alert('ERROR: Cannot publish unless it\'s a csv import');
       return;
     }
-    const importNote = `${this.props.userData.name} published import - ${this.props.importNote}`;
+    const importNote = `${this.auth.loggedInUserName()} published import - ${this.props.importNote}`;
     this.props.actions.publishMembers(this.props.members, importNote);
   }
 
