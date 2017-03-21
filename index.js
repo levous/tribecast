@@ -36,7 +36,7 @@ function setupRoutes(directoryPath, app){
 
 // connect to the database and load models
 const dbUri = config.get('dbUri');
-console.log('dbUri', dbUri);
+//console.log('dbUri', dbUri);
 require('./server/models').connect(dbUri);
 
 const app = express();
