@@ -41,7 +41,7 @@ export default class Root extends Component {
       <Provider store={store}>
         <Router history={browserHistory}>
           <Route path='/' component={Base}>
-            <IndexRoute component={HomePage} />
+            <IndexRoute component={HomePage} onEnter={(nextState, replace) => {if (auth.isUserAuthorizedToView()){replace('/membership')}}}/>
             <Route path='/login' component={LoginPage} />
             <Route path='/signup' component={SignUpPage} />
             <Route path='/logout' onEnter={this.logOut} />
