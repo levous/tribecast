@@ -1,13 +1,18 @@
 export const user_action_types = {
-  CACHE_USER_DATA: 'CACHE_USER_DATA',
+  USER_LOGGED_IN: 'USER_LOGGED_IN',
+    USER_LOGGED_OUT: 'USER_LOGGED_OUT',
   UPDATE_PASSWORD: 'UPDATE_PASSWORD'
 };
 
-export function cacheUserData(userData) {
+export function userLoggedIn(userData) {
   return {
-    type: user_action_types.CACHE_USER_DATA,
+    type: user_action_types.USER_LOGGED_IN,
     userData
   };
+}
+
+export function userLoggedOut() {
+  return {type: user_action_types.USER_LOGGED_OUT};
 }
 
 export function updateUserPassword(password, resetToken) {

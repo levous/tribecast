@@ -1,4 +1,5 @@
-import {member_action_types, member_data_sources} from '../actions/member-actions.js'
+import {member_action_types, member_data_sources} from '../actions/member-actions.js';
+import {user_action_types} from '../actions/user-actions.js';
 import {NotificationManager} from 'react-notifications';
 import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
@@ -270,7 +271,7 @@ let memberApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         loading: false
       });
-    case member_action_types.INITIALIZE_STATE:
+    case user_action_types.USER_LOGGED_OUT:
       return initialState;
     default:
       return state;

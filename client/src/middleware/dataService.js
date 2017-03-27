@@ -11,7 +11,7 @@ import errors from 'restify-errors';
 const membersApiURL = '/api/members';
 
 const dataService = store => next => action => {
-  // Pass all actions through by default
+
   next(action);
 
   const auth = new Auth(store);
@@ -121,7 +121,7 @@ const dataService = store => next => action => {
       .then(responseJson => {
         let updatedMember = responseJson.data;
 
-        store.dispatch({type: member_action_types.GET_ALL})
+        store.dispatch({type: member_action_types.GET_ALL});
         return next(action);
       })
       .catch(err => {
@@ -203,9 +203,9 @@ const dataService = store => next => action => {
         });
       });
 
-    // Default case allows all other actions to pass through...
+    // Already passed action along so no need to pass through again.
     default:
-      return next(action);
+      return;
   }
 
 };

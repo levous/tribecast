@@ -163,10 +163,15 @@ exports.update = function(id, member){
   if(member._id && member._id != id) return Promise.reject(new errors.InvalidArgumentError('id did not match member._id'));
 
   //normalize phone numbers
-  let mobilePhone = new PhoneNumber(member.mobilePhone, 'US');
-  let homePhone = new PhoneNumber(member.homePhone, 'US');
-  member.homePhone = homePhone.getNumber( 'national' );
-  member.mobilePhone = mobilePhone.getNumber( 'national' );
+  if(member.mobilePhone) {
+    let mobilePhone = new PhoneNumber(member.mobilePhone, 'US');
+    member.mobilePhone = mobilePhone.getNumber( 'national' );
+  }
+
+  if(member.homePhone) {
+    let homePhone = PhoneNumber(member.homePhone, 'US');
+    member.homePhone = homePhone.getNumber( 'national' );
+  }
 
   const query = {'_id': id };
   return Member.findOneAndUpdate(query, member, {upsert:false, new: true, runValidators: true}).exec();

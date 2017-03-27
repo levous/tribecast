@@ -4,10 +4,11 @@ import persistState, {mergePersistedState} from 'redux-localstorage';
 // import filter from 'redux-localstorage-filter';
 import adapter from 'redux-localstorage/lib/adapters/localStorage';
 import thunk from 'redux-thunk';
-import promiseMiddleware from '../middleware/promiseMiddleware'
+import promiseMiddleware from '../middleware/promiseMiddleware';
 import dataService from '../middleware/dataService';
+import socketIoMiddleware from '../middleware/socketIoMiddleware';
 
- 
+
 export default function configureStore() {
 
   /*
@@ -31,7 +32,7 @@ export default function configureStore() {
   const storage = compose()(adapter(window.localStorage));
 
   const enhancers = compose(
-    applyMiddleware(dataService, thunk, promiseMiddleware),
+    applyMiddleware(dataService, socketIoMiddleware, thunk, promiseMiddleware),
     persistState(storage, 'redux-localstorage'),
     (process.env.NODE_ENV !== 'production' && window.devToolsExtension) ? window.devToolsExtension() : f => f
   );

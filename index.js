@@ -8,7 +8,7 @@ const config = require('config');
 const authCheckMiddleware = require('./server/middleware/auth-check');
 const log = require('./server/modules/log')(module);
 const errorSerializer = require('./server/modules/error-handling/error-serializer')
-
+const socketHandler = require('./server/modules/socket-io');
 
 function setupRoutes(directoryPath, app){
   const routesBasePath = path.join(__dirname, 'server/routes');
@@ -41,6 +41,9 @@ require('./server/models').connect(dbUri);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server = require('http').Server(app);
+const io = require('socket.io')(server);// add as middleware so routes have access to io
+app.use(function(req, res, next) { 'use strict'; req.io = io; next(); });
 
 // Compression
 app.use(compression());
@@ -113,6 +116,9 @@ app.get('*', function (request, response){
 })
 
 // start the server
-app.listen(PORT, () => {
-  log.info(`Server is running on http://localhost:${PORT} or http://127.0.0.1:${PORT}`);
+server.listen(PORT, () => {
+  log.info(`Server is running on http://localhost:${PORT} or http://127.0.0.1:${PORT} in ${app.get('env')} mode`);
 });
+
+// socket.io
+io.on('connection', socketHandler);
