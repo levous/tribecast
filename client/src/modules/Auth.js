@@ -105,7 +105,7 @@ class Auth {
   }
 
   userCanEditMember(userData, member) {
-    if(!userData) return false;
+    if(!userData || !member) return false;
     if(this.store.getState().memberApp.dataSource !== memberActions.member_data_sources.API) return false;
     if(this.userIsInRole(userData, [Auth.ROLES.ADMIN])) return true;
     if(userData.memberUserKey && userData.memberUserKey === member.memberUserKey) return true;

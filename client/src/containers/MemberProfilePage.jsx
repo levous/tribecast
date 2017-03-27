@@ -22,7 +22,11 @@ class MembershipPage extends Component {
   componentWillMount(){
     const {members, userData, auth} = this.props;
 
-    if(!userData.memberUserKey) NotificationManager.warning("Your user account has no member listing referenced", "Missing Reference");
+    if(!userData.memberUserKey || userData.memberUserKey.length < 1){
+      NotificationManager.warning("Your user account has no member listing referenced", "Missing Reference");
+      return;
+    }
+
     const userMember = members.find(m => m.memberUserKey == userData.memberUserKey);
     if(userData.memberUserKey && !userMember) NotificationManager.warning("I couldn't find the member listing associated with your user account");
     const canEditUserMember = this.auth.userCanEditMember(userData, userMember);
