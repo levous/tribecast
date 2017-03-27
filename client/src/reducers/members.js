@@ -1,9 +1,19 @@
-import {member_action_types, member_data_sources} from '../actions/member-actions.js';
+import {member_action_types, member_data_sources, member_sort_keys} from '../actions/member-actions.js';
 import {user_action_types} from '../actions/user-actions.js';
 import {NotificationManager} from 'react-notifications';
 import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
 import PhoneNumber from 'awesome-phonenumber';
+
+const sortComparer = sortKey => {
+  switch (sortKey){
+    case member_sort_keys.ADDRESS:
+      //TODO: ensure it don't break when property address is not there
+      return (a, b) => a.propertyAddress.street.localeCompare(b.propertyAddress.street);
+    default: //member_sort_keys.NAME:
+      return (a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName);
+  }
+};
 
 class Member {
   constructor(id, fname, lname, street, city, state, zip){
@@ -79,7 +89,7 @@ const seedMembers = [
 
 
 const initialState = {
-  members: seedMembers,
+  members: seedMembers.sort(sortComparer(member_sort_keys.NAME)),
   //TODO: change this to an id so that it's not retained when data is refreshed
   selectedMember: undefined,
   dataSource: member_data_sources.SEED,
@@ -129,7 +139,11 @@ let memberApp = function(state = initialState, action) {
       NotificationManager.success('Server data loaded');
       //TODO: look for local records that are not on the server.  support offline edits
       // copy server _id to local id
-      const patchedMembers = action.members.map(member => Object.assign(member, {id: member._id}));
+
+      const patchedMembers = action.members
+        .map(member => Object.assign(member, {id: member._id}))
+        .sort(sortComparer(member_sort_keys.NAME));;
+
       console.log('MEMBER_DATA_RECEIVED');
       return Object.assign({}, state, {
         members: patchedMembers,
@@ -270,6 +284,12 @@ let memberApp = function(state = initialState, action) {
       NotificationManager.info('loading action cancelled', 'Loading cancelled', 15000);
       return Object.assign({}, state, {
         loading: false
+      });
+    case member_action_types.MEMBER_SET_SORT:
+      const sort = sortComparer(action.sort);
+      sortedMembers = state.members.sort(sort);
+      return Object.assign({}, state, {
+        members: sortedMembers
       });
     case user_action_types.USER_LOGGED_OUT:
       return initialState;
