@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Root from './containers/Root.jsx'
+import Root from './containers/Root';
+import MuiTheme from './components/MuiTheme';
 //TODO: configure webpack to inject sass  //import '../stylesheets/main.scss';
 //TODO: configure webpack to support import of component.jsx without the extension `import Root from './containers/Root'`
 
@@ -15,7 +15,7 @@ import '../stylesheets/main.scss'
 injectTapEventPlugin();
 
 const Index = () => (
-  <MuiThemeProvider muiTheme={getMuiTheme()}>
+  <MuiThemeProvider muiTheme={MuiTheme}>
     <Root/>
   </MuiThemeProvider>
 )

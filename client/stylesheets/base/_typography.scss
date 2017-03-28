@@ -9,10 +9,10 @@ body {
 }
 
 label {
-  font-size: .9em;
+  font-size: .8em;
   color: $text-color-secondary;
   letter-spacing: .1em;
-  font-weight:300;
+  font-weight:200;
 }
 
 a {
@@ -24,8 +24,8 @@ h1{
   font-weight:100;
 }
 h2{
-  font-weight: 300;
-  font-size:1.3em
+  font-weight: 100;
+  font-size: 1.7em;
 }
 
 H2 ::-webkit-input-placeholder {

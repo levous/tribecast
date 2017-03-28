@@ -23,7 +23,7 @@ export default class MemberList extends Component {
   render() {
     const styles = {
       selectedRow: {
-        border: '1px solid #00bcd4'
+        border: '1px solid #82b186'
       },
       listStyle: {
         overflow: 'scroll',

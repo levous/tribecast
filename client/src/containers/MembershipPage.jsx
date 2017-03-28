@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap'
 import FlatButton from 'material-ui/FlatButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import {NotificationManager} from 'react-notifications';
@@ -13,6 +14,7 @@ import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
+import IconAdd from 'material-ui/svg-icons/content/add';
 import 'react-notifications/lib/notifications.css';
 
 class MembershipPage extends Component {
@@ -142,9 +144,9 @@ class MembershipPage extends Component {
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
-          {isLoggedIn && (<FlatButton primary={false} label='' style={{float:'right'}} icon={<IconRefresh />} onTouchTap={() => this.handleRefreshButtonTouchTap()} />)}
-          {isAdmin && (<FlatButton primary={true} label='+' style={{float:'right'}} onTouchTap={() => this.handleAddButtonTouchTap()} />)}
-
+        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
+        {isAdmin && ( <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton> )}
+        <div style={{clear:'both', marginTop:'5px'}}></div>
         <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>

@@ -28,7 +28,8 @@ class MembershipPage extends Component {
     }
 
     const userMember = members.find(m => m.memberUserKey == userData.memberUserKey);
-    if(userData.memberUserKey && !userMember) NotificationManager.warning("I couldn't find the member listing associated with your user account");
+    if(userData.memberUserKey && !userMember) return NotificationManager.warning("I couldn't find the member listing associated with your user account");
+
     const canEditUserMember = this.auth.userCanEditMember(userData, userMember);
     this.setState({userMember, canEditUserMember});
   }

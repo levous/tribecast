@@ -4,7 +4,7 @@ import TweenMax from 'gsap'
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import Address from './Address.jsx';
-import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import PropertyTextInput from '../forms/PropertyTextInput.jsx'
 import StyledLabel from '../forms/StyledLabel'
 import MemberContactView from './MemberContactView'
@@ -65,7 +65,7 @@ export default class Member extends Component {
 
     return (
       <div key={`member${member.id}`} style={{}}>
-        {canEdit && (<FlatButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
+        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
         <StyledLabel htmlFor='first-name' text='name' />
 
         <h2 style={{marginTop: 0}}>
