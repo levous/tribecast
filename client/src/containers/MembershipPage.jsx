@@ -64,8 +64,8 @@ class MembershipPage extends Component {
   handleAddButtonTouchTap() {
     let temp = {
       id: Math.floor(Date.now() / 1000),
-      firstName: $uper',
-      lastName: 'Man',
+      firstName: '$uper',
+      lastName: '_Man',
       propertyAddress: {
         street: '99 Serenbe Ln',
         city : 'Palmetto',
