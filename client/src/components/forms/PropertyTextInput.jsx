@@ -23,10 +23,17 @@ class PropertyTextInput extends Component {
   setPropertyValue(object, value, propertySelectorPath, ) {
     const selectorPaths = propertySelectorPath.split('.');
     let targetObject = object;
-    const propertyName = selectorPaths[selectorPaths.length-1];
-
-    for(let idx=0;idx<selectorPaths.length-1;idx++){
-      targetObject = targetObject[selectorPaths[idx]];
+    const pathCount = selectorPaths.length;
+    const propertyName = selectorPaths[pathCount-1];
+    for(let idx=0; idx < pathCount-1; idx++){
+      let tryTargetObject = targetObject[selectorPaths[idx]];
+      // when setting a property where it was previously empty, the parent may also be missing
+      if(!tryTargetObject && idx < pathCount - 1) {
+        // stub the parent
+        tryTargetObject = {};
+        targetObject[selectorPaths[idx]] = tryTargetObject;
+      }
+      targetObject = tryTargetObject;
     }
 
 

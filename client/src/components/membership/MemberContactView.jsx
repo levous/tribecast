@@ -67,13 +67,6 @@ const MemberContactView = ({
       />
     </div>
     <div>
-      <StyledLabel htmlFor='neighborhood' text='neighborhood' />
-      <PropertyTextInput
-        object={member} propertySelectorPath='neighborhood'
-        placeholder='Swann Ridge' editing={editing} canEdit={canEdit}
-        onChange={onPropertyChange} id='neighborhood'/>
-    </div>
-    <div>
       <StyledLabel htmlFor='alt-address' text='alternate address' />
       <PropertyTextInput
         object={member} propertySelectorPath='alternateAddress.street'
@@ -106,6 +99,14 @@ const MemberContactView = ({
         style={{marginLeft:'8px'}}
       />
     </div>
+    <div>
+      <StyledLabel htmlFor='neighborhood' text='neighborhood' />
+      <PropertyTextInput
+        object={member} propertySelectorPath='neighborhood'
+        placeholder='Swann Ridge' editing={editing} canEdit={canEdit}
+        onChange={onPropertyChange} id='neighborhood'/>
+    </div>
+
   </div>
 );
 
