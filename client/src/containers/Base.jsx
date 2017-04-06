@@ -29,29 +29,29 @@ const Base = ({ children }, {store}) => {
           )}
           {userIsAuthenticated && (
             <LinkContainer to="/profile">
-              <NavItem eventKey={1}>My Profile</NavItem>
+              <NavItem eventKey={2}>My Profile</NavItem>
             </LinkContainer>
           )}
           {userIsAuthenticated && (
-            <LinkContainer to="/upload">
-              <NavItem eventKey={1}>Upload CSV</NavItem>
+            <LinkContainer to="/admin">
+              <NavItem eventKey={3}>Admin Dashboard</NavItem>
             </LinkContainer>
           )}
         </Nav>
         <Nav pullRight>
           {userIsAuthenticated && (
             <LinkContainer to="/logout">
-              <NavItem eventKey={1}>Log Out, {userName}</NavItem>
+              <NavItem eventKey={4}>Log Out, {userName}</NavItem>
             </LinkContainer>
           )}
           {!userIsAuthenticated && (
             <LinkContainer to="/signup">
-              <NavItem eventKey={1}>Sign Up</NavItem>
+              <NavItem eventKey={5}>Sign Up</NavItem>
             </LinkContainer>
           )}
           {!userIsAuthenticated && (
             <LinkContainer to="/login">
-              <NavItem eventKey={2}>Log In</NavItem>
+              <NavItem eventKey={6}>Log In</NavItem>
             </LinkContainer>
           )}
 

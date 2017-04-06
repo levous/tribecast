@@ -3,10 +3,13 @@ const Mongoose = require('mongoose');
 const Member = require('../models/member');
 const User = require('../models/user');
 const errors = require('restify-errors');
-const uuidV1 = require('uuid/v1');
+const log = require('../modules/log')(module);
+const uuid = require('../modules/uuid');
 
 // Use bluebird promises
 Mongoose.Promise = Promise;
+
+
 
 exports.getAll = function(){
 
@@ -30,13 +33,13 @@ exports.forgotPassword = function(email) {
         return Promise.reject(err);
       }
 
-      user.passwordResetToken = uuidV1();
+      user.passwordResetToken = uuid();
       user.passwordResetTokenExpires = Date.now() + 3600000; // 1 hour
-      console.log('reset token',user.resetPasswordToken);
-      return user.save();
+      log.info(`forgotPassword - reset token: ${user.resetPasswordToken}`);
+      return use.save();
     })
     .then(user => {
-      console.log('user', user);
+
       return {message: 'forgot password routine completed successfully'}
     });
 };
@@ -64,10 +67,46 @@ exports.updatePasswordUsingResetToken = function(resetToken, newPassword) {
     }
 
     user.password = newPassword;
-    console.log('newPass', newPassword);
+
     return user.save();
   });
 };
+
+exports.createUser = function(userData) {
+  const newUser = new User(userData);
+  return newUser.save();
+}
+
+exports.generateInvite = function(member) {
+
+  let memberUser;
+  return this.findByEmailAddress(member.email)
+  .then(user => {
+
+    if (!user) {
+
+      log.info(`creating new user for member invite ${member.email}`);
+      const userData = {
+        email: member.email.toLowerCase(),
+        name: `${member.firstName} ${member.lastName}`.trim(),
+        password: `invited ${new Date()}`,
+        memberUserKey: uuid()
+      };
+      return this.createUser(userData);
+    }
+    log.info(`found user for member invite ${member.email}`);
+    return user;
+  }).then(user => {
+    memberUser = user;
+    member.memberUserKey = user.memberUserKey;
+    return member.save();
+  }).then(member => {
+    memberUser.passwordResetToken = uuid();
+    memberUser.passwordResetTokenExpires = Date.now() + 3600000; // 1 hour
+    return memberUser.save();
+  });
+};
+
 
 
 

@@ -156,6 +156,34 @@ const dataService = store => next => action => {
             err
           });
         });
+
+    case member_action_types.INVITE_MEMBER:
+      
+      // only dispatch api call if data source is API
+      if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+        const unpublishedMembersError = new errors.PreconditionFailedError('Cannot invite a member using unpublished member.  Publish or cancel any imports first or refresh members from the server.');
+        return Promise.reject(unpublishedMembersError);
+      }
+
+      const inviteMember = action.member;
+      return fetch('/api/members/generate-invite', {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify({email: inviteMember.email})
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        store.dispatch({type: member_action_types.INVITE_MEMBER_RESPONSE_RECEIVED, inviteResponse: responseJson});
+        return next(action);
+      })
+      .catch(err => {
+        // need something more specific?
+        return next({
+          //TODO: better failure respone
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
     case member_action_types.UPLOAD_DATA_REQUEST_MATCH_CHECK:
 
       const members = store.getState().memberApp.members;

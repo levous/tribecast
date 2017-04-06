@@ -1,5 +1,6 @@
 import {
   green900,
+  indigo900,
   cyan700,
   pinkA200,
   grey100, grey300, grey400, grey500,
@@ -12,7 +13,8 @@ import spacing from 'material-ui/styles/spacing';
 const MuiTheme = getMuiTheme({
   palette: {
     primary1Color: green900,
-    primary2Color: cyan700
+    primary2Color: cyan700,
+    secondaryColor: indigo900
   },
   tabs: {
     backgroundColor: fade(green900, 0.3)
@@ -22,7 +24,8 @@ const MuiTheme = getMuiTheme({
     border: 'solid 1px white'
   },
   raisedButton: {
-    primaryColor:  fade(green900, 0.5)
+    primaryColor:  fade(green900, 0.5),
+    secondaryColor:  fade(indigo900, 0.5)
   },
   floatingActionButton: {
     secondaryColor: fade(green900, 0.5)

@@ -1,6 +1,7 @@
 const express = require('express');
 const errors = require('restify-errors');
 const memberController = require('../../controllers/memberController');
+const userController = require('../../controllers/userController');
 const log = require('../../modules/log')(module);
 const MongooseObjectId = require('mongoose').Types.ObjectId;
 
@@ -114,7 +115,7 @@ exports.setup = function (basePath, app) {
     // validate id
     if (!MongooseObjectId.isValid(memberId)) return next(new errors.ResourceNotFoundError('Provided id not valid'));
 
-    memberController.get(memberId)
+    memberController.findById(memberId)
       .then(member => {
         if(!member) return next(new errors.ResourceNotFoundError('Provided id resulted in no matching record'));
         const responseBody = {
@@ -148,6 +149,38 @@ exports.setup = function (basePath, app) {
           data: member
         };
         if(req.io) req.io.emit('member:update', member);
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
+  router.post('/generate-invite', function(req, res, next){
+    const email = req.body.email;
+    let message = '';
+
+    memberController.findByEmail(email)
+      .then(members => {
+        if(!members || !members.length) return next(new errors.ResourceNotFoundError('Provided email resulted in no matching records'));
+        message += `found ${members.length} members with email ${email}`;
+        let inviteActions = [];
+        members.forEach(member => {
+          inviteActions.push(userController.generateInvite(member));
+        });
+        return Promise.all(inviteActions);
+      }).then(invites => {
+        let inviteResponses = [];
+        invites.forEach(invite => {
+          inviteResponses.push({
+            inviteToken: invite.passwordResetToken,
+            inviteExpires: invite.passwordResetTokenExpires,
+            name: invite.name,
+            email: invite.email
+          })
+        });
+        const responseBody = {
+          message: message,
+          data: inviteResponses
+        }
         res.json(responseBody);
       })
       .catch(next);

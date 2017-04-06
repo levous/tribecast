@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Grid, Row, Col} from 'react-bootstrap'
+import {Grid, Row, Col} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
@@ -100,10 +101,15 @@ class MembershipPage extends Component {
     this.handleRefreshButtonTouchTap();
   }
 
+  handleInvite(member) {
+    this.props.actions.inviteMember(member);
+  }
+
   render() {
     const {selectedMember, userData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
+    console.log(isAdmin);
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     const weightedSearchKeys = [{
@@ -162,12 +168,16 @@ class MembershipPage extends Component {
                 selectedMemberId={selectedMemberId}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
+
               {selectedMember && (
+
                 <Member key={`memberdiv${selectedMember.id}`}
                   member={selectedMember}
                   canEdit={canEditSelectedMember}
+                  canInvite={isAdmin}
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
+                  onInvite={(member) => this.handleInvite(member)}
                 />
               )}
             </Col>

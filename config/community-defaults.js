@@ -5,6 +5,8 @@ exports.location = {
 };
 
 exports.name = 'Serenbe Directory';
+exports.urlRoot = 'http://tribecast.heroku.com';
+
 
 exports.colors = {
   bg: {
