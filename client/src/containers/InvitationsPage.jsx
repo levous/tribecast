@@ -5,6 +5,9 @@ import defaults from '../../../config/community-defaults';
 
 class InvitationsPage extends React.Component {
   render() {
+    if(!this.props.invites_loading){
+      return <div className='jumbotron'>Loading...</div>
+    }
     return (
       <div className='jumbotron'>
         {this.props.invites.message}
@@ -25,6 +28,7 @@ class InvitationsPage extends React.Component {
 function mapStateToProps(state) {
   return {
     invites: state.memberApp.invites,
+    invites_loading: state.memberApp.invites_loading,
     user: state.userApp.userData
   };
 }

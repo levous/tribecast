@@ -41,7 +41,7 @@ class PasswordResetPage extends React.Component {
     return (
 
       <div className='jumbotron'>
-        <p>Welcome!  Please provide a password to create and activate your account.</p>
+        <p>Welcome!  Please create a password to activate your membership account.</p>
         <div>
           <label htmlFor='password'>Please Enter your Password</label>
           <div style={noticeStyle}>{passwordNotice}</div>

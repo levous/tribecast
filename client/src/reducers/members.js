@@ -292,9 +292,14 @@ let memberApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         members: sortedMembers
       });
+    case member_action_types.INVITE_MEMBER:
+      return Object.assign({}, state, {
+        invites_loading: true
+      });
     case member_action_types.INVITE_MEMBER_RESPONSE_RECEIVED:
       return Object.assign({}, state, {
-        invites: action.inviteResponse
+        invites: action.inviteResponse,
+        invites_loading: false
       });
     case user_action_types.USER_LOGGED_OUT:
       return initialState;

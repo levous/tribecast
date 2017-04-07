@@ -54,7 +54,7 @@ export default class Member extends Component {
     const editing = this.state.editing;
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
-    const canInvite = this.props.canInvite && !member.memberUserKey;
+    const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
 
     const styles = {
       headline: {

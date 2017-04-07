@@ -103,6 +103,7 @@ class MembershipPage extends Component {
 
   handleInvite(member) {
     this.props.actions.inviteMember(member);
+    this.props.router.push('/invitations');
   }
 
   render() {
