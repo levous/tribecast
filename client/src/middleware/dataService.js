@@ -158,7 +158,7 @@ const dataService = store => next => action => {
         });
 
     case member_action_types.INVITE_MEMBER:
-      
+
       // only dispatch api call if data source is API
       if(store.getState().memberApp.dataSource !== member_data_sources.API) {
         const unpublishedMembersError = new errors.PreconditionFailedError('Cannot invite a member using unpublished member.  Publish or cancel any imports first or refresh members from the server.');
@@ -222,6 +222,7 @@ const dataService = store => next => action => {
       .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         const message = responseJson.message;
+        store.dispatch({type: user_action_types.UPDATE_PASSWORD_SUCCESS});
         return next(action);
       })
       .catch(err => {

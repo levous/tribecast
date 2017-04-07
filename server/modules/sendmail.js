@@ -1,4 +1,5 @@
-var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+const sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+const config = require('config');
 
 function sendMail(fromAddress, toAddress, subject, bodyHtml){
   const request = sg.emptyRequest({
@@ -27,8 +28,8 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
     },
   });
 
-  console.log(process.env.SENDGRID_API_KEY);
-
+  
+  if(config.get('suppressEmail')) return Promise.resolve(request);
   if(!process.env.SENDGRID_API_KEY) throw new Error('process.env.SENDGRID_API_KEY not set');
 
   //With promise

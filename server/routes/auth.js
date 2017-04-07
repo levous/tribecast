@@ -131,8 +131,8 @@ exports.setup = function (basePath, app) {
         message: validationResult.message,
         errors: validationResult.errors
       });
-    }
-
+    } 
+    //TODO: if we move the passport logic to the userController, it can be reused by password reset, etc
 
     return passport.authenticate('local-login', (err, token, userData) => {
       if (err) {

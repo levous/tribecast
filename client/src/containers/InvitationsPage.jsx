@@ -10,6 +10,7 @@ class InvitationsPage extends React.Component {
     }
     return (
       <div className='jumbotron'>
+        <p>An email was dispatched from the server!  For your convenience, here is a copy.  You can send it personally.  The embedded link is specific to the recipient's account.</p>
         {this.props.invites.message}
         {this.props.invites.data.map((invite, i) => (
           <div key={`invite${i}`} style={{border: '1px solid #ffffff', borderRadius: '10px', margin: '20px', padding: '20px'}}>

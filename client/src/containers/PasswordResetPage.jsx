@@ -38,6 +38,9 @@ class PasswordResetPage extends React.Component {
     }
 
     const {passwordNotice, passwordConfirmNotice} = this.state;
+
+    if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
+
     return (
 
       <div className='jumbotron'>
@@ -64,10 +67,16 @@ PasswordResetPage.contextTypes = {
   store: PropTypes.object.isRequired
 };
 
+function mapStateToProps(state) {
+  return {
+    passwordResetSucceeded: state.userApp.passwordResetSucceeded
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(userActions, dispatch)
   };
 }
 
-export default connect(null, mapDispatchToProps)(PasswordResetPage);
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordResetPage);
