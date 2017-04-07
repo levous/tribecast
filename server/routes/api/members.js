@@ -4,6 +4,8 @@ const memberController = require('../../controllers/memberController');
 const userController = require('../../controllers/userController');
 const log = require('../../modules/log')(module);
 const MongooseObjectId = require('mongoose').Types.ObjectId;
+const sendmail = require('../../modules/sendmail');
+const communityDefaults = require('../../../config/community-defaults');
 
 exports.setup = function (basePath, app) {
   const router = express.Router();
@@ -157,6 +159,7 @@ exports.setup = function (basePath, app) {
   router.post('/generate-invite', function(req, res, next){
     const email = req.body.email;
     let message = '';
+    let inviteResponses;
 
     memberController.findByEmail(email)
       .then(members => {
@@ -167,16 +170,38 @@ exports.setup = function (basePath, app) {
           inviteActions.push(userController.generateInvite(member));
         });
         return Promise.all(inviteActions);
-      }).then(invites => {
-        let inviteResponses = [];
-        invites.forEach(invite => {
-          inviteResponses.push({
+      })
+      .then(invites => {
+        inviteResponses = invites.map(invite => {
+          return {
             inviteToken: invite.passwordResetToken,
             inviteExpires: invite.passwordResetTokenExpires,
             name: invite.name,
             email: invite.email
-          })
+          };
         });
+
+        const emails = inviteResponses.map(invite => {
+          const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
+            `<p>Dear ${invite.name},</p>` +
+            `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
+            '<p style="padding-left: 300px;">Warm regards,</p>' +
+            `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
+            '</div>'
+
+
+          return sendmail(
+            communityDefaults.fromEmail.address,
+            invite.email,
+            `${communityDefaults.name} Invitation`,
+            emailHtml
+          );
+        });
+
+        return Promise.all(emails);
+      })
+      .then(sgResponses => {
+
         const responseBody = {
           message: message,
           data: inviteResponses
