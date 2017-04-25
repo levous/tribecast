@@ -11,6 +11,8 @@ export const member_action_types = {
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE',
   ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER',
+  INVITE_MEMBER: 'INVITE_MEMBER',
+  INVITE_MEMBER_RESPONSE_RECEIVED: 'INVITE_MEMBER_RESPONSE_RECEIVED',
   UPLOAD_DATA_REQUEST_MATCH_CHECK: 'MEMBER_UPLOAD_MATCH_CHECK',
   UPLOAD_DATA_RECEIVE_MATCH_CHECK: 'MEMBER_UPLOAD_MATCH_CHECK_RCV',
   CANCEL_LOADING: 'MEMBER_CANCEL_LOADING',
@@ -69,6 +71,10 @@ export function cancelLoading() {
 
 export function assignUserMember(member){
   return {type: member_action_types.ASSIGN_USER_MEMBER, member};
+}
+
+export function inviteMember(member){
+  return {type: member_action_types.INVITE_MEMBER, member};
 }
 
 export function setMemberSort(){

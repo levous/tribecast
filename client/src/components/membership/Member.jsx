@@ -35,6 +35,10 @@ export default class Member extends Component {
     });
   }
 
+  handleInviteButtonTouchTap(member){
+    this.props.onInvite(member);
+  }
+
   handlePropertyChange(member){
     this.props.onUpdate(member);
   }
@@ -50,6 +54,7 @@ export default class Member extends Component {
     const editing = this.state.editing;
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
+    const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
 
     const styles = {
       headline: {
@@ -66,6 +71,7 @@ export default class Member extends Component {
     return (
       <div key={`member${member.id}`} style={{}}>
         {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
+        {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={() => this.handleInviteButtonTouchTap(member)}/>)}
         <StyledLabel htmlFor='first-name' text='name' />
 
         <h2 style={{marginTop: 0}}>

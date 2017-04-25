@@ -93,6 +93,7 @@ const initialState = {
   //TODO: change this to an id so that it's not retained when data is refreshed
   selectedMember: undefined,
   dataSource: member_data_sources.SEED,
+  invites: undefined,
   loading: false
 };
 
@@ -290,6 +291,15 @@ let memberApp = function(state = initialState, action) {
       sortedMembers = state.members.sort(sort);
       return Object.assign({}, state, {
         members: sortedMembers
+      });
+    case member_action_types.INVITE_MEMBER:
+      return Object.assign({}, state, {
+        invites_loading: true
+      });
+    case member_action_types.INVITE_MEMBER_RESPONSE_RECEIVED:
+      return Object.assign({}, state, {
+        invites: action.inviteResponse,
+        invites_loading: false
       });
     case user_action_types.USER_LOGGED_OUT:
       return initialState;

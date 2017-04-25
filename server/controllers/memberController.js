@@ -21,11 +21,23 @@ exports.getAll = function(){
  * Get Member
  * @returns (Promise) Member
  */
-exports.get = function(id){
+exports.findById = function(id){
   if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
   const query = {'_id': id };
   return Member.findOne(query).exec();
 }
+
+/**
+ * Get Member by email.  Since multiple properties can be owned by the same member entity, there might be multiple member records having the same email address.
+ *  There are some comments in notes.md discussing that the business rules around this are not fully worked out
+ * @returns (Promise) [Members]
+ */
+exports.findByEmail = function(email){
+  if(!email || !email.length) return Promise.reject(new errors.MissingParameterError('email was not provided'));
+  const query = {'email': email };
+  return Member.find(query).exec();
+}
+
 
 /**
  * Create new Member

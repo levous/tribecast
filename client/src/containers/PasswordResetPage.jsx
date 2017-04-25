@@ -22,14 +22,40 @@ class PasswordResetPage extends React.Component {
   }
 
   handleUpdatePassword(password, passwordConfirmation){
-    this.props.actions.updateUserPassword(this.passwordInput.value, 'bed91480-0ab7-11e7-8a5a-391bcf20e197');
+    // clear last run
+    this.setState({passwordNotice: null, passwordConfirmNotice: null});
+
+    if(!this.passwordInput.value) return this.setState({passwordNotice: 'Please provide a password'});
+    if(!this.passwordConfirmInput.value || this.passwordInput.value !== this.passwordConfirmInput.value)  return this.setState({passwordConfirmNotice: 'Confirm Password must match Password'});
+
+    this.props.actions.updateUserPassword(this.passwordInput.value, this.props.params.token);
   }
 
   render() {
+
+    const noticeStyle = {
+      color: '#aa0000'
+    }
+
+    const {passwordNotice, passwordConfirmNotice} = this.state;
+
+    if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
+
     return (
-      <div>
-        <input type='password' ref={input => this.passwordInput = input}/>
-        <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go'/>
+
+      <div className='jumbotron'>
+        <p>Welcome!  Please create a password to activate your membership account.</p>
+        <div>
+          <label htmlFor='password'>Please Enter your Password</label>
+          <div style={noticeStyle}>{passwordNotice}</div>
+          <input type='password' ref={input => this.passwordInput = input} id='password'/>
+        </div>
+        <div>
+          <label htmlFor='password-confirm'>Confirm your Password</label>
+          <div style={noticeStyle}>{passwordConfirmNotice}</div>
+          <input type='password' ref={input => this.passwordConfirmInput = input} id='password-confirm'/>
+        </div>
+        <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
       </div>
     );
   }
@@ -41,10 +67,16 @@ PasswordResetPage.contextTypes = {
   store: PropTypes.object.isRequired
 };
 
+function mapStateToProps(state) {
+  return {
+    passwordResetSucceeded: state.userApp.passwordResetSucceeded
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(userActions, dispatch)
   };
 }
 
-export default connect(null, mapDispatchToProps)(PasswordResetPage);
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordResetPage);

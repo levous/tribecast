@@ -110,13 +110,15 @@ class LoginPage extends React.Component {
    * Render the component.
    */
   render() {
+    const message = this.props.passwordResetSucceeded ? 'Password Reset was Successful!  Please log in.' : undefined;
     return (
       <Card>
         <CardMedia
-          overlay={<CardTitle title={communityDefaults.name} subtitle="Welcome!" />}
+          overlay={<CardTitle title={communityDefaults.name} subtitle='Welcome!' />}
         >
           <img src="/images/serenbe-farm.jpg" />
         </CardMedia>
+        {message && (<div style={{color: '#aa0000', fontWeight: 'bold', textAlign: 'center'}}>{message}</div>)}
         <CardActions>
           <LoginForm
             onSubmit={this.processForm}
@@ -139,10 +141,17 @@ LoginPage.contextTypes = {
   store: PropTypes.object.isRequired
 };
 
+
+function mapStateToProps(state) {
+  return {
+    passwordResetSucceeded: state.userApp.passwordResetSucceeded
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(userActions, dispatch)
   };
 }
 
-export default connect(null, mapDispatchToProps)(LoginPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

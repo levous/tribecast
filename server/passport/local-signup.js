@@ -1,6 +1,7 @@
 const User = require('mongoose').model('User');
 const PassportLocalStrategy = require('passport-local').Strategy;
 const AuthData = require('./AuthData');
+const userController = require('../controllers/userController');
 
 /**
  * Return the Passport Local Strategy object.
@@ -17,6 +18,7 @@ module.exports = new PassportLocalStrategy({
     name: req.body.name.trim()
   };
 
+//TODO: update this to use the userController.createUser with promise...
   const newUser = new User(userData);
   newUser.save((err) => {
     if (err) { return done(err); }

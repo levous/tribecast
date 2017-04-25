@@ -39,6 +39,7 @@ class MembershipPage extends Component {
   }
 
   render() {
+    if(!(this.state && this.state.userMember)) return <div className='jumbotron'>Sorry, I don't have a member record matched to your user account.</div>
     const {userMember, canEditUserMember} = this.state;
 
     return (
