@@ -139,3 +139,19 @@ NotificationManager.error(message, title, timeOut, callback, priority);
     406 WrongAcceptError
 
   <a name="restify-serialization">* note: restify-errors</a> has a [serialization strategy](https://github.com/restify/errors#rendering-errors) that might be superior.  As long as clients are not already consuming the JsonAPI error structure, feel free to migrate to this.
+
+## Database
+
+Hosted on MongoLab
+production:  ds123311.mlab.com:23311/serenbe
+staging:     ds151008.mlab.com:51008/tribecast
+
+### BackUp / Restore DB
+
+
+
+`mongodump -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --out /backup/dump`
+
+`mongorestore -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --drop /backup/dump`
+
+### Restore from Backup

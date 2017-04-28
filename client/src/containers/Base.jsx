@@ -9,6 +9,7 @@ import communityDefaults from '../../../config/community-defaults';
 const Base = ({ children }, {store}) => {
   const auth = new Auth(store);
   const userIsAuthenticated = auth.isUserAuthenticated();
+  const userIsAdmin = auth.isUserAdmin();
   const userName = auth.loggedInUserName() || 'what?';
   return (
   <div>
@@ -32,7 +33,7 @@ const Base = ({ children }, {store}) => {
               <NavItem eventKey={2}>My Profile</NavItem>
             </LinkContainer>
           )}
-          {userIsAuthenticated && (
+          {userIsAdmin && (
             <LinkContainer to="/admin">
               <NavItem eventKey={3}>Admin Dashboard</NavItem>
             </LinkContainer>
