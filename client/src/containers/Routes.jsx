@@ -51,6 +51,7 @@ export default class Routes extends Component {
             <Route path='/admin' component={AdminDashboardPage} />
             <Route path='/invitations' component={InvitationsPage} />
             <Route path='/invite/:token' component={PasswordResetPage} />
+            <Route path='/forgot-password/:token' component={PasswordResetPage} />
             <Route path='/profile' component={MemberProfilePage} onEnter={this.requireAuth} />
             <Route path='/upload' component={UploadPage} onEnter={this.requireAuth} />
             <Route path='/*' component={NotFound} />

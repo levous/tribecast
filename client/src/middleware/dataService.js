@@ -232,6 +232,29 @@ const dataService = store => next => action => {
         });
       });
 
+    case user_action_types.RESET_PASSWORD:
+
+      const accountEmail = action.email;
+      debugger;
+      return fetch('/auth/forgot-password', {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify({email: accountEmail})
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        store.dispatch({type: member_action_types.RESET_PASSWORD_RESPONSE_RECEIVED, resetResponse: responseJson});
+        return next(action);
+      })
+      .catch(err => {
+        // need something more specific?
+        return next({
+          //TODO: better failure respone
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+
     // Already passed action along so no need to pass through again.
     default:
       return;

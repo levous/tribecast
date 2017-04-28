@@ -110,7 +110,6 @@ class MembershipPage extends Component {
     const {selectedMember, userData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
-    console.log(isAdmin);
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     const weightedSearchKeys = [{

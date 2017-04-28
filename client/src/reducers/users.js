@@ -19,9 +19,12 @@ let userApp = function(state = initialState, action) {
         passwordResetSucceeded: undefined
       });
     case user_action_types.UPDATE_PASSWORD_SUCCESS:
-    return Object.assign({}, state, {
-      passwordResetSucceeded: true
-    });
+      return Object.assign({}, state, {
+        passwordResetSucceeded: true
+      });
+      case user_action_types.RESET_PASSWORD_RESPONSE_RECEIVED:
+      NotificationManager.success(`${action.forgotPassword} ${action.member.lastName} Server Saved!`);
+      return state;
     default:
       return state;
   }

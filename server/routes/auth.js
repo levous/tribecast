@@ -4,6 +4,9 @@ const passport = require('passport');
 const express = require('express');
 const errors = require('restify-errors');
 const userController = require('../controllers/userController');
+const sendmail = require('../modules/sendmail');
+const communityDefaults = require('../../config/community-defaults');
+const log = require('../modules/log')(module);
 
 //TODO: Convert all to promises
 //TODO: Move logic out of routes.  I like routes to be clean and simple.  Create controllers that do not care about pathing.  AuthController should return a Promise and that is all that should be handled here
@@ -131,7 +134,7 @@ exports.setup = function (basePath, app) {
         message: validationResult.message,
         errors: validationResult.errors
       });
-    } 
+    }
     //TODO: if we move the passport logic to the userController, it can be reused by password reset, etc
 
     return passport.authenticate('local-login', (err, token, userData) => {
@@ -165,11 +168,30 @@ exports.setup = function (basePath, app) {
    * @param {string} email - email address of user
    * @returns TODO:add proper docs
    */
-  router.post('/forgotPassword', (request, res, next) => {
+  router.post('/forgot-password', (request, res, next) => {
     const email = request.body.email;
     userController.forgotPassword(email)
     .then(json => {
+      // successful response means email was found
       res.status(200);
+
+      const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
+          `<p>Dear ${json.userName},</p>` +
+          `<p>A password reset was requested for ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/forgot-password/${json.resetToken}">Reset Password Link</a> to create a new password.</p>` +
+          `<p style="font-size:0.8em">(If you did not initiate this reset, please contact support as an unauthorized somebody may be trying to access your account.)</p>` +
+          '<p style="padding-left: 300px;">Warm regards,</p>' +
+          `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
+          '</div>';
+
+        log.info(`FORGOTPASSWORD success email \n     to: ${email}\n     body:${emailHtml}`);
+
+        return sendmail(
+          communityDefaults.fromEmail.address,
+          email,
+          `${communityDefaults.name} Password Reset`,
+          emailHtml
+        );
+
       return res.json(json);
     })
     .catch(next);

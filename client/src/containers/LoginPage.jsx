@@ -37,6 +37,7 @@ class LoginPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
 
   }
 
@@ -106,6 +107,10 @@ class LoginPage extends React.Component {
     });
   }
 
+  resetPassword(email) {
+    this.props.actions.resetPassword(email);
+  }
+
   /**
    * Render the component.
    */
@@ -123,6 +128,7 @@ class LoginPage extends React.Component {
           <LoginForm
             onSubmit={this.processForm}
             onChange={this.changeUser}
+            onResetPassword={this.resetPassword}
             errors={this.state.errors}
             successMessage={this.state.successMessage}
             user={this.state.user}

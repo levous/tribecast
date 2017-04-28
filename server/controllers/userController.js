@@ -35,12 +35,16 @@ exports.forgotPassword = function(email) {
 
       user.passwordResetToken = uuid();
       user.passwordResetTokenExpires = Date.now() + 3600000; // 1 hour
-      log.info(`forgotPassword - reset token: ${user.resetPasswordToken}`);
-      return use.save();
+      log.info(`forgotPassword - reset token: ${user.passwordResetToken}`);
+      return user.save();
     })
     .then(user => {
 
-      return {message: 'forgot password routine completed successfully'}
+      return {
+        message: 'forgot password routine completed successfully',
+        resetToken: user.passwordResetToken,
+        userName: user.name
+      }
     });
 };
 

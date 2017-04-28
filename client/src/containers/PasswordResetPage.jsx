@@ -14,8 +14,7 @@ class PasswordResetPage extends React.Component {
     super(props, context);
 
     // set the initial component state
-    this.state = {
-    };
+    this.state = {};
 
     this.auth = new Auth(context.store);
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
@@ -41,10 +40,15 @@ class PasswordResetPage extends React.Component {
 
     if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
 
+    const userMessage = this.props.location.pathname.includes('forgot-password') ?
+      'Welcome, back!  Please create a new password for your account.':
+      'Welcome!  Please create a password to activate your membership account.';
+
+
     return (
 
       <div className='jumbotron'>
-        <p>Welcome!  Please create a password to activate your membership account.</p>
+        <p>{userMessage}</p>
         <div>
           <label htmlFor='password'>Please Enter your Password</label>
           <div style={noticeStyle}>{passwordNotice}</div>

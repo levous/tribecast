@@ -15,7 +15,6 @@ exports.setup = function (basePath, app) {
    * @returns "201 Created" upon success with a location header where the new object can be retrieved
    */
   router.post('/', function(req, res, next){
-    console.log('post member', req.body);
     const newMember = req.body;
 
     //TODO: Validate this shit!
@@ -50,7 +49,6 @@ exports.setup = function (basePath, app) {
    *        }, ...]
    */
   router.post('/publish', function(req, res, next){
-    console.log('post member', req.body);
     const members = req.body;
 
     //TODO: Validate this shit!
@@ -88,7 +86,6 @@ exports.setup = function (basePath, app) {
    */
   router.post('/match-check', function(req, res, next){
     const members = req.body;
-    console.log('match-check - members', members);
     memberController.checkMatches(members)
       .then(function(matchResults){
         let statusCode = 200;

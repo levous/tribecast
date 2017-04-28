@@ -23,7 +23,7 @@ const LoginForm = ({
       emailValid8.innerHTML = 'Please provide your email address for password reset';
       return;
     }
-    onResetPassword(emailField.value);
+    onResetPassword(email);
   }
 
   return (
