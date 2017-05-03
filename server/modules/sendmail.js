@@ -38,7 +38,7 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
       console.log(response.statusCode);
       console.log(response.body);
       console.log(response.headers);
-      if(statusCode >= 400) {
+      if(response.statusCode >= 400) {
         throw new Error(`Send mail failed with status code: ${response.statusCode}`)
       }
       return {status:response.statusCode};
