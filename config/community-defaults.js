@@ -5,7 +5,7 @@ exports.location = {
 };
 
 exports.name = 'Serenbe Directory';
-exports.urlRoot = 'https://tribecast.herokuapp.com';
+exports.urlRoot = 'https://serenbe.herokuapp.com';
 exports.fromEmail = {
   name: 'Rusty',
   address: 'rzarse2@gmail.com'

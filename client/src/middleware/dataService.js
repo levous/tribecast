@@ -243,7 +243,7 @@ const dataService = store => next => action => {
       })
       .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
-        store.dispatch({type: member_action_types.RESET_PASSWORD_RESPONSE_RECEIVED, resetResponse: responseJson});
+        store.dispatch({type: user_action_types.RESET_PASSWORD_RESPONSE_RECEIVED, resetResponse: responseJson});
         return next(action);
       })
       .catch(err => {

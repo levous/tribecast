@@ -28,7 +28,7 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
     },
   });
 
-  
+
   if(config.has('suppressEmail')) return Promise.resolve(request);
   if(!process.env.SENDGRID_API_KEY) throw new Error('process.env.SENDGRID_API_KEY not set');
 
@@ -38,12 +38,16 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
       console.log(response.statusCode);
       console.log(response.body);
       console.log(response.headers);
+      if(statusCode >= 400) {
+        throw new Error(`Send mail failed with status code: ${response.statusCode}`)
+      }
+      return {status:response.statusCode};
     })
-    .catch(error => {
+    /*.catch(error => {
       //error is an instance of SendGridError
       //The full response is attached to error.response
       console.log(error.response.statusCode);
-    });
+    });*/
 
 }
 

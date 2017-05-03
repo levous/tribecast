@@ -170,11 +170,11 @@ exports.setup = function (basePath, app) {
    */
   router.post('/forgot-password', (request, res, next) => {
     const email = request.body.email;
+    let username;
     userController.forgotPassword(email)
     .then(json => {
       // successful response means email was found
-      res.status(200);
-
+      username = json.userName;
       const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
           `<p>Dear ${json.userName},</p>` +
           `<p>A password reset was requested for ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/forgot-password/${json.resetToken}">Reset Password Link</a> to create a new password.</p>` +
@@ -183,16 +183,17 @@ exports.setup = function (basePath, app) {
           `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
           '</div>';
 
-        log.info(`FORGOTPASSWORD success email \n     to: ${email}\n     body:${emailHtml}`);
+      log.info(`FORGOTPASSWORD success email \n     to: ${email}\n     body:${emailHtml}`);
 
-        return sendmail(
-          communityDefaults.fromEmail.address,
-          email,
-          `${communityDefaults.name} Password Reset`,
-          emailHtml
-        );
-
-      return res.json(json);
+      return sendmail(
+        communityDefaults.fromEmail.address,
+        email,
+        `${communityDefaults.name} Password Reset`,
+        emailHtml
+      );
+    })
+    .then(mailResponse => {
+      return res.json({status: mailResponse.status, username: username, message: 'Password reset email sent successfully'});
     })
     .catch(next);
 
