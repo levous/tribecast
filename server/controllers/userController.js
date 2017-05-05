@@ -22,11 +22,11 @@ exports.getAll = function(){
 
 exports.findByEmailAddress = function(email) {
   // find a user by email address
-  return User.findOne({ email: email });
+  return User.findOne({ email: email.toLowerCase() }).exec();
 };
 
 exports.forgotPassword = function(email) {
-  return User.findOne({ email: email })
+  return User.findOne({ email: email.toLowerCase() }).exec()
     .then(user => {
       if (!user) {
         const err = new errors.ResourceNotFoundError('No user found using provided email address')
@@ -52,7 +52,7 @@ exports.findByPasswordResetToken = function(resetToken) {
   if(!resetToken || !resetToken.length) return Promise.reject(new errors.PreconditionFailedError('Reset token missing or invalid'));
 
   // find a user by password reset token
-  return User.findOne({ passwordResetToken: resetToken, passwordResetTokenExpires: { $gt: Date.now() } })
+  return User.findOne({ passwordResetToken: resetToken, passwordResetTokenExpires: { $gt: Date.now() } }).exec()
     .then(user => {
       if (!user) {
         const err = new errors.ResourceNotFoundError('Password reset token is invalid or has expired')
@@ -84,6 +84,7 @@ exports.createUser = function(userData) {
 exports.generateInvite = function(member) {
 
   let memberUser;
+  const expireDuration = 7 * 24 * 3600000; // 1 week
   return this.findByEmailAddress(member.email)
   .then(user => {
 
@@ -103,10 +104,12 @@ exports.generateInvite = function(member) {
   }).then(user => {
     memberUser = user;
     member.memberUserKey = user.memberUserKey;
+    member.lastInvitedAt = new Date();
+    member.inviteCount = member.inviteCount + 1;
     return member.save();
   }).then(member => {
     memberUser.passwordResetToken = uuid();
-    memberUser.passwordResetTokenExpires = Date.now() + 3600000; // 1 hour
+    memberUser.passwordResetTokenExpires = Date.now() + expireDuration;
     return memberUser.save();
   });
 };

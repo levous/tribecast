@@ -46,7 +46,12 @@ let MemberSchema = new Mongoose.Schema({
   websiteURL: String,
   optIn: Boolean,
   directorySubscription: Boolean,
-  recordOriginNote: String
+  recordOriginNote: String,
+  lastInvitedAt: Date,
+  inviteCount: { type: Number, default: 0 }
+},
+{
+  timestamps: true
 });
 
 

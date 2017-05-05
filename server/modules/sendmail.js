@@ -29,7 +29,7 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
   });
 
 
-  if(config.has('suppressEmail')) return Promise.resolve(request);
+  if(config.has('suppressEmail')) return Promise.resolve({statusCode: 204, request});
   if(!process.env.SENDGRID_API_KEY) throw new Error('process.env.SENDGRID_API_KEY not set');
 
   //With promise

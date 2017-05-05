@@ -150,8 +150,11 @@ staging:     ds151008.mlab.com:51008/tribecast
 
 
 
-`mongodump -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --out /backup/dump`
+`mongodump -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --out backup/dump`
 
-`mongorestore -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --drop /backup/dump`
+`mongorestore -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --drop backup/dump`
+
+to restore to local mongo from a dump of production:
+`mongorestore --host=127.0.0.1 --db tribecast --drop backup/dump/serenbe`
 
 ### Restore from Backup

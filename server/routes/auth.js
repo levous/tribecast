@@ -220,7 +220,7 @@ exports.setup = function (basePath, app) {
 
   router.post('/reset/:passwordResetToken', (req, res, next) => {
 
-console.log(req.body);
+    console.log(req.body);
     const passwordResetToken = req.params.passwordResetToken;
     const newPassword = req.body.newPassword;
 

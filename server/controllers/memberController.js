@@ -3,9 +3,13 @@ const Mongoose = require('mongoose');
 const MongooseObjectId = require('mongoose').Types.ObjectId;
 const Member = require('../models/member');
 const User = require('../models/user');
+const userController = require('./userController');
+const sendmail = require('../modules/sendmail');
 const errors = require('restify-errors');
 const uuidV1 = require('uuid/v1');
 const PhoneNumber = require('awesome-phonenumber');
+const communityDefaults = require('../../config/community-defaults');
+
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
@@ -38,6 +42,18 @@ exports.findByEmail = function(email){
   return Member.find(query).exec();
 }
 
+/**
+ * Get all Member(s) having email who do not have an associated user account.
+ * @returns (Promise) [Members]
+ */
+exports.findAllInviteCandidates = function(){
+  //TODO: once invited, record should be marked with date of invite and invite count.  Future invites should exclude when invites have been ignored
+  const query = {
+    'email': { $exists: true, '$ne': '' },
+    'memberUserKey': null // The { item : null } query matches documents that either contain the item field whose value is null or that do not contain the item field.
+  };
+  return Member.find(query).exec();
+}
 
 /**
  * Create new Member
@@ -210,4 +226,54 @@ exports.assignUserMember = function(userId, memberId){
   .then(user => {
     if(!user) throw new errors.InvalidArgumentError('No user found using provided userId');
   });
+}
+
+exports.sendMemberInvites = function(members){
+
+  let inviteActions = [];
+  let inviteResponses;
+
+  members.forEach(member => {
+    inviteActions.push(userController.generateInvite(member));
+  });
+
+  return Promise.all(inviteActions)
+    .then(invites => {
+    inviteResponses = invites.map(invite => {
+      return {
+        inviteToken: invite.passwordResetToken,
+        inviteExpires: invite.passwordResetTokenExpires,
+        name: invite.name,
+        email: invite.email
+      };
+    });
+
+    const emails = inviteResponses.map(invite => {
+      const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
+        `<p>Dear ${invite.name},</p>` +
+        `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
+        '<p style="padding-left: 300px;">Warm regards,</p>' +
+        `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
+        '</div>'
+
+
+      return sendmail(
+        communityDefaults.fromEmail.address,
+        invite.email,
+        `${communityDefaults.name} Invitation`,
+        emailHtml
+      );
+    });
+
+    return Promise.all(emails);
+  })
+  .then(sgResponses => {
+    return sgResponses.map((sgResponse, idx) => {
+      let response = inviteResponses[idx]; //assume ordinality?
+      response.status = sgResponse.statusCode;
+      return response;
+    });
+  })
+
+
 }

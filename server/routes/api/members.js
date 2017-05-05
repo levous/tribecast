@@ -153,6 +153,27 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  router.post('/invite-all-new', function(req, res, next){
+
+    let message = '';
+
+
+    memberController.findAllInviteCandidates()
+      .then(members => {
+        if(!members || !members.length) return next(new errors.ResourceNotFoundError('Query for new members resulted in no matching records'));
+        message += `found ${members.length} members candidate for invite`;
+        return memberController.sendMemberInvites(members);
+      })
+      .then(inviteResponses => {
+        const responseBody = {
+          message: message,
+          data: inviteResponses
+        }
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
   router.post('/generate-invite', function(req, res, next){
     const email = req.body.email;
     let message = '';
@@ -162,43 +183,11 @@ exports.setup = function (basePath, app) {
       .then(members => {
         if(!members || !members.length) return next(new errors.ResourceNotFoundError('Provided email resulted in no matching records'));
         message += `found ${members.length} members with email ${email}`;
-        let inviteActions = [];
-        members.forEach(member => {
-          inviteActions.push(userController.generateInvite(member));
-        });
-        return Promise.all(inviteActions);
+
+        //here
+        return memberController.sendMemberInvites(members);
       })
-      .then(invites => {
-        inviteResponses = invites.map(invite => {
-          return {
-            inviteToken: invite.passwordResetToken,
-            inviteExpires: invite.passwordResetTokenExpires,
-            name: invite.name,
-            email: invite.email
-          };
-        });
-
-        const emails = inviteResponses.map(invite => {
-          const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
-            `<p>Dear ${invite.name},</p>` +
-            `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
-            '<p style="padding-left: 300px;">Warm regards,</p>' +
-            `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
-            '</div>'
-
-
-          return sendmail(
-            communityDefaults.fromEmail.address,
-            invite.email,
-            `${communityDefaults.name} Invitation`,
-            emailHtml
-          );
-        });
-
-        return Promise.all(emails);
-      })
-      .then(sgResponses => {
-
+      .then(inviteResponses => {
         const responseBody = {
           message: message,
           data: inviteResponses
