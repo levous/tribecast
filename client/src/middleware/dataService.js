@@ -6,7 +6,7 @@ import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types, member_data_sources} from '../actions/member-actions';
 import {user_action_types} from '../actions/user-actions';
-import errors from 'restify-errors';
+import errors from '../modules/errors';
 
 const membersApiURL = '/api/members';
 

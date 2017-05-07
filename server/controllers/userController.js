@@ -71,6 +71,7 @@ exports.updatePasswordUsingResetToken = function(resetToken, newPassword) {
     }
 
     user.password = newPassword;
+    user.confirmedAt = user.confirmedAt || new Date();
 
     return user.save();
   });
@@ -86,32 +87,32 @@ exports.generateInvite = function(member) {
   let memberUser;
   const expireDuration = 7 * 24 * 3600000; // 1 week
   return this.findByEmailAddress(member.email)
-  .then(user => {
+    .then(user => {
 
-    if (!user) {
+      if (!user) {
+        log.info(`creating new user for member invite ${member.email}`);
+        const userData = {
+          email: member.email.toLowerCase(),
+          name: `${member.firstName} ${member.lastName}`.trim(),
+          password: `invited ${new Date()}`,
+          memberUserKey: uuid()
+        };
+        return this.createUser(userData);
+      }
 
-      log.info(`creating new user for member invite ${member.email}`);
-      const userData = {
-        email: member.email.toLowerCase(),
-        name: `${member.firstName} ${member.lastName}`.trim(),
-        password: `invited ${new Date()}`,
-        memberUserKey: uuid()
-      };
-      return this.createUser(userData);
-    }
-    log.info(`found user for member invite ${member.email}`);
-    return user;
-  }).then(user => {
-    memberUser = user;
-    member.memberUserKey = user.memberUserKey;
-    member.lastInvitedAt = new Date();
-    member.inviteCount = member.inviteCount + 1;
-    return member.save();
-  }).then(member => {
-    memberUser.passwordResetToken = uuid();
-    memberUser.passwordResetTokenExpires = Date.now() + expireDuration;
-    return memberUser.save();
-  });
+      log.info(`found user for member invite ${member.email}`);
+      return user;
+    }).then(user => {
+      memberUser = user;
+      member.memberUserKey = user.memberUserKey;
+      member.lastInvitedAt = new Date();
+      member.inviteCount = member.inviteCount + 1;
+      return member.save();
+    }).then(member => {
+      memberUser.passwordResetToken = uuid();
+      memberUser.passwordResetTokenExpires = Date.now() + expireDuration;
+      return memberUser.save();
+    });
 };
 
 

@@ -41,19 +41,23 @@ H2 ::-webkit-input-placeholder {
    font-weight:200;
    font-size:.9em;
    letter-spacing: .1em;
+   color: #aaccaa !important;
 }
 
 :-moz-placeholder { /* Firefox 18- */
    font-weight:200;
    font-size:.9em;
+   color: #aaccaa !important;
 }
 
 ::-moz-placeholder {  /* Firefox 19+ */
    font-weight:200;
    font-size:.9em;
+   color: #aaccaa !important;
 }
 
 :-ms-input-placeholder {
    font-weight:200;
    font-size:.9em;
+   color: #aaccaa !important;
 }
