@@ -2,6 +2,7 @@ const Mongoose = require('mongoose');
 //const Promise = require ('bluebird');
 const MongooseObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
+const log = require('../modules/log')(module);
 const Member = require('../models/member');
 const User = require('../models/user');
 const userController = require('./userController');
@@ -254,6 +255,17 @@ exports.sendMemberInvites = function(members){
 
   members.forEach(member => {
     const memberEmail = member.email.toLowerCase();
+    // check if email is marked not deliverable
+    if(member.emailStatus && !member.emailStatus.deliverable) {
+      log.warn(`Suppressing member invite to ${member.email} because it is marked undeliverable (${member.emailStatus.verifiedAt} - ${member.emailStatus.smtpCode}:${member.emailStatus.smtpDescription})`)
+      return inviteActions.push(Promise.resolve({
+        undeliverable: true,
+        smtpStatus: member.emailStatus.smtpCode,
+        smtpDesciption: member.emailStatus.smptDescription,
+        name: `${member.firstName} ${member.lastName}`,
+        email: member.email
+      }));
+    }
     // be sure to only add each member email once
     if(!pendingInviteEmails.find(email => email === memberEmail)) {
       inviteActions.push(userController.generateInvite(member));
@@ -268,11 +280,15 @@ exports.sendMemberInvites = function(members){
         inviteToken: invite.passwordResetToken,
         inviteExpires: invite.passwordResetTokenExpires,
         name: invite.name,
-        email: invite.email
+        email: invite.email,
+        undeliverable: invite.undeliverable
       };
     });
 
     const emails = inviteResponses.map(invite => {
+
+      if(invite.undeliverable) return Promise.resolve(invite);
+
       const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
         `<p>Dear ${invite.name},</p>` +
         `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +

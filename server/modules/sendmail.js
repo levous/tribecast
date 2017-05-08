@@ -38,7 +38,6 @@ function sendMail(fromAddress, fromName, toAddress, toName, subject, bodyHtml){
   if(config.has('suppressEmail')){
     log.warn('sendMail delivery suppressed because suppressEmail config key is set');
     return Promise.resolve({statusCode: 204, request});
-
   }
 
   if(!process.env.SENDGRID_API_KEY) throw new Error('process.env.SENDGRID_API_KEY not set');

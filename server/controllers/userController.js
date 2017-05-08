@@ -9,8 +9,6 @@ const uuid = require('../modules/uuid');
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
-
-
 exports.getAll = function(){
 
   return User
@@ -30,8 +28,6 @@ exports.findByMemberUserKeys = function(memberUserKeys) {
   return User.find({ memberUserKey: { $in: memberUserKeys } }).exec();
 };
 
-
-
 exports.forgotPassword = function(email) {
   return User.findOne({ email: email.toLowerCase() }).exec()
     .then(user => {
@@ -50,7 +46,8 @@ exports.forgotPassword = function(email) {
       return {
         message: 'forgot password routine completed successfully',
         resetToken: user.passwordResetToken,
-        userName: user.name
+        userName: user.name,
+        undeliverable: (user.emailStatus && !user.emailStatus.deliverable)
       }
     });
 };

@@ -253,7 +253,7 @@ exports.setup = function (basePath, app) {
                 smtpCode: emailItem.smtpStatusCode,
                 smtpDescription: emailItem.smtpStatusDescription,
                 verifiedAt: new moment().toDate(),
-                addressIsDeliverable: (emailItem.smtpStatusCode < 400)
+                deliverable: (emailItem.smtpStatusCode < 400)
               };
               updates.push(resultItem.save());
             });
