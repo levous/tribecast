@@ -187,7 +187,9 @@ exports.setup = function (basePath, app) {
 
       return sendmail(
         communityDefaults.fromEmail.address,
+        communityDefaults.fromEmail.name,
         email,
+        username,
         `${communityDefaults.name} Password Reset`,
         emailHtml
       );

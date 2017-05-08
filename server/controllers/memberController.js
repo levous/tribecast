@@ -286,7 +286,9 @@ exports.sendMemberInvites = function(members){
 
       return sendmail(
         communityDefaults.fromEmail.address,
+        communityDefaults.fromEmail.name,
         invite.email,
+        invite.name,
         `${communityDefaults.name} Invitation`,
         emailHtml
       );

@@ -2,7 +2,7 @@ const sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 const log = require('./log')(module);
 const config = require('config');
 
-function sendMail(fromAddress, toAddress, subject, bodyHtml){
+function sendMail(fromAddress, fromName, toAddress, toName, subject, bodyHtml){
   const requestPayload = {
     method: 'POST',
     path: '/v3/mail/send',
@@ -12,6 +12,7 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
           to: [
             {
               email: toAddress,
+              name: toName
             },
           ],
           subject: subject,
@@ -19,6 +20,7 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
       ],
       from: {
         email: fromAddress,
+        name: fromName
       },
       content: [
         {
@@ -37,7 +39,7 @@ function sendMail(fromAddress, toAddress, subject, bodyHtml){
     log.warn('sendMail delivery suppressed because suppressEmail config key is set');
     return Promise.resolve({statusCode: 204, request});
 
-  } 
+  }
 
   if(!process.env.SENDGRID_API_KEY) throw new Error('process.env.SENDGRID_API_KEY not set');
 

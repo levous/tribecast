@@ -7,7 +7,7 @@ exports.location = {
 exports.name = 'Serenbe Directory';
 exports.urlRoot = 'https://serenbe.herokuapp.com';
 exports.fromEmail = {
-  name: 'Rusty',
+  name: 'Rusty Serenbe Directory',
   address: 'rzarse2@gmail.com'
 };
 
