@@ -52,7 +52,13 @@ const SignUpForm = ({
         <RaisedButton type="submit" label="Create New Account" primary />
       </div>
 
-      <CardText>Already have an account? <Link to={'/login'}>Log in</Link></CardText>
+      <CardText>
+        Already have an account? <Link to={'/login'}>Log in</Link>
+        <p style={{color:'#800000'}}> Accounts must be authorized by an administrator.  Please sign up and we will contact you to verify access and contact preferences.  Thanks!</p>
+      </CardText>
+
+
+
     </form>
   </Card>
 );
@@ -65,4 +71,3 @@ SignUpForm.propTypes = {
 };
 
 export default SignUpForm;
-
