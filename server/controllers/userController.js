@@ -20,7 +20,7 @@ exports.getAll = function(){
     .exec();
 };
 
-exports.findByEmailAddress = function(email) {
+exports.findByEmail = function(email) {
   // find a user by email address
   return User.findOne({ email: email.toLowerCase() }).exec();
 };
@@ -93,7 +93,7 @@ exports.generateInvite = function(member) {
 
   let memberUser;
   const expireDuration = 7 * 24 * 3600000; // 1 week
-  return this.findByEmailAddress(member.email)
+  return this.findByEmail(member.email)
     .then(user => {
 
       if (!user) {

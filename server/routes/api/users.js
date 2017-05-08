@@ -27,7 +27,7 @@ exports.setup = function (basePath, app) {
     const email = req.body.email;
     const role = req.body.role;
     //TODO: Validate this shit!
-    userController.findByEmailAddress(email)
+    userController.findByEmail(email)
       .then(user => {
         if(!user) return next(new errors.ResourceNotFoundError('Provided email not found'));
         return userController.addUserToRole(user, role);

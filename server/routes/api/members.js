@@ -230,5 +230,55 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  router.post('/update-email-status', function(req, res, next){
+    const data = req.body.data;
+
+    const memberQueries = data.map(item => memberController.findByEmail(item.email));
+    const userQueries = data.map(item => userController.findByEmail(item.email));
+    const membersAndUsers = [...memberQueries, ...userQueries];
+
+    Promise.all(membersAndUsers)
+      .then(results => {
+        let updates = [];
+        results.forEach(result => {
+          // member result is an array with likely one match, user result is a single item
+          if(result) {
+            // coerce into array
+            const resultItems = Array.isArray(result) ? result : [result];
+
+            resultItems.forEach(resultItem => {
+
+              const emailItem = data.find(item => item.email.toLowerCase() === resultItem.email.toLowerCase());
+              resultItem.emailStatus = {
+                smtpCode: emailItem.smtpStatusCode,
+                smtpDescription: emailItem.smtpStatusDescription,
+                verifiedAt: new moment().toDate(),
+                addressIsDeliverable: (emailItem.smtpStatusCode < 400)
+              };
+              updates.push(resultItem.save());
+            });
+          }
+        });
+        return Promise.all(updates);
+      })
+      .then(saves => {
+        return saves.map(item => {
+          console.log('i', item);
+          return {
+            email: item.email,
+            smtpCode: item.emailStatus.smtpCode,
+            deliverable: item.emailStatus.addressIsDeliverable,
+            itemType: (item.propertyAddress) ? 'Member': 'User'
+          };
+        });
+      })
+      .then(responseJson => {
+        res.json(responseJson);
+      })
+      .catch(next);
+
+  });
+
+
   app.use(basePath, router);
 };

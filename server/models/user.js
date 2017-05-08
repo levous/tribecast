@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
+const EmailStatusSchema = require('./emailStatusSchema');
 // define the User model schema
 const UserSchema = new mongoose.Schema({
   memberUserKey: String,
@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     index: { unique: true }
   },
+  emailStatus:  { type: EmailStatusSchema, default: EmailStatusSchema },
   password: String,
   name: String,
   roles: [String],
