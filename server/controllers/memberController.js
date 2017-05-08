@@ -1,6 +1,7 @@
 const Mongoose = require('mongoose');
 //const Promise = require ('bluebird');
 const MongooseObjectId = require('mongoose').Types.ObjectId;
+const moment = require('moment');
 const Member = require('../models/member');
 const User = require('../models/user');
 const userController = require('./userController');
@@ -47,11 +48,28 @@ exports.findByEmail = function(email){
  * @returns (Promise) [Members]
  */
 exports.findAllInviteCandidates = function(){
-  //TODO: once invited, record should be marked with date of invite and invite count.  Future invites should exclude when invites have been ignored
   const query = {
     'email': { $exists: true, '$ne': '' },
     'memberUserKey': null // The { item : null } query matches documents that either contain the item field whose value is null or that do not contain the item field.
   };
+  return Member.find(query).exec();
+}
+
+/**
+ * Get all Member(s) having previously been invited since
+ * @returns (Promise) [Members]
+ */
+exports.findInvitedSince = function(since, until){
+  const sinceDate = moment(since);
+  const untilDate = moment(until);
+  if(!sinceDate.isValid()) return Promise.reject(new errors.InvalidArgumentError('Parameter "since" must be a valid Date'));
+  if(!untilDate.isValid()) return Promise.reject(new errors.InvalidArgumentError('Parameter "until" must be a valid Date'));
+
+
+  const query = {
+    'lastInvitedAt': {'$gte': sinceDate.toDate(), '$lte': untilDate.toDate() }
+  };
+
   return Member.find(query).exec();
 }
 

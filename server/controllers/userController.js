@@ -25,6 +25,13 @@ exports.findByEmailAddress = function(email) {
   return User.findOne({ email: email.toLowerCase() }).exec();
 };
 
+exports.findByMemberUserKeys = function(memberUserKeys) {
+  // find a user by email address
+  return User.find({ memberUserKey: { $in: memberUserKeys } }).exec();
+};
+
+
+
 exports.forgotPassword = function(email) {
   return User.findOne({ email: email.toLowerCase() }).exec()
     .then(user => {

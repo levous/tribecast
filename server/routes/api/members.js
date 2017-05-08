@@ -1,5 +1,6 @@
 const express = require('express');
 const errors = require('restify-errors');
+const moment = require('moment');
 const memberController = require('../../controllers/memberController');
 const userController = require('../../controllers/userController');
 const log = require('../../modules/log')(module);
@@ -157,7 +158,6 @@ exports.setup = function (basePath, app) {
 
     let message = '';
 
-
     memberController.findAllInviteCandidates()
       .then(members => {
         if(!members || !members.length) return next(new errors.ResourceNotFoundError('Query for new members resulted in no matching records'));
@@ -174,6 +174,41 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  router.post('/invite-send-again', function(req, res, next) {
+
+    if (!req.body.since || !req.body.since.length) return next(new errors.MissingParameterError('parameter "since" Date required'));
+    const since = moment(req.body.since);
+    const until = moment(req.body.until);
+    if(!since.isValid()) return next(new errors.InvalidArgumentError('"since" was not a valid ISO Date'));
+    const maxCount = req.body.maxCount || -1;
+
+    let members = [];
+
+    memberController.findInvitedSince(since, until)
+      .then(memberResults => {
+        members = memberResults;
+        const memberUserKeys = members.map(member => member.memberUserKey);
+        return userController.findByMemberUserKeys(memberUserKeys);
+      })
+      .then(users => {
+        const verifiedUsers = users.filter(user => user.confirmedAt);
+        return members.filter(member => !verifiedUsers.find(user => user.memberUserKey === member.memberUserKey));
+      })
+      .then(unconfirmedMembers => {
+        let membersToInvite = unconfirmedMembers;
+        if(maxCount > 0 && maxCount < membersToInvite.length) membersToInvite = membersToInvite.slice(0, maxCount);
+        return memberController.sendMemberInvites(membersToInvite);
+      })
+      .then(inviteResponses => {
+        const responseBody = {
+          message: `resent invitation to ${inviteResponses.length} unconfirmed members having been invited since ${since.format()} until ${until.format()}`,
+          data: inviteResponses
+        }
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
   router.post('/generate-invite', function(req, res, next){
     const email = req.body.email;
     let message = '';
@@ -183,8 +218,6 @@ exports.setup = function (basePath, app) {
       .then(members => {
         if(!members || !members.length) return next(new errors.ResourceNotFoundError('Provided email resulted in no matching records'));
         message += `found ${members.length} members with email ${email}`;
-
-        //here
         return memberController.sendMemberInvites(members);
       })
       .then(inviteResponses => {
