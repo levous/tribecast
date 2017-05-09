@@ -14,9 +14,8 @@ module.exports = (req, res, next) => {
   const authorizedWithRole = function(user) {
     // look for configured authorization node
     const rootPath = req.baseUrl + req.path;
-    const matchingNode = authorization.find(authNode => authNode.route == rootPath);
+    const matchingNode = authorization.find(authNode => rootPath.toLowerCase().startsWith(authNode.route));
     if(matchingNode){
-      let userRole = undefined;
       // loop each allowed role
       for(let i = 0; i < matchingNode.roles.length; i++) {
         if(user.roles.find(role => role === matchingNode.roles[i])){

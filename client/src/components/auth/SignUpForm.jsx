@@ -46,6 +46,8 @@ const SignUpForm = ({
           errorText={errors.password}
           value={user.password}
         />
+
+        
       </div>
 
       <div className="button-line">
