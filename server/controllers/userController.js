@@ -5,6 +5,7 @@ const User = require('../models/user');
 const errors = require('restify-errors');
 const log = require('../modules/log')(module);
 const uuid = require('../modules/uuid');
+const user_roles = require("../models/user_roles");
 
 // Use bluebird promises
 Mongoose.Promise = Promise;
@@ -115,11 +116,12 @@ exports.generateInvite = function(member) {
     }).then(member => {
       memberUser.passwordResetToken = uuid();
       memberUser.passwordResetTokenExpires = Date.now() + expireDuration;
+      // ensure member role for invited member
+      if(!memberUser.roles) memberUser.roles = [];
+      if(!memberUser.roles.find(role => role === user_roles.member)) memberUser.roles.push(user_roles.member);
       return memberUser.save();
     });
 };
-
-
 
 
 exports.addUserToRole = function(user, role){
