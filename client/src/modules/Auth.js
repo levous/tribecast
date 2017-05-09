@@ -1,5 +1,6 @@
 import * as userActions from '../actions/user-actions';
 import * as memberActions from '../actions/member-actions';
+import user_roles from '../../../config/user_roles';
 
 class Auth {
 
@@ -33,8 +34,7 @@ class Auth {
    * @returns {boolean}
    */
   isUserAuthorizedToView() {
-    //TODO: use roles to grant access to 'Read' directory.  Perhaps 'Reader'?
-    return this.isUserAuthenticated();
+    return this.userIsInRole(this.userData, [user_roles.member]);
   }
 
   /**
@@ -43,7 +43,7 @@ class Auth {
    * @returns {boolean}
    */
   isUserAdmin() {
-    return this.userIsInRole(this.userData, [Auth.ROLES.ADMIN]);
+    return this.userIsInRole(this.userData, [user_roles.administrator]);
   }
 
 
@@ -107,15 +107,11 @@ class Auth {
   userCanEditMember(userData, member) {
     if(!userData || !member) return false;
     if(this.store.getState().memberApp.dataSource !== memberActions.member_data_sources.API) return false;
-    if(this.userIsInRole(userData, [Auth.ROLES.ADMIN])) return true;
+    if(this.userIsInRole(userData, [user_roles.administrator])) return true;
     if(userData.memberUserKey && userData.memberUserKey === member.memberUserKey) return true;
     return false;
   }
 
-}
-
-Auth.ROLES = {
-  ADMIN: 'administrator'
 }
 
 export default Auth;

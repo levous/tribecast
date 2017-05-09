@@ -68,8 +68,8 @@ class SignUpPage extends React.Component {
         //TODO: dup code fomr LoginPage.jsx   fix all that
         // save the token
         this.auth.authenticateUser(xhr.response.token);
-        // save user data
-        this.props.actions.cacheUserData(xhr.response.user);
+        // send login action
+        this.props.actions.userLoggedIn(xhr.response.user);
 
         // change the current URL to /
         this.context.router.replace('/membership');

@@ -5,7 +5,7 @@ const User = require('../models/user');
 const errors = require('restify-errors');
 const log = require('../modules/log')(module);
 const uuid = require('../modules/uuid');
-const user_roles = require("../models/user_roles");
+const user_roles = require("../../config/user_roles");
 
 // Use bluebird promises
 Mongoose.Promise = Promise;
