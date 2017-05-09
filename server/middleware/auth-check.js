@@ -14,8 +14,10 @@ module.exports = (req, res, next) => {
   const authorizedWithRole = function(user) {
     // look for configured authorization node
     const rootPath = req.baseUrl + req.path;
-    const matchingNode = authorization.find(authNode => rootPath.toLowerCase().startsWith(authNode.route));
-    if(matchingNode){
+    const matchingNodes = authorization.filter(authNode => rootPath.toLowerCase().startsWith(authNode.route));
+    if(matchingNodes){
+      // sort by length and use the most qualified path
+      const matchingNode = matchingNodes.sort((a, b) => b.route.length - a.route.length)[0];
       // loop each allowed role
       for(let i = 0; i < matchingNode.roles.length; i++) {
         if(user.roles.find(role => role === matchingNode.roles[i])){
@@ -55,6 +57,7 @@ module.exports = (req, res, next) => {
 
       if(!authorizedWithRole(user)) {
         res.status(401).json({"message":"Role Not Authorized"}).end();
+        return;
       }
 
       return next();
