@@ -94,7 +94,8 @@ exports.generateInvite = function(member) {
         email: member.email.toLowerCase(),
         name: `${member.firstName} ${member.lastName}`.trim(),
         password: `invited ${new Date()}`,
-        memberUserKey: uuid()
+        memberUserKey: uuid(),
+        source: 'member-invite'
       };
       return this.createUser(userData);
     }

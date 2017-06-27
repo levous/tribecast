@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   password: String,
   name: String,
   roles: [String],
+  source: String,
   passwordResetToken: String,
   passwordResetTokenExpires: Date
 });

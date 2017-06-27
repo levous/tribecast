@@ -42,7 +42,7 @@ class SignUpPage extends React.Component {
     const name = encodeURIComponent(this.state.user.name);
     const email = encodeURIComponent(this.state.user.email);
     const password = encodeURIComponent(this.state.user.password);
-    const formData = `name=${name}&email=${email}&password=${password}`;
+    const formData = `name=${name}&email=${email}&password=${password}&source=signup`;
 
     //TODO: All remote calls should be moved out of the page into the auth service.
     //     This component should then watch logged in state and redirect when state changes.

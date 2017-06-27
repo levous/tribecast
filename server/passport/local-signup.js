@@ -15,7 +15,8 @@ module.exports = new PassportLocalStrategy({
   const userData = {
     email: email.trim().toLowerCase(),
     password: password.trim(),
-    name: req.body.name.trim()
+    name: req.body.name.trim(),
+    source: 'local-signup'
   };
 
 //TODO: update this to use the userController.createUser with promise...
