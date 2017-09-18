@@ -59,7 +59,6 @@
     "redux": "^3.6.0",
     "redux-localstorage": "^1.0.0-rc5",
     "redux-thunk": "^2.1.0",
-    "restify-errors": "^4.3.0",
     "sass-loader": "^4.1.1",
     "sendgrid": "^5.0.0",
     "socket.io": "^1.7.3",

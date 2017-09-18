@@ -5,6 +5,7 @@ import {
   pinkA200,
   grey100, grey300, grey400, grey500,
   white, darkBlack, fullBlack,
+  red900
 } from 'material-ui/styles/colors';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {fade} from 'material-ui/utils/colorManipulator';
@@ -14,7 +15,8 @@ const MuiTheme = getMuiTheme({
   palette: {
     primary1Color: green900,
     primary2Color: cyan700,
-    secondaryColor: indigo900
+    secondaryColor: indigo900,
+    borderColor: fade(green900, 0.2)
   },
   tabs: {
     backgroundColor: fade(green900, 0.3)
@@ -34,7 +36,9 @@ const MuiTheme = getMuiTheme({
 
 export default MuiTheme;
 
-/*{
+/*
+// list of stylable properties/elements: https://github.com/callemall/material-ui/blob/master/src/styles/getMuiTheme.js
+{
   spacing: spacing,
   fontFamily: 'Roboto, sans-serif',
   palette: {

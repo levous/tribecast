@@ -1,4 +1,4 @@
-import errors from 'restify-errors';
+import errors from './errors';
 import fetch from 'isomorphic-fetch';
 
 

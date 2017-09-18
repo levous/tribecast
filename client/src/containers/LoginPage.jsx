@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Auth from '../modules/Auth';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardHeader, CardMedia, CardText, CardTitle } from 'material-ui/Card';
 import LoginForm from '../components/auth/LoginForm.jsx';
 import * as userActions from '../actions/user-actions';
@@ -107,34 +109,43 @@ class LoginPage extends React.Component {
     });
   }
 
-  resetPassword(email) {
-    this.props.actions.resetPassword(email);
+  resetPassword() {
+    //TODO: valid8 email and only send when there is one there
+    this.props.actions.resetPassword(this.state.user.email);
+  }
+
+  dialogClosed(){
+    this.setState({passwordResetDialogOpen: false});
   }
 
   /**
    * Render the component.
    */
   render() {
-    const message = this.props.passwordResetSucceeded ? 'Password Reset was Successful!  Please log in.' : undefined;
+
     return (
-      <Card>
-        <CardMedia
-          overlay={<CardTitle title={communityDefaults.name} subtitle='Welcome!' />}
-        >
-          <img src="/images/serenbe-farm.jpg" />
-        </CardMedia>
-        {message && (<div style={{color: '#aa0000', fontWeight: 'bold', textAlign: 'center'}}>{message}</div>)}
-        <CardActions>
-          <LoginForm
-            onSubmit={this.processForm}
-            onChange={this.changeUser}
-            onResetPassword={this.resetPassword}
-            errors={this.state.errors}
-            successMessage={this.state.successMessage}
-            user={this.state.user}
-          />
-        </CardActions>
-      </Card>
+      <div className="jumbotron auth-panel">
+
+        <Dialog
+            title="Dialog With Actions"
+            actions={<FlatButton label="OK" primary={true} onClick={this.dialogClosed} />}
+            modal={false}
+            open={this.state.passwordResetDialogOpen}
+            onRequestClose={this.dialogClosed}
+          >
+            Password Reset was Successful!  Please log in.
+        </Dialog>
+
+        <LoginForm
+          onSubmit={this.processForm}
+          onChange={this.changeUser}
+          onResetPassword={this.resetPassword}
+          errors={this.state.errors}
+          successMessage={this.state.successMessage}
+          user={this.state.user}
+        />
+
+      </div>
 
 
     );
@@ -150,7 +161,7 @@ LoginPage.contextTypes = {
 
 function mapStateToProps(state) {
   return {
-    passwordResetSucceeded: state.userApp.passwordResetSucceeded
+    passwordResetDialogOpen: state.userApp.passwordResetSucceeded
   };
 }
 

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import TextField from '../forms/ThemedTextField.jsx';
 
 
 const SignUpForm = ({
@@ -11,7 +11,7 @@ const SignUpForm = ({
   errors,
   user,
 }) => (
-  <Card className="container text-center">
+  <Card className="container text-center" style={{backgroundColor:'rgba(255,255,255,0.9)', padding:'20px'}}>
     <form action="/" onSubmit={onSubmit}>
       <h2 className="card-heading">Sign Up</h2>
 
@@ -47,7 +47,7 @@ const SignUpForm = ({
           value={user.password}
         />
 
-        
+
       </div>
 
       <div className="button-line">

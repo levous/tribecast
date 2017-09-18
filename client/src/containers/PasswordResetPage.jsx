@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
+import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from '../components/forms/ThemedTextField.jsx';
 import Auth from '../modules/Auth';
 
 class PasswordResetPage extends React.Component {
@@ -14,29 +16,50 @@ class PasswordResetPage extends React.Component {
     super(props, context);
 
     // set the initial component state
-    this.state = {};
+    this.state = {errors:{}, fields:{}};
 
     this.auth = new Auth(context.store);
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
+    this.textFieldChanged = this.textFieldChanged.bind(this);
+
   }
 
-  handleUpdatePassword(password, passwordConfirmation){
+  textFieldChanged(event) {
+    const field = event.target.name;
+    const {fields, errors} = this.state;
+    fields[field] = event.target.value;
+
+    // convenient cleanup of error messages (not checking password strength or nothin)
+    if(fields.password) errors.password = null;
+    if(fields.password == fields.passwordConfirmation) errors.passwordConfirmation = null;
+
+    this.setState({
+      fields,
+      errors
+    });
+  }
+
+  handleUpdatePassword(){
+    const fields = this.state.fields;
     // clear last run
-    this.setState({passwordNotice: null, passwordConfirmNotice: null});
+    this.setState({errors:{}});
+    const errors = {};
 
-    if(!this.passwordInput.value) return this.setState({passwordNotice: 'Please provide a password'});
-    if(!this.passwordConfirmInput.value || this.passwordInput.value !== this.passwordConfirmInput.value)  return this.setState({passwordConfirmNotice: 'Confirm Password must match Password'});
+    if(!fields.password) errors.password = 'Please provide a password';
+    if(!fields.passwordConfirmation || fields.password !== fields.passwordConfirmation) errors.passwordConfirmation = 'Confirm Password must match Password';
 
-    this.props.actions.updateUserPassword(this.passwordInput.value, this.props.params.token);
+    this.setState({
+      errors
+    });
+
+    if (errors.password || errors.passwordConfirmation) return;
+
+    this.props.actions.updateUserPassword(fields.password, this.props.params.token);
   }
 
   render() {
 
-    const noticeStyle = {
-      color: '#aa0000'
-    }
-
-    const {passwordNotice, passwordConfirmNotice} = this.state;
+    const {errors, fields} = this.state;
 
     if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
 
@@ -47,20 +70,33 @@ class PasswordResetPage extends React.Component {
 
     return (
 
-      <div className='jumbotron'>
-        <p>{userMessage}</p>
-        <div>
-          <label htmlFor='password'>Please Enter your Password</label>
-          <div style={noticeStyle}>{passwordNotice}</div>
-          <input type='password' ref={input => this.passwordInput = input} id='password'/>
-        </div>
-        <div>
-          <label htmlFor='password-confirm'>Confirm your Password</label>
-          <div style={noticeStyle}>{passwordConfirmNotice}</div>
-          <input type='password' ref={input => this.passwordConfirmInput = input} id='password-confirm'/>
-        </div>
-        <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
+      <div className="jumbotron auth-panel">
+        <Card className="text-center" style={{backgroundColor:'rgba(255,255,255,0.9)', padding:'20px'}}>
+          <p>{userMessage}</p>
+          <div>
+            <TextField
+              floatingLabelText="New Password"
+              type="password"
+              name="password"
+              onChange={this.textFieldChanged}
+              errorText={errors.password}
+              value={fields.password}
+            />
+          </div>
+          <div>
+            <TextField
+              floatingLabelText="Confirm Password"
+              type="password"
+              name="passwordConfirmation"
+              onChange={this.textFieldChanged}
+              errorText={errors.passwordConfirmation}
+              value={fields.passwordConfirmation}
+            />
+          </div>
+          <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
+        </Card>
       </div>
+
     );
   }
 
