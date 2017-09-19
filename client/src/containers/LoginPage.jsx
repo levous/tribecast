@@ -34,7 +34,7 @@ class LoginPage extends React.Component {
     };
 
     this.auth = new Auth(context.store);
-
+    
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.resetPassword = this.resetPassword.bind(this);

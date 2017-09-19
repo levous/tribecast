@@ -3,6 +3,8 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
 import RaisedButton from 'material-ui/RaisedButton';
+import { Card, CardText } from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
 import Auth from '../modules/Auth';
 
 class PasswordResetPage extends React.Component {
@@ -14,20 +16,37 @@ class PasswordResetPage extends React.Component {
     super(props, context);
 
     // set the initial component state
-    this.state = {};
+    this.state = {
+      fields: {
+        password: '',
+        passwordConfirmation: ''
+      },
+      errors:{}
+    };
 
     this.auth = new Auth(context.store);
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(event) {
+    const fieldName = event.target.name;
+    const fields = this.state.fields;
+    fields[fieldName] = event.target.value;
+
+    this.setState({
+      fields
+    });
   }
 
   handleUpdatePassword(password, passwordConfirmation){
-    // clear last run
-    this.setState({passwordNotice: null, passwordConfirmNotice: null});
+    this.setState({errors: {}});
+    const fields = this.state.fields;
 
-    if(!this.passwordInput.value) return this.setState({passwordNotice: 'Please provide a password'});
-    if(!this.passwordConfirmInput.value || this.passwordInput.value !== this.passwordConfirmInput.value)  return this.setState({passwordConfirmNotice: 'Confirm Password must match Password'});
+    if(!fields.password) return this.setState({errors: {password: 'Please provide a password'}});
+    if(!fields.passwordConfirmation || fields.password !== fields.passwordConfirmation)  return this.setState({errors: {passwordConfirmation: 'Confirm Password must match Password'}});
 
-    this.props.actions.updateUserPassword(this.passwordInput.value, this.props.params.token);
+    this.props.actions.updateUserPassword(fields.password, this.props.params.token);
   }
 
   render() {
@@ -44,22 +63,42 @@ class PasswordResetPage extends React.Component {
       'Welcome, back!  Please create a new password for your account.':
       'Welcome!  Please create a password to activate your membership account.';
 
+    const {errors, fields} = this.state;
 
     return (
 
       <div className='jumbotron'>
-        <p>{userMessage}</p>
-        <div>
-          <label htmlFor='password'>Please Enter your Password</label>
-          <div style={noticeStyle}>{passwordNotice}</div>
-          <input type='password' ref={input => this.passwordInput = input} id='password'/>
-        </div>
-        <div>
-          <label htmlFor='password-confirm'>Confirm your Password</label>
-          <div style={noticeStyle}>{passwordConfirmNotice}</div>
-          <input type='password' ref={input => this.passwordConfirmInput = input} id='password-confirm'/>
-        </div>
-        <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
+        <Card className="container text-center">
+          <p>{userMessage}</p>
+          <div>
+
+            <div style={noticeStyle}>{passwordNotice}</div>
+              <TextField
+                floatingLabelText='New Password'
+                type='password'
+                name='password'
+                errorText={errors.password}
+                onChange={this.onChange}
+                value={fields.password}
+              />
+
+          </div>
+          <div>
+
+            <div style={noticeStyle}>{passwordConfirmNotice}</div>
+
+              <TextField
+                floatingLabelText='Confirm Your Password'
+                type='password'
+                name='passwordConfirmation'
+                errorText={errors.passwordConfirmation}
+                onChange={this.onChange}
+                value={fields.passwordConfirmation}
+              />
+
+          </div>
+          <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
+        </Card>
       </div>
     );
   }
