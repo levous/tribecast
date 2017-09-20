@@ -26,7 +26,8 @@ const socketIoMiddleware = store => {
 
       // Get all members
       case user_action_types.USER_LOGGED_IN:
-        store.dispatch({type: member_action_types.GET_ALL});
+        if(action.userData.roles && action.userData.roles.length) store.dispatch({type: member_action_types.GET_ALL});
+        
         socket.emit('login');
         return next(action);
       // Already passed action along so no need to pass through again.

@@ -1,5 +1,6 @@
 const express = require('express');
-const errors = require('restify-errors');
+const errors = require('../../../shared-modules/http-errors');
+const moment = require('moment');
 const memberController = require('../../controllers/memberController');
 const userController = require('../../controllers/userController');
 const log = require('../../modules/log')(module);
@@ -153,6 +154,61 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  router.post('/invite-all-new', function(req, res, next){
+
+    let message = '';
+
+    memberController.findAllInviteCandidates()
+      .then(members => {
+        if(!members || !members.length) return next(new errors.ResourceNotFoundError('Query for new members resulted in no matching records'));
+        message += `found ${members.length} members candidate for invite`;
+        return memberController.sendMemberInvites(members);
+      })
+      .then(inviteResponses => {
+        const responseBody = {
+          message: message,
+          data: inviteResponses
+        }
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
+  router.post('/invite-send-again', function(req, res, next) {
+
+    if (!req.body.since || !req.body.since.length) return next(new errors.MissingParameterError('parameter "since" Date required'));
+    const since = moment(req.body.since);
+    const until = moment(req.body.until);
+    if(!since.isValid()) return next(new errors.InvalidArgumentError('"since" was not a valid ISO Date'));
+    const maxCount = req.body.maxCount || -1;
+
+    let members = [];
+
+    memberController.findInvitedSince(since, until)
+      .then(memberResults => {
+        members = memberResults;
+        const memberUserKeys = members.map(member => member.memberUserKey);
+        return userController.findByMemberUserKeys(memberUserKeys);
+      })
+      .then(users => {
+        const verifiedUsers = users.filter(user => user.confirmedAt);
+        return members.filter(member => !verifiedUsers.find(user => user.memberUserKey === member.memberUserKey));
+      })
+      .then(unconfirmedMembers => {
+        let membersToInvite = unconfirmedMembers;
+        if(maxCount > 0 && maxCount < membersToInvite.length) membersToInvite = membersToInvite.slice(0, maxCount);
+        return memberController.sendMemberInvites(membersToInvite);
+      })
+      .then(inviteResponses => {
+        const responseBody = {
+          message: `resent invitation to ${inviteResponses.length} unconfirmed members having been invited since ${since.format()} until ${until.format()}`,
+          data: inviteResponses
+        }
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
   router.post('/generate-invite', function(req, res, next){
     const email = req.body.email;
     let message = '';
@@ -162,43 +218,9 @@ exports.setup = function (basePath, app) {
       .then(members => {
         if(!members || !members.length) return next(new errors.ResourceNotFoundError('Provided email resulted in no matching records'));
         message += `found ${members.length} members with email ${email}`;
-        let inviteActions = [];
-        members.forEach(member => {
-          inviteActions.push(userController.generateInvite(member));
-        });
-        return Promise.all(inviteActions);
+        return memberController.sendMemberInvites(members);
       })
-      .then(invites => {
-        inviteResponses = invites.map(invite => {
-          return {
-            inviteToken: invite.passwordResetToken,
-            inviteExpires: invite.passwordResetTokenExpires,
-            name: invite.name,
-            email: invite.email
-          };
-        });
-
-        const emails = inviteResponses.map(invite => {
-          const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
-            `<p>Dear ${invite.name},</p>` +
-            `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
-            '<p style="padding-left: 300px;">Warm regards,</p>' +
-            `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
-            '</div>'
-
-
-          return sendmail(
-            communityDefaults.fromEmail.address,
-            invite.email,
-            `${communityDefaults.name} Invitation`,
-            emailHtml
-          );
-        });
-
-        return Promise.all(emails);
-      })
-      .then(sgResponses => {
-
+      .then(inviteResponses => {
         const responseBody = {
           message: message,
           data: inviteResponses
@@ -207,6 +229,56 @@ exports.setup = function (basePath, app) {
       })
       .catch(next);
   });
+
+  router.post('/update-email-status', function(req, res, next){
+    const data = req.body.data;
+
+    const memberQueries = data.map(item => memberController.findByEmail(item.email));
+    const userQueries = data.map(item => userController.findByEmail(item.email));
+    const membersAndUsers = [...memberQueries, ...userQueries];
+
+    Promise.all(membersAndUsers)
+      .then(results => {
+        let updates = [];
+        results.forEach(result => {
+          // member result is an array with likely one match, user result is a single item
+          if(result) {
+            // coerce into array
+            const resultItems = Array.isArray(result) ? result : [result];
+
+            resultItems.forEach(resultItem => {
+
+              const emailItem = data.find(item => item.email.toLowerCase() === resultItem.email.toLowerCase());
+              resultItem.emailStatus = {
+                smtpCode: emailItem.smtpStatusCode,
+                smtpDescription: emailItem.smtpStatusDescription,
+                verifiedAt: new moment().toDate(),
+                deliverable: (emailItem.smtpStatusCode < 400)
+              };
+              updates.push(resultItem.save());
+            });
+          }
+        });
+        return Promise.all(updates);
+      })
+      .then(saves => {
+        return saves.map(item => {
+          console.log('i', item);
+          return {
+            email: item.email,
+            smtpCode: item.emailStatus.smtpCode,
+            deliverable: item.emailStatus.addressIsDeliverable,
+            itemType: (item.propertyAddress) ? 'Member': 'User'
+          };
+        });
+      })
+      .then(responseJson => {
+        res.json(responseJson);
+      })
+      .catch(next);
+
+  });
+
 
   app.use(basePath, router);
 };

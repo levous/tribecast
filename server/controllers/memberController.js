@@ -1,11 +1,17 @@
 const Mongoose = require('mongoose');
 //const Promise = require ('bluebird');
 const MongooseObjectId = require('mongoose').Types.ObjectId;
+const moment = require('moment');
+const log = require('../modules/log')(module);
 const Member = require('../models/member');
 const User = require('../models/user');
-const errors = require('restify-errors');
+const userController = require('./userController');
+const sendmail = require('../modules/sendmail');
+const errors = require('../../shared-modules/http-errors');
 const uuidV1 = require('uuid/v1');
 const PhoneNumber = require('awesome-phonenumber');
+const communityDefaults = require('../../config/community-defaults');
+
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
@@ -38,6 +44,35 @@ exports.findByEmail = function(email){
   return Member.find(query).exec();
 }
 
+/**
+ * Get all Member(s) having email who do not have an associated user account.
+ * @returns (Promise) [Members]
+ */
+exports.findAllInviteCandidates = function(){
+  const query = {
+    'email': { $exists: true, '$ne': '' },
+    'memberUserKey': null // The { item : null } query matches documents that either contain the item field whose value is null or that do not contain the item field.
+  };
+  return Member.find(query).exec();
+}
+
+/**
+ * Get all Member(s) having previously been invited since
+ * @returns (Promise) [Members]
+ */
+exports.findInvitedSince = function(since, until){
+  const sinceDate = moment(since);
+  const untilDate = moment(until);
+  if(!sinceDate.isValid()) return Promise.reject(new errors.InvalidArgumentError('Parameter "since" must be a valid Date'));
+  if(!untilDate.isValid()) return Promise.reject(new errors.InvalidArgumentError('Parameter "until" must be a valid Date'));
+
+
+  const query = {
+    'lastInvitedAt': {'$gte': sinceDate.toDate(), '$lte': untilDate.toDate() }
+  };
+
+  return Member.find(query).exec();
+}
 
 /**
  * Create new Member
@@ -210,4 +245,80 @@ exports.assignUserMember = function(userId, memberId){
   .then(user => {
     if(!user) throw new errors.InvalidArgumentError('No user found using provided userId');
   });
+}
+
+exports.sendMemberInvites = function(members){
+
+  let inviteActions = [];
+  let inviteResponses;
+  let pendingInviteEmails = [];
+
+  members.forEach(member => {
+    const memberEmail = member.email.toLowerCase();
+    // check if email is marked not deliverable
+    if(member.emailStatus && !member.emailStatus.deliverable) {
+      log.warn(`Suppressing member invite to ${member.email} because it is marked undeliverable (${member.emailStatus.verifiedAt} - ${member.emailStatus.smtpCode}:${member.emailStatus.smtpDescription})`)
+      return inviteActions.push(Promise.resolve({
+        undeliverable: true,
+        smtpStatus: member.emailStatus.smtpCode,
+        smtpDesciption: member.emailStatus.smptDescription,
+        name: `${member.firstName} ${member.lastName}`,
+        email: member.email
+      }));
+    }
+    // be sure to only add each member email once
+    if(!pendingInviteEmails.find(email => email === memberEmail)) {
+      inviteActions.push(userController.generateInvite(member));
+      pendingInviteEmails.push(memberEmail);
+    }
+  });
+
+  return Promise.all(inviteActions)
+    .then(invites => {
+    inviteResponses = invites.map(invite => {
+      return {
+        inviteToken: invite.passwordResetToken,
+        inviteExpires: invite.passwordResetTokenExpires,
+        name: invite.name,
+        email: invite.email,
+        undeliverable: invite.undeliverable
+      };
+    });
+
+    const emails = inviteResponses.map(invite => {
+
+      if(invite.undeliverable) return Promise.resolve(invite);
+
+      const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
+        `<p>Dear ${invite.name},</p>` +
+        `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
+        '<p>Please review and update your personal information and rest assured this is a private, members-only, password-protected directory for you and your community neighbors, exclusively.</p>' +
+        `<p style='font-size:0.8em'>If you have already joined the ${communityDefaults.name}, apologies for the duplicate invite, you can continue using your existing account and disregard this email.</p>` +
+        '<p>We\'re looking forward to connecting with you!</p>' +
+        '<p style="padding-left: 50px;">Warm regards,</p>' +
+        `<p style="padding-left: 50px;">${communityDefaults.fromEmail.name}</p>` +
+        '</div>'
+
+
+      return sendmail(
+        communityDefaults.fromEmail.address,
+        communityDefaults.fromEmail.name,
+        invite.email,
+        invite.name,
+        `${communityDefaults.name} Invitation`,
+        emailHtml
+      );
+    });
+
+    return Promise.all(emails);
+  })
+  .then(sgResponses => {
+    return sgResponses.map((sgResponse, idx) => {
+      let response = inviteResponses[idx]; //assume ordinality?
+      response.status = sgResponse.statusCode;
+      return response;
+    });
+  })
+
+
 }

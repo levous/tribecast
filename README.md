@@ -58,7 +58,7 @@ NotificationManager.error(message, title, timeOut, callback, priority);
 
 
 ### Errors:
-  Uses [restify-errors](https://github.com/restify/errors)
+  Originally, was using restify errors but that had a nasty bug in the browser and has been replaced by a custom errors strategy....  yeah
 
   When errors are thrown, they will be returned in the following structure (modeled after [JsonAPI](http://jsonapi.org/examples/), see [note on serialization](.#restify-serialization))):
 
@@ -78,7 +78,7 @@ NotificationManager.error(message, title, timeOut, callback, priority);
   ```
   a single error will still be returned as an array of one error
 
-  The module ships with the following HttpErrors:
+  The module should be completed (not yet fully implemented) with the following HttpErrors:
 
     400 BadRequestError
     401 UnauthorizedError
@@ -138,7 +138,7 @@ NotificationManager.error(message, title, timeOut, callback, priority);
     404 ResourceNotFoundError
     406 WrongAcceptError
 
-  <a name="restify-serialization">* note: restify-errors</a> has a [serialization strategy](https://github.com/restify/errors#rendering-errors) that might be superior.  As long as clients are not already consuming the JsonAPI error structure, feel free to migrate to this.
+
 
 ## Database
 
@@ -150,8 +150,11 @@ staging:     ds151008.mlab.com:51008/tribecast
 
 
 
-`mongodump -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --out /backup/dump`
+`mongodump -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --out backup/dump`
 
-`mongorestore -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --drop /backup/dump`
+`mongorestore -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --drop backup/dump`
+
+to restore to local mongo from a dump of production:
+`mongorestore --host=127.0.0.1 --db tribecast --drop backup/dump/serenbe`
 
 ### Restore from Backup

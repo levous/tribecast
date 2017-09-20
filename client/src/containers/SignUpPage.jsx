@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
 import SignUpForm from '../components/auth/SignUpForm';
 import Auth from '../modules/Auth';
-
+import Validator from '../../../shared-modules/Validator';
 class SignUpPage extends React.Component {
 
   /**
@@ -37,6 +37,23 @@ class SignUpPage extends React.Component {
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
+    const errors = {};
+
+    if(!this.state.user.name) errors.name = 'Please provide your Name';
+    if(!this.state.user.password) errors.password = 'Please provide a Password';
+    if(!this.state.user.email) errors.email = 'Please provide your Email Address';
+
+    if (this.state.user.email && !Validator.isValidEmail(this.state.user.email)) {
+      errors.email = 'Email address is Not Valid';
+      errors.summary = 'That email address doesn\'t look right.  Please provide a valid email address.';
+    }
+
+    if(errors.name || errors.email || errors.password || errors.summary) {
+      this.setState({
+        errors
+      });
+      return;
+    }
 
     // create a string for an HTTP body message
     const name = encodeURIComponent(this.state.user.name);
@@ -68,8 +85,8 @@ class SignUpPage extends React.Component {
         //TODO: dup code fomr LoginPage.jsx   fix all that
         // save the token
         this.auth.authenticateUser(xhr.response.token);
-        // save user data
-        this.props.actions.cacheUserData(xhr.response.user);
+        // send login action
+        this.props.actions.userLoggedIn(xhr.response.user);
 
         // change the current URL to /
         this.context.router.replace('/membership');
@@ -77,7 +94,7 @@ class SignUpPage extends React.Component {
       } else {
         // failure
 
-        const errors = xhr.response.errors ? xhr.response.errors : {};
+        const errors = xhr.response.errors || {};
         errors.summary = xhr.response.message;
 
         this.setState({
@@ -108,12 +125,14 @@ class SignUpPage extends React.Component {
    */
   render() {
     return (
-      <SignUpForm
-        onSubmit={this.processForm}
-        onChange={this.changeUser}
-        errors={this.state.errors}
-        user={this.state.user}
-      />
+      <div className="jumbotron auth-panel">
+        <SignUpForm
+          onSubmit={this.processForm}
+          onChange={this.changeUser}
+          errors={this.state.errors}
+          user={this.state.user}
+        />
+      </div>
     );
   }
 

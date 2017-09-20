@@ -1,5 +1,5 @@
 const express = require('express');
-const errors = require('restify-errors');
+const errors = require('../../../shared-modules/http-errors');
 const userController = require('../../controllers/userController');
 const log = require('../../modules/log')(module);
 const AuthData = require('../../passport/AuthData.js');
@@ -27,7 +27,7 @@ exports.setup = function (basePath, app) {
     const email = req.body.email;
     const role = req.body.role;
     //TODO: Validate this shit!
-    userController.findByEmailAddress(email)
+    userController.findByEmail(email)
       .then(user => {
         if(!user) return next(new errors.ResourceNotFoundError('Provided email not found'));
         return userController.addUserToRole(user, role);

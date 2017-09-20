@@ -1,5 +1,5 @@
 const express = require('express');
-const errors = require('restify-errors');
+const errors = require('../../../shared-modules/http-errors');
 const memberController = require('../../controllers/memberController');
 const log = require('../../modules/log')(module);
 const MongooseObjectId = require('mongoose').Types.ObjectId;
@@ -23,7 +23,7 @@ exports.setup = function (basePath, app) {
     // pass to controller.assignUserMember
     memberController.assignUserMember(user.id, memberId)
     .then(nada => {
-      
+
       // Set "Success" status
       res.status(200);
       const responseBody = {

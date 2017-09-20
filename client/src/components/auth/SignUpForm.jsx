@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import TextField from '../forms/ThemedTextField.jsx';
 
 
 const SignUpForm = ({
@@ -11,7 +11,7 @@ const SignUpForm = ({
   errors,
   user,
 }) => (
-  <Card className="container text-center">
+  <Card className="container text-center" style={{backgroundColor:'rgba(255,255,255,0.9)', padding:'20px'}}>
     <form action="/" onSubmit={onSubmit}>
       <h2 className="card-heading">Sign Up</h2>
 
@@ -46,13 +46,21 @@ const SignUpForm = ({
           errorText={errors.password}
           value={user.password}
         />
+
+
       </div>
 
       <div className="button-line">
         <RaisedButton type="submit" label="Create New Account" primary />
       </div>
 
-      <CardText>Already have an account? <Link to={'/login'}>Log in</Link></CardText>
+      <CardText>
+        Already have an account? <Link to={'/login'}>Log in</Link>
+        <p style={{color:'#800000'}}> Accounts must be authorized by an administrator.  Please sign up and we will contact you to verify access and contact preferences.  Thanks!</p>
+      </CardText>
+
+
+
     </form>
   </Card>
 );
@@ -65,4 +73,3 @@ SignUpForm.propTypes = {
 };
 
 export default SignUpForm;
-

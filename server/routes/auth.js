@@ -2,7 +2,7 @@
 const validator = require('validator');
 const passport = require('passport');
 const express = require('express');
-const errors = require('restify-errors');
+const errors = require('../../shared-modules/http-errors');
 const userController = require('../controllers/userController');
 const sendmail = require('../modules/sendmail');
 const communityDefaults = require('../../config/community-defaults');
@@ -171,10 +171,13 @@ exports.setup = function (basePath, app) {
   router.post('/forgot-password', (request, res, next) => {
     const email = request.body.email;
     let username;
+    let emailMarkedUndeliverable = false;
     userController.forgotPassword(email)
     .then(json => {
       // successful response means email was found
       username = json.userName;
+      emailMarkedUndeliverable = json.undeliverable;
+
       const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
           `<p>Dear ${json.userName},</p>` +
           `<p>A password reset was requested for ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/forgot-password/${json.resetToken}">Reset Password Link</a> to create a new password.</p>` +
@@ -187,13 +190,20 @@ exports.setup = function (basePath, app) {
 
       return sendmail(
         communityDefaults.fromEmail.address,
+        communityDefaults.fromEmail.name,
         email,
+        username,
         `${communityDefaults.name} Password Reset`,
         emailHtml
       );
     })
     .then(mailResponse => {
-      return res.json({status: mailResponse.status, username: username, message: 'Password reset email sent successfully'});
+      let message = 'Password reset email sent successfully';
+      if(emailMarkedUndeliverable) {
+        message += '.  WARNING: the email address has been marked undeliverable.  Please contact support to investigate problems encountered sending to this email address.';
+        log.warn(`Forgot password email to "${email}" attempted but email was previously marked undeliverable.`);
+      }
+      return res.json({status: mailResponse.status, username: username, message: message});
     })
     .catch(next);
 
@@ -220,7 +230,7 @@ exports.setup = function (basePath, app) {
 
   router.post('/reset/:passwordResetToken', (req, res, next) => {
 
-console.log(req.body);
+    console.log(req.body);
     const passwordResetToken = req.params.passwordResetToken;
     const newPassword = req.body.newPassword;
 

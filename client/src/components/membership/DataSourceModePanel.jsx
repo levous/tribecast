@@ -43,7 +43,7 @@ export default class Member extends Component {
           return (
             <div>
               <Panel collapsible expanded={this.state.open} header='Preview Mode' bsStyle="info">
-                You are viewing preview content.  Please log in to load {communityDefaults.name}
+                You are viewing preview content.  An administrator can authorize your account to load {communityDefaults.name}
               </Panel>
             </div>
           );

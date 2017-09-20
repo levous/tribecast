@@ -23,7 +23,12 @@ let userApp = function(state = initialState, action) {
         passwordResetSucceeded: true
       });
     case user_action_types.RESET_PASSWORD_RESPONSE_RECEIVED:
-      NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link.`);
+      if(action.resetResponse.errors){
+        const errorMessage = action.resetResponse.errors[0].detail;
+        NotificationManager.error(errorMessage, 'Reset Password Failed', 15000);
+      }else{
+        NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link.`);
+      }
       return state;
     default:
       return state;

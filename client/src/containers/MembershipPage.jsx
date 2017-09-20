@@ -160,7 +160,7 @@ class MembershipPage extends Component {
                 list={this.props.members}
                 keys={weightedSearchKeys}
                 placeholder='fuzzy finder'
-                style={{width:'100%', border: 'solid 1px rgb(0, 188, 212)', padding: '3px', borderRadius: '5px'}}
+                style={{width:'100%', border: 'solid 1px rgb(136, 208, 1)', padding: '3px', borderRadius: '5px'}}
                 onSearch={filteredList => this.handleSearch(filteredList)} />
               <br/>
               <MemberList members={this.state.filteredList}

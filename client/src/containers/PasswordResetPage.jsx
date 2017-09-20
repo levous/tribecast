@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
-import RaisedButton from 'material-ui/RaisedButton';
 import { Card, CardText } from 'material-ui/Card';
-import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from '../components/forms/ThemedTextField.jsx';
 import Auth from '../modules/Auth';
 
 class PasswordResetPage extends React.Component {
@@ -16,46 +16,50 @@ class PasswordResetPage extends React.Component {
     super(props, context);
 
     // set the initial component state
-    this.state = {
-      fields: {
-        password: '',
-        passwordConfirmation: ''
-      },
-      errors:{}
-    };
+    this.state = {errors:{}, fields:{}};
 
     this.auth = new Auth(context.store);
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
-    this.onChange = this.onChange.bind(this);
+    this.textFieldChanged = this.textFieldChanged.bind(this);
+
   }
 
-  onChange(event) {
-    const fieldName = event.target.name;
-    const fields = this.state.fields;
-    fields[fieldName] = event.target.value;
+  textFieldChanged(event) {
+    const field = event.target.name;
+    const {fields, errors} = this.state;
+    fields[field] = event.target.value;
+
+    // convenient cleanup of error messages (not checking password strength or nothin)
+    if(fields.password) errors.password = null;
+    if(fields.password == fields.passwordConfirmation) errors.passwordConfirmation = null;
 
     this.setState({
-      fields
+      fields,
+      errors
     });
   }
 
-  handleUpdatePassword(password, passwordConfirmation){
-    this.setState({errors: {}});
+  handleUpdatePassword(){
     const fields = this.state.fields;
+    // clear last run
+    this.setState({errors:{}});
+    const errors = {};
 
-    if(!fields.password) return this.setState({errors: {password: 'Please provide a password'}});
-    if(!fields.passwordConfirmation || fields.password !== fields.passwordConfirmation)  return this.setState({errors: {passwordConfirmation: 'Confirm Password must match Password'}});
+    if(!fields.password) errors.password = 'Please provide a password';
+    if(!fields.passwordConfirmation || fields.password !== fields.passwordConfirmation) errors.passwordConfirmation = 'Confirm Password must match Password';
+
+    this.setState({
+      errors
+    });
+
+    if (errors.password || errors.passwordConfirmation) return;
 
     this.props.actions.updateUserPassword(fields.password, this.props.params.token);
   }
 
   render() {
 
-    const noticeStyle = {
-      color: '#aa0000'
-    }
-
-    const {passwordNotice, passwordConfirmNotice} = this.state;
+    const {errors, fields} = this.state;
 
     if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
 
@@ -63,43 +67,36 @@ class PasswordResetPage extends React.Component {
       'Welcome, back!  Please create a new password for your account.':
       'Welcome!  Please create a password to activate your membership account.';
 
-    const {errors, fields} = this.state;
 
     return (
 
-      <div className='jumbotron'>
-        <Card className="container text-center">
+      <div className="jumbotron auth-panel">
+        <Card className="text-center" style={{backgroundColor:'rgba(255,255,255,0.9)', padding:'20px'}}>
           <p>{userMessage}</p>
           <div>
-
-            <div style={noticeStyle}>{passwordNotice}</div>
-              <TextField
-                floatingLabelText='New Password'
-                type='password'
-                name='password'
-                errorText={errors.password}
-                onChange={this.onChange}
-                value={fields.password}
-              />
-
+            <TextField
+              floatingLabelText="New Password"
+              type="password"
+              name="password"
+              onChange={this.textFieldChanged}
+              errorText={errors.password}
+              value={fields.password}
+            />
           </div>
           <div>
-
-            <div style={noticeStyle}>{passwordConfirmNotice}</div>
-
-              <TextField
-                floatingLabelText='Confirm Your Password'
-                type='password'
-                name='passwordConfirmation'
-                errorText={errors.passwordConfirmation}
-                onChange={this.onChange}
-                value={fields.passwordConfirmation}
-              />
-
+            <TextField
+              floatingLabelText="Confirm Password"
+              type="password"
+              name="passwordConfirmation"
+              onChange={this.textFieldChanged}
+              errorText={errors.passwordConfirmation}
+              value={fields.passwordConfirmation}
+            />
           </div>
           <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
         </Card>
       </div>
+
     );
   }
 

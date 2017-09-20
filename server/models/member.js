@@ -1,7 +1,7 @@
 const Mongoose      = require('mongoose');
 const Promise       = require('bluebird');
 const AddressSchema = require('./address');
-
+const EmailStatusSchema = require('./emailStatusSchema');
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
@@ -16,6 +16,7 @@ const phoneValidator = {
 let MemberSchema = new Mongoose.Schema({
   memberUserKey: String,
   email: String,
+  emailStatus:  { type: EmailStatusSchema, default: EmailStatusSchema },
   firstName: String,
   lastName: String,
   mobilePhone: {
@@ -46,7 +47,12 @@ let MemberSchema = new Mongoose.Schema({
   websiteURL: String,
   optIn: Boolean,
   directorySubscription: Boolean,
-  recordOriginNote: String
+  recordOriginNote: String,
+  lastInvitedAt: Date,
+  inviteCount: { type: Number, default: 0 }
+},
+{
+  timestamps: true
 });
 
 

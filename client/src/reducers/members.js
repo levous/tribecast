@@ -16,7 +16,7 @@ const sortComparer = sortKey => {
 };
 
 class Member {
-  constructor(id, fname, lname, street, city, state, zip){
+  constructor(id, fname, lname, street, city, state, zip, mobilePhone, homePhone, email){
     this.id = id;
     this.firstName = fname;
     this.lastName = lname;
@@ -25,12 +25,15 @@ class Member {
       city: city,
       state: state,
       zip: zip
-    }
+    };
+    this.mobilePhone = mobilePhone;
+    this.homePhone = homePhone;
+    this.email = email;
   }
 }
 
 const seedMembers = [
-  new Member(666, 'Rusty', 'Brontobones', '3 Swann Rdg','Palmetto', 'GA', '30268'),
+  new Member(666, 'Rusty', 'Brontobones', '3 Swann Rdg','Palmetto', 'GA', '30268', '(212) 555-1234', '(212) 555-9876', 'rubble@barney.com'),
   new Member(1,'Fred','Flintstone','34 Swann Rdg', 'Palmetto','GA','30268'),
   new Member(2, 'Barney', 'Rubble', '23 Serenbe Ln', 'Palmetto','GA','30268'),
   new Member(3, 'Bam Bam', 'Stonehenge'),
@@ -42,7 +45,7 @@ const seedMembers = [
   new Member(19,'Scottie', 'Dillahunt','61 Canterbury Street', 'Catonsville', 'MD', '21228'),
   new Member(20,'Pilar', 'Bardwell','672 Windfall Drive', 'Linden', 'NJ', '07036'),
   new Member(21,'Genevive', 'Hower','13 Sunnyslope St.', 'North Royalton', 'OH', '44133'),
-  new Member(22,'Rosanne', 'Aguirre','17 Olive Court', 'Orland Park', 'IL', '60462'),
+  new Member(22,'Rosanne', 'Aguirre','17 Olive Court', 'Orland Park', 'IL', '60462','(414) 555-1234', '(414) 555-9876', 'aguirre@comehereay.com'),
   new Member(23,'Janette', 'Bedsole','840 East Eagle Ave.', 'Harrison Township', 'MI', '48045'),
   new Member(24,'Dorris', 'Drescher','54 Green Hill Lane', 'San Jose', 'CA', '95127'),
   new Member(25,'Zenaida', 'Geibel','499 Saxon Drive', 'Lakeland', 'FL', '33801'),

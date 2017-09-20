@@ -7,7 +7,7 @@ chai.should();
 const Mongoose = require('mongoose');
 const {expect, assert} = chai;
 
-import errors from 'restify-errors';
+import errors from '../../shared-modules/http-errors';
 import memberController from './memberController';
 
 describe('memberController', () => {
