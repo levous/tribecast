@@ -235,7 +235,7 @@ const dataService = store => next => action => {
     case user_action_types.RESET_PASSWORD:
 
       const accountEmail = action.email;
-      debugger;
+    
       return fetch('/auth/forgot-password', {
         method: 'post',
         headers: authHeaders,

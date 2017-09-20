@@ -9,6 +9,7 @@ import LoginForm from '../components/auth/LoginForm.jsx';
 import * as userActions from '../actions/user-actions';
 import communityDefaults from '../../../config/community-defaults';
 import Validator from '../../../shared-modules/Validator';
+import Logger from '../modules/Logger';
 
 class LoginPage extends React.Component {
 
@@ -120,6 +121,8 @@ class LoginPage extends React.Component {
       });
       return;
     }
+
+    Logger.logWarn({description: `${this.state.user.email} resetting password`});
 
     this.props.actions.resetPassword(this.state.user.email);
   }
