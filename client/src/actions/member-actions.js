@@ -30,6 +30,17 @@ export const member_sort_keys = {
   ADDRESS: 'ADDRESS'
 }
 
+export function addAndSelectMember(member) {
+  return dispatch => {
+    return dispatch({
+      type: member_action_types.ADD,
+      member: member
+    }).then(()=>{
+      dispatch(selectMember(member));
+    });
+  };
+};
+
 export function addMember(member) {
   return {
     type: member_action_types.ADD,

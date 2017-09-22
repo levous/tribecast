@@ -74,8 +74,10 @@ class MembershipPage extends Component {
         zip  :  '30268'
       }
     };
-
-    this.props.actions.addMember(temp);
+    this.props.actions.addMember(temp)
+      .then(()=>{
+        this.props.actions.selectMember(temp);
+      });
   }
 
   handleRefreshButtonTouchTap() {
