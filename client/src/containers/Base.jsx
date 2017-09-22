@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Link, IndexLink } from 'react-router';
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import IconHelp from 'material-ui/svg-icons/action/help-outline';
+import { white, lightBlue500 } from 'material-ui/styles/colors';
 import { LinkContainer } from 'react-router-bootstrap';
 import {NotificationContainer} from 'react-notifications';
 import Auth from '../modules/Auth';
@@ -38,11 +40,11 @@ const Base = ({ children }, {store}) => {
               <NavItem eventKey={3}>Admin Dashboard</NavItem>
             </LinkContainer>
           )}
+          <LinkContainer to="/help">
+            <NavItem eventKey={5}><IconHelp color={lightBlue500} /></NavItem>
+          </LinkContainer>
         </Nav>
         <Nav pullRight>
-          <LinkContainer to="/help">
-            <NavItem eventKey={5}>Help</NavItem>
-          </LinkContainer>
           {userIsAuthenticated && (
             <LinkContainer to="/logout">
               <NavItem eventKey={4}>Log Out, {userName}</NavItem>
@@ -58,6 +60,7 @@ const Base = ({ children }, {store}) => {
               <NavItem eventKey={6}>Log In</NavItem>
             </LinkContainer>
           )}
+
 
         </Nav>
       </Navbar.Collapse>
