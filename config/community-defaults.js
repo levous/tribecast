@@ -11,6 +11,10 @@ exports.fromEmail = {
   address: 'rzarse2@gmail.com'
 };
 
+exports.supportEmail = {
+  address: "support@serenbedirectory.freshdesk.com"
+};
+
 exports.colors = {
   bg: {
     action: '#daf1d0',

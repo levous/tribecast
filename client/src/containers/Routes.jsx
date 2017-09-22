@@ -15,6 +15,7 @@ import InvitationsPage from './InvitationsPage';
 import MemberProfilePage from './MemberProfilePage';
 import MembershipPage from './MembershipPage';
 import UploadPage from './UploadPage';
+import HelpPage from './HelpPage';
 import AdminDashboardPage from './AdminDashboardPage';
 import NotFound from './NotFound';
 
@@ -54,6 +55,7 @@ export default class Routes extends Component {
             <Route path='/forgot-password/:token' component={PasswordResetPage} />
             <Route path='/profile' component={MemberProfilePage} onEnter={this.requireAuth} />
             <Route path='/upload' component={UploadPage} onEnter={this.requireAuth} />
+            <Route path='/help' component={HelpPage} />
             <Route path='/*' component={NotFound} />
           </Route>
         </Router>

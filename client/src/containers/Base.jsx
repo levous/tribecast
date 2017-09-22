@@ -40,6 +40,9 @@ const Base = ({ children }, {store}) => {
           )}
         </Nav>
         <Nav pullRight>
+          <LinkContainer to="/help">
+            <NavItem eventKey={5}>Help</NavItem>
+          </LinkContainer>
           {userIsAuthenticated && (
             <LinkContainer to="/logout">
               <NavItem eventKey={4}>Log Out, {userName}</NavItem>

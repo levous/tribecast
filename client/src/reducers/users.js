@@ -22,6 +22,10 @@ let userApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         passwordResetSucceeded: true
       });
+    case user_action_types.RESET_PASSWORD:
+      return Object.assign({}, state, {
+        passwordResetSucceeded: undefined
+      });
     case user_action_types.RESET_PASSWORD_RESPONSE_RECEIVED:
       if(action.resetResponse.errors){
         const errorMessage = action.resetResponse.errors[0].detail;
@@ -30,6 +34,7 @@ let userApp = function(state = initialState, action) {
         NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link.`);
       }
       return state;
+
     default:
       return state;
   }

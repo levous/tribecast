@@ -35,7 +35,7 @@ class LoginPage extends React.Component {
         email: '',
         password: ''
       },
-      passwordResetDialogOpen: false
+      passwordResetDialogOpen: props.passwordResetSucceeded
     };
 
     this.auth = new Auth(context.store);
@@ -43,6 +43,7 @@ class LoginPage extends React.Component {
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
+    this.dialogClosed = this.dialogClosed.bind(this);
 
   }
 
@@ -140,13 +141,13 @@ class LoginPage extends React.Component {
       <div className="jumbotron auth-panel">
 
         <Dialog
-            title="Dialog With Actions"
+            title="Password Was Reset"
             actions={<FlatButton label="OK" primary={true} onClick={this.dialogClosed} />}
             modal={false}
             open={this.state.passwordResetDialogOpen}
             onRequestClose={this.dialogClosed}
           >
-            Password Reset was Successful!  Please log in.
+          Password Reset was Successful!  Please log in.
         </Dialog>
 
         <LoginForm
@@ -174,7 +175,7 @@ LoginPage.contextTypes = {
 
 function mapStateToProps(state) {
   return {
-    passwordResetDialogOpen: state.userApp.passwordResetSucceeded
+    passwordResetSucceeded: state.userApp.passwordResetSucceeded
   };
 }
 

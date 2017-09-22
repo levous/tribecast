@@ -67,7 +67,6 @@ class PasswordResetPage extends React.Component {
       'Welcome, back!  Please create a new password for your account.':
       'Welcome!  Please create a password to activate your membership account.';
 
-
     return (
 
       <div className="jumbotron auth-panel">
