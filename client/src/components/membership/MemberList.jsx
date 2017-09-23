@@ -2,21 +2,39 @@ import React, {PropTypes, Component} from 'react';
 import { List, ListItem } from 'material-ui/List';
 import Avatar from 'react-avatar';
 import md5 from 'js-md5';
+import { findDOMNode } from "react-dom";
+import scrollIntoView from "scroll-into-view";
 import defaults from '../../../../config/community-defaults';
 //TODO: convert styles.listStyle to className
 
 export default class MemberList extends Component {
   constructor(props, context) {
     super(props, context);
-    const selectedMemberId = props.selectedMemberId || -1;
-    this.state = {
-      activeItem: selectedMemberId
-    }
+    this.listItems = [];
+  }
+
+  scrollSelectedItemIntoView(targetMemberId) {
+
+    // scroll the selected item into view
+    // loop the members and find the selected item
+    this.props.members.forEach((member, i) => {
+      if(targetMemberId === member.id){
+        // retrieve the dom node using the ref pattern.
+        //TODO: Not happy that this has a strong dependency on the render list ref code.  Thoughts?
+        const activeItemElement = findDOMNode(this.listItems[i]);
+        scrollIntoView(activeItemElement);
+      }
+    });
+  }
+
+  componentDidUpdate(){
+
+      this.scrollSelectedItemIntoView(this.props.selectedMemberId);
+    
   }
 
   handleItemTouchTap(member){
     console.log('handleItemTouchTap', member.id);
-    this.setState({activeItem:member.id});
     this.props.onSelectItem(member);
   }
 
@@ -40,12 +58,12 @@ export default class MemberList extends Component {
       }
     };
 
-    const className = this.state.activeItem ? 'member-list-container squeeze' : 'member-list-container'
+    const className = this.props.selectedMemberId ? 'member-list-container squeeze' : 'member-list-container'
 
     const computeStyle = (member => {
       //TODO: abstract this logic for determining match strength
 
-      let style = (this.state.activeItem === member.id) ? styles.selectedRow : {};
+      let style = (this.props.selectedMemberId === member.id) ? styles.selectedRow : {};
       if(member.apiMatch) {
         if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
           style = Object.assign({}, style, styles.verifiedNewRecord);
@@ -59,6 +77,7 @@ export default class MemberList extends Component {
     });
 
     console.log('member count',this.props.members.length);
+
     return (
       <div style={styles.listStyle} className={className}>
 
@@ -70,8 +89,9 @@ export default class MemberList extends Component {
                 console.log('MemberList:props.members.map', 'member item was null');
                 return <ListItem key={`mem${i}`} primaryText='member null' secondaryText='This indicates a problem.  Please contact support.' />
               }
+
               return (
-              <ListItem key={`mem${i}`}
+              <ListItem key={`mem${i}`} ref={ref => this.listItems[i] = ref}
                 leftAvatar={
                   <Avatar md5Email={member.email ? md5(member.email) : ''} name={`${member.firstName} ${member.lastName}`} round={true} size={40} />
                 }

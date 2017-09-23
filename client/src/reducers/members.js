@@ -103,7 +103,23 @@ const initialState = {
 // to start over...
 //localStorage.clear();
 
+
 let memberApp = function(state = initialState, action) {
+
+  const updateMemberInList = (state, targetMemberId, member) => {
+    // find the index by id
+    const targetIndex = state.members.map(function(m) {return m.id; }).indexOf(targetMemberId);
+
+    // create a new array, containing updated item, using spread and slice
+    return Object.assign({}, state, {
+      members: [
+        ...state.members.slice(0, targetIndex),
+        // ensure unspecified props are not accidentally discarded and that stored object is not mutated
+        Object.assign({}, state.members[targetIndex], member),
+        ...state.members.slice(targetIndex + 1)
+      ]
+    });
+  };
 
   switch (action.type) {
     case member_action_types.SELECT_MEMBER:
@@ -118,26 +134,24 @@ let memberApp = function(state = initialState, action) {
         ]
       });
 
-    case member_action_types.UPDATE_SUCCESS_RECEIVED:
+    case member_action_types.UPDATE_SUCCESS_RECEIVED: {
       NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
-      //fall through
-    case member_action_types.UPDATE:
-
       const memberId = action.id || action.member.id;
-      // find the index by id
-      const actionIndex = state.members.map(function(m) {return m.id; }).indexOf(memberId);
-      // assign _id to id if present.  Server is source of record
-      if(action.member._id) action.member.id = action.member._id;
-      // create a new array, containing updated item, using spread and slice
-      return Object.assign({}, state, {
-        members: [
-          ...state.members.slice(0, actionIndex),
-          // ensure unspecified props are not accidentally discarded and that stored object is not mutated
-          Object.assign({}, state.members[actionIndex], action.member),
-          ...state.members.slice(actionIndex + 1)
-        ]
-      });
+      let member = action.member;
+      // ensure that if member._id is present, a server record identifier, that it matches the id.
+      //   If not, this was a new record with a temp id.  Update without mutating
+      if(member._id && member._id !== member.id) member = Object.assign({}, member, {id: member._id});
+      const newState = updateMemberInList(state, memberId, member);
 
+      // updated selected member if action id matches selectedMember id
+      if(action.id === state.selectedMember.id) return Object.assign({}, newState, {selectedMember: member});
+
+      return newState;
+    }
+    case member_action_types.UPDATE: {
+      const memberId = action.id || action.member.id;
+      return updateMemberInList(state, memberId, action.member);
+    }
     case member_action_types.MEMBER_DATA_RECEIVED:
 
       NotificationManager.success('Server data loaded');

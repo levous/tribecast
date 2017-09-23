@@ -75,9 +75,7 @@ class MembershipPage extends Component {
       }
     };
     this.props.actions.addMember(temp)
-      .then(()=>{
-        this.props.actions.selectMember(temp);
-      });
+    this.props.actions.selectMember(temp);
   }
 
   handleRefreshButtonTouchTap() {
