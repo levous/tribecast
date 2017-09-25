@@ -9,6 +9,12 @@ exports.setup = function (basePath, app){
     return res.sendFile(path.resolve(__dirname, '../', 'static', 'images', 'apple-touch-icon.png'));
   });
 
+  router.get('/offline-cache.manifest', (req, res) => {
+    res.header("Content-Type", "text/cache-manifest");
+
+    return res.sendFile(path.resolve(__dirname, '../', 'static', 'offline-cache.manifest'));
+  });
+
   router.post ('/api/logger',  (req, res, next) => {
 
     logger.log(

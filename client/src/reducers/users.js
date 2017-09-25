@@ -1,4 +1,4 @@
-import {user_action_types} from '../actions/user-actions.js';
+  import {user_action_types} from '../actions/user-actions.js';
 import {NotificationManager} from 'react-notifications';
 
 const initialState = {
@@ -34,7 +34,11 @@ let userApp = function(state = initialState, action) {
         NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link.`);
       }
       return state;
-
+    case user_action_types.SELECT_USER_ACCOUNT:
+      
+      return Object.assign({}, state, {
+        selectedUser: action.user
+      });
     default:
       return state;
   }

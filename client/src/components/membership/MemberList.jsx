@@ -11,10 +11,13 @@ export default class MemberList extends Component {
   constructor(props, context) {
     super(props, context);
     this.listItems = [];
+
+    this.state = {
+      shouldScrollTop: false
+    };
   }
 
   scrollSelectedItemIntoView(targetMemberId) {
-
     // scroll the selected item into view
     // loop the members and find the selected item
     this.props.members.forEach((member, i) => {
@@ -23,14 +26,25 @@ export default class MemberList extends Component {
         //TODO: Not happy that this has a strong dependency on the render list ref code.  Thoughts?
         const activeItemElement = findDOMNode(this.listItems[i]);
         scrollIntoView(activeItemElement);
+        return;
       }
     });
   }
 
-  componentDidUpdate(){
+  componentWillReceiveProps(nextProps){
+    if(nextProps.members !== this.props.members){
+      this.setState({shouldScrollTop: true});
+    }
+  }
 
+  componentDidUpdate(){
+    // return above was not hit, scroll top if indicated by new member list
+    if(this.state.shouldScrollTop){
+      scrollIntoView(findDOMNode(this.listItems[0]));
+      this.setState({shouldScrollTop: false});
+    } else {
       this.scrollSelectedItemIntoView(this.props.selectedMemberId);
-    
+    }
   }
 
   handleItemTouchTap(member){
@@ -64,6 +78,7 @@ export default class MemberList extends Component {
       //TODO: abstract this logic for determining match strength
 
       let style = (this.props.selectedMemberId === member.id) ? styles.selectedRow : {};
+      
       if(member.apiMatch) {
         if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
           style = Object.assign({}, style, styles.verifiedNewRecord);

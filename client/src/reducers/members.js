@@ -93,7 +93,7 @@ const seedMembers = [
 
 const initialState = {
   members: seedMembers.sort(sortComparer(member_sort_keys.NAME)),
-  //TODO: change this to an id so that it's not retained when data is refreshed
+  //TODO: refactor to use id rather than member so that the pre-edit data is not retained
   selectedMember: undefined,
   dataSource: member_data_sources.SEED,
   invites: undefined,

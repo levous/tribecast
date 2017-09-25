@@ -8,57 +8,34 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import {NotificationManager} from 'react-notifications';
-import MemberList from '../components/membership/MemberList.jsx';
-import Member from '../components/membership/Member.jsx';
-import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
+import UserList from '../components/account-management/UserList.jsx';
+import UserAccount from '../components/account-management/UserAccount.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
-import * as memberActions from '../actions/member-actions';
+import * as userActions from '../actions/user-actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
 import IconAdd from 'material-ui/svg-icons/content/add';
 import 'react-notifications/lib/notifications.css';
 
-class MembershipPage extends Component {
+class UserAccountManagementPage extends Component {
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filteredList: props.members,
+      filteredList: props.users,
     }
 
     this.auth = new Auth(context.store);
   }
 
-  componentDidMount() {
-    if(this.props.location.query.notification){
-      NotificationManager.info(this.props.location.query.notification);
-    }
-
-    if(this.props.location.query.clearLocalStorage){
-      localStorage.clear();
-    }
-
-    if(this.props.location.query.cancelLoading){
-      this.props.actions.cancelLoading();
-    }
-
-    if(this.props.location.query.refresh){
-      this.props.actions.refreshMembersFromServer();
-    }
-  }
-
   componentWillReceiveProps(nextProps){
-    if(nextProps.members !== this.props.members){
-      this.setState({filteredList: nextProps.members});
+    if(nextProps !== this.props.users){
+      this.setState({filteredList: nextProps.users});
     }
   }
 
-  handleMemberItemSelection(member) {
-    this.props.actions.selectMember(member);
-  }
-
-  handleUpdate(member){
-    this.props.actions.updateMember(member);
+  handleUserItemSelection(userAccount) {
+    this.props.actions.selectUserAccount(userAccount);
   }
 
   handleAddButtonTouchTap() {
@@ -73,12 +50,12 @@ class MembershipPage extends Component {
         zip  :  '30268'
       }
     };
-    this.props.actions.addMember(temp)
-    this.props.actions.selectMember(temp);
+    this.props.actions.createUserAccount(temp)
+    this.props.actions.selectUserAccount(temp);
   }
 
   handleRefreshButtonTouchTap() {
-    this.props.actions.refreshMembersFromServer();
+    this.props.actions.refreshUsersFromServer();
   }
 
   handleSearch(results) {
@@ -93,7 +70,7 @@ class MembershipPage extends Component {
       return;
     }
     const importNote = `${this.auth.loggedInUserName()} published import - ${this.props.importNote}`;
-    this.props.actions.publishMembers(this.props.members, importNote);
+    this.props.actions.publishMembers(this.props.users, importNote);
   }
 
   handleDataSourceModeCancel(dataSource){
@@ -105,56 +82,33 @@ class MembershipPage extends Component {
     this.props.router.push('/invitations');
   }
 
-  handleCancelLoading(button) {
-    this.props.actions.cancelLoading();
-  };
-
   render() {
-    const {selectedMember, userData, auth, loading} = this.props;
+    const {selectedUser, currentUserData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
-    const selectedMemberId = selectedMember ? selectedMember.id : -1;
-    const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
+    const selectedUserId = selectedUser ? selectedUser.id : -1;
     const weightedSearchKeys = [{
-      name: 'lastName',
-      weight: 0.3
-    },
-    {
-      name: 'firstName',
-      weight: 0.3
-    },
-    {
-       name: 'propertyAddress.street',
-       weight: 0.1
-    },
-    {
-       name: 'neighborhood',
-       weight: 0.1
-    },
-    {
+      name: 'name',
+      weight: 0.5
+    },{
        name: 'email',
-       weight: 0.1
+       weight: 0.5
     }];
-
 
     return (
       <div className="jumbotron">
+        <h1>User Management</h1>
         {loading && (
           <div>
             <Dialog
               title="Fetching from API"
               modal={true}
-              open={true}
-              actions={[<FlatButton label="Cancel Loading" onClick={(button) => this.handleCancelLoading(button)} />]}
-              >
+              open={true} >
               ...loading <CircularProgress />
             </Dialog>
             {`${loading}`}
           </div>
         )}
-        <DataSourceModePanel dataSource={this.props.dataSource}
-          onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
-          onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {isAdmin && ( <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton> )}
         <div style={{clear:'both', marginTop:'5px'}}></div>
@@ -162,27 +116,24 @@ class MembershipPage extends Component {
           <Row className="show-grid">
             <Col xs={12} md={4}>
               <SearchField
-                list={this.props.members}
+                list={this.props.users}
                 keys={weightedSearchKeys}
                 placeholder='fuzzy finder'
                 style={{width:'100%', border: 'solid 1px rgb(136, 208, 1)', padding: '3px', borderRadius: '5px'}}
                 onSearch={filteredList => this.handleSearch(filteredList)} />
               <br/>
-              <MemberList members={this.state.filteredList}
-                onSelectItem={(member) => this.handleMemberItemSelection(member)}
-                selectedMemberId={selectedMemberId}/>
+              <UserList users={this.state.filteredList}
+                onSelectItem={(user) => this.handleUserItemSelection(user)}
+                selectedUserId={selectedUserId}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
 
-              {selectedMember && (
+              {selectedUser && (
 
-                <Member key={`memberdiv${selectedMember.id}`}
-                  member={selectedMember}
-                  canEdit={canEditSelectedMember}
-                  canInvite={isAdmin}
+                <UserAccount
+                  user={selectedUser}
                   style={{postion: 'relative'}}
-                  onUpdate={(member) => this.handleUpdate(member)}
-                  onInvite={(member) => this.handleInvite(member)}
+                  onUpdate={(user) => this.handleUpdate(user)}
                 />
               )}
             </Col>
@@ -193,26 +144,24 @@ class MembershipPage extends Component {
   }
 }
 
-MembershipPage.contextTypes = {
+UserAccountManagementPage.contextTypes = {
   router: PropTypes.object.isRequired,
   store: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
   return {
-    members: state.memberApp.members,
-    selectedMember: state.memberApp.selectedMember,
-    dataSource: state.memberApp.dataSource,
-    importNote: state.memberApp.importNote,
-    userData: state.userApp.userData,
+    users: [{id: 9, name: "Hello Kitty", email: "hello@kitty.com"}, {id: 10, name: "HGrooy Baby", email: "groovy@baby.com"}],
+    selectedUser: state.userApp.selectedUser,
+    currentUserData: state.userApp.userData,
     loading: state.memberApp.loading
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(memberActions, dispatch)
+    actions: bindActionCreators(userActions, dispatch)
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MembershipPage);
+export default connect(mapStateToProps, mapDispatchToProps)(UserAccountManagementPage);

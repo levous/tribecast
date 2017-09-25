@@ -13,6 +13,7 @@ import PasswordResetPage from './PasswordResetPage';
 import InvitationsPage from './InvitationsPage';
 import MemberProfilePage from './MemberProfilePage';
 import MembershipPage from './MembershipPage';
+import UserAccountManagementPage from './UserAccountManagementPage';
 import UploadPage from './UploadPage';
 import HelpPage from './HelpPage';
 import AdminDashboardPage from './AdminDashboardPage';
@@ -58,6 +59,7 @@ class Routes extends Component {
             <Route path='/logout' onEnter={(nextState, replace) => this.logOut(nextState, replace)} />
             <Route path='/membership' component={MembershipPage} />
             <Route path='/admin' component={AdminDashboardPage} />
+            <Route path='/user-accounts' component={UserAccountManagementPage} />
             <Route path='/invitations' component={InvitationsPage} />
             <Route path='/invite/:token' component={PasswordResetPage} />
             <Route path='/forgot-password/:token' component={PasswordResetPage} />
