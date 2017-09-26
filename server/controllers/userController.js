@@ -10,8 +10,6 @@ const user_roles = require('../../config/user_roles');
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
-
-
 exports.getAll = function(){
 
   return User
@@ -135,4 +133,14 @@ exports.addUserToRole = function(user, role){
   }
   user.roles.push(role);
   return user.save();
+};
+
+exports.removeUserFromRole = function(user, role){
+  const idx = user.roles.indexOf(role);
+  if(idx > -1) {
+    user.roles.splice(idx, 1);
+    return user.save();
+  } else {
+    return Promise.reject(`User was not assigned to the '${role}' role`);
+  }
 };

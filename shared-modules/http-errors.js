@@ -2,9 +2,9 @@
 
 const errors = {
   makeErrFromCode: (errorCode, errorDescription) => {
-    const error = new Error('${errorDescription} code:${errorCode}');
-    error.
-    return
+    const error = new Error(`${errorDescription} code:${errorCode}`);
+    error.statusCode = errorCode;
+    return error;
   }
 }
 

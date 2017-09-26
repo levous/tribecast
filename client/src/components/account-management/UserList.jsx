@@ -49,6 +49,7 @@ export default class UserList extends Component {
     this.props.onSelectItem(user);
   }
 
+
   render() {
     const styles = {
       selectedRow: {
@@ -63,6 +64,7 @@ export default class UserList extends Component {
     const className = this.props.selectedUserId ? 'member-list-container squeeze' : 'member-list-container'
 
     const computeStyle = (user => {
+      console.log(user);
       let style = (this.props.selectedUserId === user.id) ? styles.selectedRow : {};
       return style;
     });

@@ -160,7 +160,7 @@ let memberApp = function(state = initialState, action) {
 
       const patchedMembers = action.members
         .map(member => Object.assign(member, {id: member._id}))
-        .sort(sortComparer(member_sort_keys.NAME));;
+        .sort(sortComparer(member_sort_keys.NAME));
 
       console.log('MEMBER_DATA_RECEIVED');
       return Object.assign({}, state, {

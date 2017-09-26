@@ -39,7 +39,7 @@ const dataService = store => next => action => {
       .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
         const members = responseJson.data;
-        console.log('members', members);
+        //console.log('members', members);
         return next({
           type: member_action_types.MEMBER_DATA_RECEIVED,
           members
@@ -208,6 +208,34 @@ const dataService = store => next => action => {
       });
 
       return next(action);
+    case user_action_types.GET_ALL:
+
+      if(!auth.isUserAdmin()){
+        return next({
+          type: member_action_types.USER_DATA_FAILED,
+          err: new errors.NotAuthorizedError('Sorry, you aren\'t authorized to view the user records.')
+        });
+      }
+      return fetch('/api/users', {
+        method: 'get',
+        headers: authHeaders
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        const users = responseJson.data;
+
+        return next({
+          type: user_action_types.USER_DATA_RECEIVED,
+          users
+        });
+      })
+      .catch(err => {
+        return next({
+          type: user_action_types.USER_DATA_FAILED,
+          err
+        });
+      });
+      break;
 
     case user_action_types.UPDATE_PASSWORD:
       const {password, resetToken} = action;
@@ -235,7 +263,7 @@ const dataService = store => next => action => {
     case user_action_types.RESET_PASSWORD:
 
       const accountEmail = action.email;
-    
+
       return fetch('/auth/forgot-password', {
         method: 'post',
         headers: authHeaders,
@@ -255,6 +283,38 @@ const dataService = store => next => action => {
         });
       });
 
+
+    case user_action_types.TOGGLE_USER_ROLE: {
+      const {user, role} = action;
+      const jsonBody = {
+        email: user.email,
+        role: role
+      };
+
+      const apiEndPoint = user.roles.includes(role) ? '/api/users/remove-user-from-role' : '/api/users/assign-user-to-role'
+
+      return fetch(apiEndPoint,
+        {
+          method: 'post',
+          headers: authHeaders,
+          body: JSON.stringify(jsonBody)
+        })
+        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+        .then(responseJson => {
+
+          const message = responseJson.message;
+          user.roles = responseJson.data;
+          store.dispatch({type: user_action_types.UPDATE_USER_SUCCESS, user: user});
+          return next(action);
+        })
+        .catch(err => {
+          
+          return next({
+            type: user_action_types.UPDATE_FAILURE_RECEIVED,
+            err
+          });
+        });
+    }
     // Already passed action along so no need to pass through again.
     default:
       return;

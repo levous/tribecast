@@ -1,12 +1,22 @@
 export const user_action_types = {
+  GET_ALL: 'GET_USERS',
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
   UPDATE_PASSWORD: 'UPDATE_PASSWORD',
   RESET_PASSWORD: 'RESET_PASSWORD',
   RESET_PASSWORD_RESPONSE_RECEIVED: 'RESET_PASSWORD_RESPONSE_RECEIVED',
   UPDATE_PASSWORD_SUCCESS: 'UPDATE_PASSWORD_SUCCESS',
-  SELECT_USER_ACCOUNT: 'SELECT_USER_ACCOUNT'
+  UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
+  SELECT_USER_ACCOUNT: 'SELECT_USER_ACCOUNT',
+  USER_DATA_RECEIVED: 'USER_DATA_RECEIVED',
+  USER_DATA_FAILED: 'USER_DATA_FAILED',
+  TOGGLE_USER_ROLE: 'TOGGLE_USER_ROLE'
 };
+
+export const user_sort_keys = {
+  NAME: 'NAME',
+  EMAIL: 'EMAIL'
+}
 
 export function userLoggedIn(userData) {
   return {
@@ -31,6 +41,21 @@ export function updateUserPassword(password, resetToken) {
     type: user_action_types.UPDATE_PASSWORD,
     password,
     resetToken
+  };
+}
+
+export function toggleUserRole(user, role) {
+  return {
+    type: user_action_types.TOGGLE_USER_ROLE,
+    user,
+    role
+  };
+}
+
+
+export function getAllUsers() {
+  return {
+    type: user_action_types.GET_ALL
   };
 }
 

@@ -43,5 +43,33 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  /**
+   * Add User to Role - POST
+   * @param {string} email - email address of user
+   * @param {string} role - role to add
+   * @returns "200 Success" data = {roles:[string]}
+   */
+  router.post('/remove-user-from-role', function(req, res, next){
+    const email = req.body.email;
+    const role = req.body.role;
+    //TODO: Validate this shit!
+
+    userController.findByEmail(email)
+      .then(user => {
+        if(!user) return next(new errors.ResourceNotFoundError('Provided email not found'));
+        return userController.removeUserFromRole(user, role);
+      }).then(user => {
+
+        res.status(200);
+        const responseBody = {
+          message: `successfully removed ${user.name} from '${role}' role`,
+          data: user.roles
+        }
+        return res.json(responseBody);
+      })
+      .catch(next);
+
+  });
+
   app.use(basePath, router);
 };

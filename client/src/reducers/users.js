@@ -1,12 +1,37 @@
-  import {user_action_types} from '../actions/user-actions.js';
+import {user_action_types, user_sort_keys} from '../actions/user-actions.js';
 import {NotificationManager} from 'react-notifications';
 
 const initialState = {
   userData: undefined,
-  passwordResetSucceeded: undefined
+  passwordResetSucceeded: undefined,
+  loading: false
+};
+
+const sortComparer = sortKey => {
+  switch (sortKey){
+    case user_sort_keys.EMAIL:
+      return (a, b) => a.email.localeCompare(b.email);
+    default: //member_sort_keys.NAME:
+      return (a, b) => a.name.localeCompare(b.name);
+  }
 };
 
 let userApp = function(state = initialState, action) {
+
+  const updateUserInList = (state, user) => {
+    const userEmails = state.users.map((u)=>{return u.email});
+    // find the index by id
+    const targetIndex = userEmails.indexOf(user.email);
+
+    // create a new array, containing updated item, using spread and slice
+    return [
+        ...state.users.slice(0, targetIndex),
+        // ensure unspecified props are not accidentally discarded and that stored object is not mutated
+        Object.assign({}, state.users[targetIndex], user),
+        ...state.users.slice(targetIndex + 1)
+      ];
+  };
+
   switch (action.type) {
     case user_action_types.USER_LOGGED_IN:
       return Object.assign({}, state, {
@@ -35,9 +60,42 @@ let userApp = function(state = initialState, action) {
       }
       return state;
     case user_action_types.SELECT_USER_ACCOUNT:
-      
+
       return Object.assign({}, state, {
         selectedUser: action.user
+      });
+    case user_action_types.USER_DATA_RECEIVED:
+
+      NotificationManager.success('Server data loaded');
+
+      const patchedUsers = action.users
+        .map(user => Object.assign(user, {id: user.email}))
+        .sort(sortComparer(user_sort_keys.NAME));
+
+      return Object.assign({}, state, {
+        users: patchedUsers,
+        loading: false
+      });
+    case user_action_types.UPDATE_USER_SUCCESS:
+
+      NotificationManager.success('User Updated Successfully');
+      const user = action.user;
+      const updatedUsers = updateUserInList(state, user);
+      let selectedUser = state.selectedUser;
+      if(selectedUser && selectedUser.email === user.email ){
+        selectedUser = user;
+      }
+
+      return Object.assign({}, state, {
+        users: updatedUsers,
+        loading: false
+      });
+
+    case user_action_types.USER_DATA_FAILED:
+      // when triggered by a throw, accessing the error slows the notification presentation such that it flashes too quickly
+      NotificationManager.error(action.err.message, 'Server data load failed with error', 15000);
+      return Object.assign({}, state, {
+        loading: false
       });
     default:
       return state;

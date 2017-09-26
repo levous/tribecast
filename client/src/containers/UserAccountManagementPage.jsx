@@ -22,14 +22,15 @@ class UserAccountManagementPage extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filteredList: props.users,
+      filteredList: props.users || [{id: 9, name: "Hello Kitty", email: "hello@kitty.com"}, {id: 10, name: "HGrooy Baby", email: "groovy@baby.com"}],
     }
 
     this.auth = new Auth(context.store);
+    this.props.actions.getAllUsers();
   }
 
   componentWillReceiveProps(nextProps){
-    if(nextProps !== this.props.users){
+    if(nextProps.users !== this.props.users){
       this.setState({filteredList: nextProps.users});
     }
   }
@@ -39,23 +40,23 @@ class UserAccountManagementPage extends Component {
   }
 
   handleAddButtonTouchTap() {
+    return alert('not implemented yet');
+
     let temp = {
-      id: Math.floor(Date.now() / 1000),
-      firstName: '$uper',
-      lastName: '_Man',
-      propertyAddress: {
-        street: '99 Serenbe Ln',
-        city : 'Palmetto',
-        state: 'GA',
-        zip  :  '30268'
-      }
+      name: '$uper',
+      email: '_Man',
+
     };
     this.props.actions.createUserAccount(temp)
     this.props.actions.selectUserAccount(temp);
   }
 
   handleRefreshButtonTouchTap() {
-    this.props.actions.refreshUsersFromServer();
+    this.props.actions.getAllUsers();
+  }
+
+  handleToggleRole(user, role) {
+    this.props.actions.toggleUserRole(user, role);
   }
 
   handleSearch(results) {
@@ -64,29 +65,11 @@ class UserAccountManagementPage extends Component {
     this.setState({filteredList: results});
   }
 
-  handleDataSourceModeAccept(dataSource) {
-    if(this.props.dataSource !== memberActions.member_data_sources.CSV_IMPORT) {
-      alert('ERROR: Cannot publish unless it\'s a csv import');
-      return;
-    }
-    const importNote = `${this.auth.loggedInUserName()} published import - ${this.props.importNote}`;
-    this.props.actions.publishMembers(this.props.users, importNote);
-  }
-
-  handleDataSourceModeCancel(dataSource){
-    this.handleRefreshButtonTouchTap();
-  }
-
-  handleInvite(member) {
-    this.props.actions.inviteMember(member);
-    this.props.router.push('/invitations');
-  }
-
   render() {
     const {selectedUser, currentUserData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
-    const selectedUserId = selectedUser ? selectedUser.id : -1;
+    const selectedUserId = selectedUser ? selectedUser.id : '';
     const weightedSearchKeys = [{
       name: 'name',
       weight: 0.5
@@ -134,6 +117,7 @@ class UserAccountManagementPage extends Component {
                   user={selectedUser}
                   style={{postion: 'relative'}}
                   onUpdate={(user) => this.handleUpdate(user)}
+                  onToggleRole={(user, role) => this.handleToggleRole(user, role)}
                 />
               )}
             </Col>
@@ -151,10 +135,12 @@ UserAccountManagementPage.contextTypes = {
 
 function mapStateToProps(state) {
   return {
-    users: [{id: 9, name: "Hello Kitty", email: "hello@kitty.com"}, {id: 10, name: "HGrooy Baby", email: "groovy@baby.com"}],
+    users: state.userApp.users,
+    members: state.memberApp.members,
     selectedUser: state.userApp.selectedUser,
     currentUserData: state.userApp.userData,
-    loading: state.memberApp.loading
+    loading: state.userApp.loading
+
   };
 }
 
