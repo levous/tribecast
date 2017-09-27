@@ -16,25 +16,31 @@ export const user_action_types = {
 export const user_sort_keys = {
   NAME: 'NAME',
   EMAIL: 'EMAIL'
-}
+};
+
+export function getAllUsers() {
+  return {
+    type: user_action_types.GET_ALL
+  };
+};
 
 export function userLoggedIn(userData) {
   return {
     type: user_action_types.USER_LOGGED_IN,
     userData
   };
-}
+};
 
 export function userLoggedOut() {
   return {type: user_action_types.USER_LOGGED_OUT};
-}
+};
 
 export function resetPassword(email) {
   return {
     type: user_action_types.RESET_PASSWORD,
     email
   };
-}
+};
 
 export function updateUserPassword(password, resetToken) {
   return {
@@ -42,7 +48,7 @@ export function updateUserPassword(password, resetToken) {
     password,
     resetToken
   };
-}
+};
 
 export function toggleUserRole(user, role) {
   return {
@@ -50,18 +56,11 @@ export function toggleUserRole(user, role) {
     user,
     role
   };
-}
-
-
-export function getAllUsers() {
-  return {
-    type: user_action_types.GET_ALL
-  };
-}
+};
 
 export function selectUserAccount(user) {
   return {
     type: user_action_types.SELECT_USER_ACCOUNT,
     user
   };
-}
+};

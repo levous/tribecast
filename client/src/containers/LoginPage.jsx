@@ -35,7 +35,7 @@ class LoginPage extends React.Component {
         email: '',
         password: ''
       },
-      passwordResetDialogOpen: props.passwordResetSucceeded
+      passwordResetDialogOpen: props.passwordResetSucceeded || false
     };
 
     this.auth = new Auth(context.store);
