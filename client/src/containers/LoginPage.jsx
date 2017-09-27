@@ -124,7 +124,7 @@ class LoginPage extends React.Component {
     }
 
     Logger.logWarn({description: `${this.state.user.email} resetting password`});
-
+    debugger;
     this.props.actions.resetPassword(this.state.user.email);
   }
 

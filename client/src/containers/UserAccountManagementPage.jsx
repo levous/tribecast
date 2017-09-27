@@ -23,7 +23,7 @@ class UserAccountManagementPage extends Component {
     super(props, context);
 
     this.state = {
-      filteredList: props.users || [{id: 9, name: "Hello Kitty", email: "hello@kitty.com"}, {id: 10, name: "HGrooy Baby", email: "groovy@baby.com"}],
+      filteredList: props.users || [{id: 9, name: "Hello Kitty", email: "hello@kitty.com"}, {id: 10, name: "Groovy Baby", email: "groovy@baby.com"}],
       usersShouldReload: (!props.users || props.users.length === 0)
     }
 

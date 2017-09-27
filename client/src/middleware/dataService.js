@@ -255,7 +255,7 @@ const dataService = store => next => action => {
       })
       .catch(err => {
         return next({
-          type: user_action_types.UPDATE_FAILURE_RECEIVED,
+          type: user_action_types.USER_DATA_FAILED,
           err
         });
       });
@@ -278,7 +278,7 @@ const dataService = store => next => action => {
         // need something more specific?
         return next({
           //TODO: better failure respone
-          type: user_action_types.UPDATE_FAILURE_RECEIVED,
+          type: user_action_types.USER_DATA_FAILED,
           err
         });
       });
