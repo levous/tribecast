@@ -4,6 +4,7 @@ import md5 from 'js-md5';
 import { findDOMNode } from "react-dom";
 import scrollIntoView from "scroll-into-view";
 import defaults from '../../../../config/community-defaults';
+import Logger from '../../modules/Logger';
 //TODO: convert styles.listStyle to className
 
 export default class UserList extends Component {
@@ -64,7 +65,7 @@ export default class UserList extends Component {
     const className = this.props.selectedUserId ? 'member-list-container squeeze' : 'member-list-container'
 
     const computeStyle = (user => {
-      console.log(user);
+
       let style = (this.props.selectedUserId === user.id) ? styles.selectedRow : {};
       return style;
     });
@@ -79,7 +80,7 @@ export default class UserList extends Component {
             this.props.users.map((user, i) => {
               // sanity check
               if(!user){
-                console.log('UserList:props.users.map', 'user item was null');
+                Logger.logWarn({source: 'UserList:props.users.map', description: 'user item was null'});
                 return <ListItem key={`mem${i}`} primaryText='user null' secondaryText='This indicates a problem.  Please contact support.' />
               }
 

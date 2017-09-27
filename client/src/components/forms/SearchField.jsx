@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Classnames from 'classnames';
 import Fuse from 'fuse.js';
+import Logger from '../../modules/Logger';
 
 class SearchField extends Component {
   constructor(props, context) {
@@ -86,7 +87,7 @@ class SearchField extends Component {
       }
     }
     catch(err){
-      console.log('executeSearch/fuse', err);
+      Logger.logError({source:'executeSearch/fuse', error: err});
     }
 
     this.onSearch(results);

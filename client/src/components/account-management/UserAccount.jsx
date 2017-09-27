@@ -23,11 +23,11 @@ const UserAccountView = ({
     </div>
     <div>
       <StyledLabel htmlFor='roles' text='Roles' />
-      <p>
+      <div className='checkbox-group'>
         {
-          roles.map((role, i) => { return <div key={i}><input type='checkbox' onClick={()=>{onToggleRole(user, role)}} checked={user.roles && user.roles.includes(role)} /><span>{role}</span></div> })
+          roles.map((role, i) => { return <div key={i}><label><input type='checkbox' onClick={()=>{onToggleRole(user, role)}} checked={user.roles && user.roles.includes(role)} /><span>{role}</span></label></div> })
         }
-      </p>
+      </div>
     </div>
   </div>
   )

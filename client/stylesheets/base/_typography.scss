@@ -37,6 +37,11 @@ H2 ::-webkit-input-placeholder {
   color: $text-color-alert;
 }
 
+.checkbox-group label {
+  color: $text-color;
+  font-size: $text-font-size;
+}
+
 ::-webkit-input-placeholder {
    font-weight:200;
    font-size:.9em;

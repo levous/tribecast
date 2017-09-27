@@ -27,3 +27,10 @@ input[type=text] {
   background-size: cover;
   padding:'20px';
 }
+
+.checkbox-group input[type='checkbox'] {
+  margin: 0 5px;
+}
+.checkbox-group label {
+  margin: 0 10px;
+}
