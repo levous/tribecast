@@ -17,7 +17,9 @@ class AdminDashboardPage extends React.Component {
 
     return (
       <div className="jumbotron">
-        <a href="/upload">Import CSV</a>
+        <p><a href="/upload">Import CSV</a></p>
+        <p><a href="/user-accounts">Manage User Accounts</a></p>
+
       </div>
     );
   }
