@@ -21,17 +21,25 @@ class UserAccountManagementPage extends Component {
 
   constructor(props, context) {
     super(props, context);
+
     this.state = {
       filteredList: props.users || [{id: 9, name: "Hello Kitty", email: "hello@kitty.com"}, {id: 10, name: "HGrooy Baby", email: "groovy@baby.com"}],
+      usersShouldReload: (!props.users || props.users.length === 0)
     }
 
     this.auth = new Auth(context.store);
-    this.props.actions.getAllUsers();
+  }
+
+  componentDidMount() {
+    if(this.state.usersShouldReload){
+      this.props.actions.getAllUsers();
+      this.setState({usersShouldReload: false});
+    }
   }
 
   componentWillReceiveProps(nextProps){
     if(nextProps.users !== this.props.users){
-      this.setState({filteredList: nextProps.users});
+      this.setState({filteredList: nextProps.users, usersShouldReload: false});
     }
   }
 

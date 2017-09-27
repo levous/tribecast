@@ -212,7 +212,7 @@ const dataService = store => next => action => {
 
       if(!auth.isUserAdmin()){
         return next({
-          type: member_action_types.USER_DATA_FAILED,
+          type: user_action_types.USER_DATA_FAILED,
           err: new errors.NotAuthorizedError('Sorry, you aren\'t authorized to view the user records.')
         });
       }
@@ -255,7 +255,7 @@ const dataService = store => next => action => {
       })
       .catch(err => {
         return next({
-          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          type: user_action_types.UPDATE_FAILURE_RECEIVED,
           err
         });
       });
@@ -278,7 +278,7 @@ const dataService = store => next => action => {
         // need something more specific?
         return next({
           //TODO: better failure respone
-          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          type: user_action_types.UPDATE_FAILURE_RECEIVED,
           err
         });
       });
@@ -308,9 +308,9 @@ const dataService = store => next => action => {
           return next(action);
         })
         .catch(err => {
-          
+
           return next({
-            type: user_action_types.UPDATE_FAILURE_RECEIVED,
+            type: user_action_types.USER_DATA_FAILED,
             err
           });
         });
