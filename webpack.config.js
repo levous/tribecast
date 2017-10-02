@@ -57,7 +57,7 @@ module.exports = {
       template: path.join(__dirname, '/server/static/index.html'),
       inject: true
     }),
-    new webpack.HotModuleReplacementPlugin(),
+    //new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('styles/main.css', {allChunks: true}),
     new webpack.optimize.UglifyJsPlugin()
     /*new webpack.optimize.UglifyJsPlugin({
