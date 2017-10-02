@@ -222,7 +222,7 @@ exports.setup = function (basePath, app) {
         if(!user) return next(new errors.ResourceNotFoundError('User for provided key not found'));
 
         res.status(200);
-        const responseBody = {message: 'password reset token is valid'};
+        const responseBody = {message: 'password reset token is valid', userName: user.name };
         return res.json(responseBody);
       })
       .catch(next);

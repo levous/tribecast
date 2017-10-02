@@ -6,6 +6,7 @@ import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from '../components/forms/ThemedTextField.jsx';
 import Auth from '../modules/Auth';
+import communityDefaults from '../../../config/community-defaults';
 
 class PasswordResetPage extends React.Component {
 
@@ -21,7 +22,7 @@ class PasswordResetPage extends React.Component {
     this.auth = new Auth(context.store);
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
     this.textFieldChanged = this.textFieldChanged.bind(this);
-
+    //TODO: call out to api /invite/:passwordResetToken to check the token.  Display the username to the user to indicate that we know who they are
   }
 
   textFieldChanged(event) {
@@ -65,7 +66,7 @@ class PasswordResetPage extends React.Component {
 
     const userMessage = this.props.location.pathname.includes('forgot-password') ?
       'Welcome, back!  Please create a new password for your account.':
-      'Welcome!  Please create a password to activate your membership account.';
+      'Welcome!  You\'ve been invited to ' + communityDefaults.name + ' so all we need is for you to create a password to activate your membership account.';
 
     return (
 

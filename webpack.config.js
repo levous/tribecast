@@ -46,11 +46,11 @@ module.exports = {
 
   plugins: [
 
-    /*new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
-    }),*/
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
@@ -58,7 +58,8 @@ module.exports = {
       inject: true
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin('styles/main.css', {allChunks: true}) ,
+    new ExtractTextPlugin('styles/main.css', {allChunks: true}),
+    new webpack.optimize.UglifyJsPlugin()
     /*new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
