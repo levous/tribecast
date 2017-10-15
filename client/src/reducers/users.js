@@ -56,7 +56,7 @@ let userApp = function(state = initialState, action) {
         const errorMessage = action.resetResponse.errors[0].detail;
         NotificationManager.error(errorMessage, 'Reset Password Failed', 15000);
       }else{
-        NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link.`);
+        NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link. (note: it might take a few minutes)`);
       }
       return state;
     case user_action_types.SELECT_USER_ACCOUNT:

@@ -147,7 +147,8 @@ class LoginPage extends React.Component {
             open={this.state.passwordResetDialogOpen}
             onRequestClose={this.dialogClosed}
           >
-          Password Reset was Successful!  Please log in.
+          Password Reset was Successful!
+          <h3>Please log in</h3>
         </Dialog>
 
         <LoginForm

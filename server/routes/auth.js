@@ -171,7 +171,6 @@ exports.setup = function (basePath, app) {
   router.post('/forgot-password', (request, res, next) => {
     const email = request.body.email;
     const urlRoot = `${request.protocol}://${request.hostname}`;
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', urlRoot);
     let username;
     let emailMarkedUndeliverable = false;
     userController.forgotPassword(email)
