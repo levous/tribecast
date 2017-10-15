@@ -30,6 +30,7 @@ export default class Member extends Component {
   }
 
   handleEditButtonTouchTap(){
+    //TODO: move this up to the page component so that editing can be passed in through props and automatcially invoked by new member creation
     this.setState({
       editing: !this.state.editing
     });

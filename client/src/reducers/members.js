@@ -97,7 +97,8 @@ const initialState = {
   selectedMember: undefined,
   dataSource: member_data_sources.SEED,
   invites: undefined,
-  loading: false
+  loading: false,
+  sortKey: member_sort_keys.NAME
 };
 
 // to start over...
@@ -109,15 +110,29 @@ let memberApp = function(state = initialState, action) {
   const updateMemberInList = (state, targetMemberId, member) => {
     // find the index by id
     const targetIndex = state.members.map(function(m) {return m.id; }).indexOf(targetMemberId);
+    const oldMember = state.members[targetIndex];
+    let newList = [
+      ...state.members.slice(0, targetIndex),
+      // ensure unspecified props are not accidentally discarded and that stored object is not mutated
+      Object.assign({}, state.members[targetIndex], member),
+      ...state.members.slice(targetIndex + 1)
+    ];
 
+    let needSort = false;
+    switch(state.sortKey) {
+      case member_sort_keys.ADDRESS:
+        needSort = (oldMember.propertyAddress.street !== member.propertyAddress.street || oldMember.propertyAddress.zip !== oldMember.propertyAddress.zip)
+        break;
+      default:
+        needSort = (oldMember.lastName !== member.lastName || oldMember.firstName !== member.firstName);
+        break;
+    }
+
+    if(needSort) newList = newList.sort(sortComparer(state.sortKey));
+    
     // create a new array, containing updated item, using spread and slice
     return Object.assign({}, state, {
-      members: [
-        ...state.members.slice(0, targetIndex),
-        // ensure unspecified props are not accidentally discarded and that stored object is not mutated
-        Object.assign({}, state.members[targetIndex], member),
-        ...state.members.slice(targetIndex + 1)
-      ]
+      members: newList
     });
   };
 
@@ -127,11 +142,13 @@ let memberApp = function(state = initialState, action) {
         selectedMember: action.member
       });
     case member_action_types.ADD:
+      const newMembers = [
+        ...state.members,
+        action.member
+      ].sort(sortComparer(state.sortKey));
+
       return Object.assign({}, state, {
-        members: [
-          ...state.members,
-          action.member
-        ]
+        members: newMembers
       });
 
     case member_action_types.UPDATE_SUCCESS_RECEIVED: {
@@ -160,7 +177,7 @@ let memberApp = function(state = initialState, action) {
 
       const patchedMembers = action.members
         .map(member => Object.assign(member, {id: member._id}))
-        .sort(sortComparer(member_sort_keys.NAME));
+        .sort(sortComparer(state.sortKey));
 
       console.log('MEMBER_DATA_RECEIVED');
       return Object.assign({}, state, {
@@ -307,7 +324,8 @@ let memberApp = function(state = initialState, action) {
       const sort = sortComparer(action.sort);
       sortedMembers = state.members.sort(sort);
       return Object.assign({}, state, {
-        members: sortedMembers
+        members: sortedMembers,
+        sortKey: action.sort
       });
     case member_action_types.INVITE_MEMBER:
       return Object.assign({}, state, {

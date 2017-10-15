@@ -149,7 +149,6 @@ staging:     ds151008.mlab.com:51008/tribecast
 ### BackUp / Restore DB
 
 
-
 `mongodump -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --out backup/dump`
 
 `mongorestore -h ds151008.mlab.com --port 51008 --db tribecast -u replace_with_username -p replace_with_password --drop backup/dump`
@@ -158,3 +157,32 @@ to restore to local mongo from a dump of production:
 `mongorestore --host=127.0.0.1 --db tribecast --drop backup/dump/serenbe`
 
 ### Restore from Backup
+
+Need notes here
+
+## Performance
+
+Random notes on optimizing performance.
+
+Check out this article [react redux perf tuning](https://medium.com/@arikmaor/react-redux-performance-tuning-tips-cef1a6c50759)
+
+
+### Pure Render Anti-Pattern
+When using a pure component, pay special attention to arrays and functions. Arrays and functions create new refs so it’s up to you to create them only once and not during every render.
+```
+// NEVER do this
+render() {
+  return <MyInput onChange={this.props.update.bind(this)} />;
+}
+// NEVER do this
+render() {
+  return <MyInput onChange={() => this.props.update()} />;
+}
+// Instead do this
+onChange() {
+    this.props.doUpdate()
+}
+render() {
+  return <MyInput onChange={this.onChange}/>;
+}
+```

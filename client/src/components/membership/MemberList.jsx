@@ -18,6 +18,7 @@ export default class MemberList extends Component {
   }
 
   scrollSelectedItemIntoView(targetMemberId) {
+
     // scroll the selected item into view
     // loop the members and find the selected item
     this.props.members.forEach((member, i) => {
@@ -78,7 +79,7 @@ export default class MemberList extends Component {
       //TODO: abstract this logic for determining match strength
 
       let style = (this.props.selectedMemberId === member.id) ? styles.selectedRow : {};
-      
+
       if(member.apiMatch) {
         if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
           style = Object.assign({}, style, styles.verifiedNewRecord);
