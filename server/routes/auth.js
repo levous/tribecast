@@ -170,6 +170,8 @@ exports.setup = function (basePath, app) {
    */
   router.post('/forgot-password', (request, res, next) => {
     const email = request.body.email;
+    const urlRoot = `${request.protocol}://${request.hostname}`;
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', urlRoot);
     let username;
     let emailMarkedUndeliverable = false;
     userController.forgotPassword(email)
@@ -180,7 +182,7 @@ exports.setup = function (basePath, app) {
 
       const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
           `<p>Dear ${json.userName},</p>` +
-          `<p>A password reset was requested for ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/forgot-password/${json.resetToken}">Reset Password Link</a> to create a new password.</p>` +
+          `<p>A password reset was requested for ${communityDefaults.name}!  Please follow the <a href="${urlRoot}/forgot-password/${json.resetToken}">Reset Password Link</a> to create a new password.</p>` +
           `<p style="font-size:0.8em">(If you did not initiate this reset, please contact support as an unauthorized somebody may be trying to access your account.)</p>` +
           '<p style="padding-left: 300px;">Warm regards,</p>' +
           `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +

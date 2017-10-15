@@ -156,13 +156,14 @@ exports.setup = function (basePath, app) {
 
   router.post('/invite-all-new', function(req, res, next){
 
+    const urlRoot = `${req.protocol}://${req.hostname}`;
     let message = '';
 
     memberController.findAllInviteCandidates()
       .then(members => {
         if(!members || !members.length) return next(new errors.ResourceNotFoundError('Query for new members resulted in no matching records'));
         message += `found ${members.length} members candidate for invite`;
-        return memberController.sendMemberInvites(members);
+        return memberController.sendMemberInvites(members, urlRoot);
       })
       .then(inviteResponses => {
         const responseBody = {
@@ -181,7 +182,7 @@ exports.setup = function (basePath, app) {
     const until = moment(req.body.until);
     if(!since.isValid()) return next(new errors.InvalidArgumentError('"since" was not a valid ISO Date'));
     const maxCount = req.body.maxCount || -1;
-
+    const urlRoot = `${req.protocol}://${req.hostname}`;
     let members = [];
 
     memberController.findInvitedSince(since, until)
@@ -197,7 +198,7 @@ exports.setup = function (basePath, app) {
       .then(unconfirmedMembers => {
         let membersToInvite = unconfirmedMembers;
         if(maxCount > 0 && maxCount < membersToInvite.length) membersToInvite = membersToInvite.slice(0, maxCount);
-        return memberController.sendMemberInvites(membersToInvite);
+        return memberController.sendMemberInvites(membersToInvite, urlRoot);
       })
       .then(inviteResponses => {
         const responseBody = {
@@ -213,12 +214,13 @@ exports.setup = function (basePath, app) {
     const email = req.body.email;
     let message = '';
     let inviteResponses;
+    const urlRoot = `${req.protocol}://${req.hostname}`;
 
     memberController.findByEmail(email)
       .then(members => {
         if(!members || !members.length) return next(new errors.ResourceNotFoundError('Provided email resulted in no matching records'));
         message += `found ${members.length} members with email ${email}`;
-        return memberController.sendMemberInvites(members);
+        return memberController.sendMemberInvites(members, urlRoot);
       })
       .then(inviteResponses => {
         const responseBody = {

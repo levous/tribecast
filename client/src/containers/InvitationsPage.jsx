@@ -5,6 +5,8 @@ import defaults from '../../../config/community-defaults';
 
 class InvitationsPage extends React.Component {
   render() {
+    const urlRoot = (typeof window !== 'undefined') ? `${window.location.protocol}//${window.location.host}` : defaults.urlRoot;
+
     if(!this.props.invites_loading){
       return <div className='jumbotron'>Loading...</div>
     }
@@ -15,7 +17,7 @@ class InvitationsPage extends React.Component {
         {this.props.invites.data.map((invite, i) => (
           <div key={`invite${i}`} style={{border: '1px solid #ffffff', borderRadius: '10px', margin: '20px', padding: '20px'}}>
             <p>Dear {invite.name || 'Friend'},</p>
-            <p>You've been invited to {defaults.name}!  Please follow the <a href={`${defaults.urlRoot}/invite/${invite.inviteToken}`}>Invite Link</a> to create your password and activate your user account.</p>
+            <p>You've been invited to {defaults.name}!  Please follow the <a href={`${urlRoot}/invite/${invite.inviteToken}`}>Invite Link</a> to create your password and activate your user account.</p>
             <p style={{paddingLeft: '300px'}}>Warm regards,</p>
             <p style={{paddingLeft: '300px'}}>{this.props.user.name}</p>
           </div>

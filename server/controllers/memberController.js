@@ -247,8 +247,8 @@ exports.assignUserMember = function(userId, memberId){
   });
 }
 
-exports.sendMemberInvites = function(members){
-
+exports.sendMemberInvites = function(members, siteUrlRoot){
+  const urlRoot = siteUrlRoot || communityDefaults.urlRoot;
   let inviteActions = [];
   let inviteResponses;
   let pendingInviteEmails = [];
@@ -291,7 +291,7 @@ exports.sendMemberInvites = function(members){
 
       const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
         `<p>Dear ${invite.name},</p>` +
-        `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${communityDefaults.urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
+        `<p>You've been invited to ${communityDefaults.name}!  Please follow the <a href="${urlRoot}/invite/${invite.inviteToken}">Invite Link</a> to create your password and activate your user account.</p>` +
         '<p>Please review and update your personal information and rest assured this is a private, members-only, password-protected directory for you and your community neighbors, exclusively.</p>' +
         `<p style='font-size:0.8em'>If you have already joined the ${communityDefaults.name}, apologies for the duplicate invite, you can continue using your existing account and disregard this email.</p>` +
         '<p>We\'re looking forward to connecting with you!</p>' +
