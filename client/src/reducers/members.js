@@ -129,7 +129,7 @@ let memberApp = function(state = initialState, action) {
     }
 
     if(needSort) newList = newList.sort(sortComparer(state.sortKey));
-    
+
     // create a new array, containing updated item, using spread and slice
     return Object.assign({}, state, {
       members: newList
@@ -197,7 +197,7 @@ let memberApp = function(state = initialState, action) {
 
       let members = importData.map(record => {
         /*
-
+        Lot
         Address
         Adult Residents
         Alternate Address
@@ -251,6 +251,7 @@ let memberApp = function(state = initialState, action) {
           mobilePhone:  mobilePhone && mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): '',
           email:        record[fieldMap['Email']],
           neighborhood: record[fieldMap['Neighborhood']],
+          lotCode: record[fieldMap['Lot']],
           propertyAddress: {
             street: record[fieldMap['Property Address']],
             city :  communityDefaults.location.city,

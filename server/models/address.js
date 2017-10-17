@@ -5,7 +5,7 @@ let AddressSchema = {
     street2: String,
     city: String,
     state: String,
-    zip: String,
+    zip: String
 };
 
 module.exports = AddressSchema;

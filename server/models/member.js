@@ -36,6 +36,7 @@ let MemberSchema = new Mongoose.Schema({
       message: 'Invalid neighborhood'
     }
   },
+  lotCode: String, // represents the real estate development lot number when applicable
   propertyAddress: { type: AddressSchema, default: AddressSchema },
   alternateAddress: { type: AddressSchema, default: AddressSchema },
   originallyFrom: String,

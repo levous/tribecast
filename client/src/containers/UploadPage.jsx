@@ -48,6 +48,7 @@ class UploadPage extends React.Component {
       'Last Name': null,
       'Home Phone': null,
       'Mobile Phone': null,
+      'Lot': null,
       'Property Address': null,
       'Alternate Address': null,
       'Hobbies': null,

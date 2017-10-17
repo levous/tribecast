@@ -49,9 +49,11 @@ class Routes extends Component {
   }
 
   render() {
+
     return (
       <Provider store={this.store}>
         <Router history={browserHistory}>
+          <Route path='/invite/:token' component={PasswordResetPage} />
           <Route path='/' component={Base}>
             <IndexRoute component={HomePage} onEnter={(nextState, replace) => this.showMembersIfAuthorized(nextState, replace)} />
             <Route path='/login' component={LoginPage} />
@@ -61,7 +63,6 @@ class Routes extends Component {
             <Route path='/admin' component={AdminDashboardPage} />
             <Route path='/user-accounts' component={UserAccountManagementPage} />
             <Route path='/invitations' component={InvitationsPage} />
-            <Route path='/invite/:token' component={PasswordResetPage} />
             <Route path='/forgot-password/:token' component={PasswordResetPage} />
             <Route path='/profile' component={MemberProfilePage} onEnter={(nextState, replace) => this.requireAuth(nextState, replace)} />
             <Route path='/upload' component={UploadPage} onEnter={(nextState, replace) => this.requireAuth(nextState, replace)} />

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
+import {NotificationContainer} from 'react-notifications';
 import TextField from '../components/forms/ThemedTextField.jsx';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
@@ -59,6 +60,13 @@ class PasswordResetPage extends React.Component {
   }
 
   render() {
+    const invitationMessageHtml = (
+      <div>
+        <NotificationContainer />
+        <p style={{textAlign: "center"}}>Welcome!  You've been invited to<br /> {communityDefaults.name}</p>
+        <h3>Please create your password here</h3>
+      </div>
+    );
 
     const {errors, fields} = this.state;
 
@@ -66,7 +74,7 @@ class PasswordResetPage extends React.Component {
 
     const userMessage = this.props.location.pathname.includes('forgot-password') ?
       'Welcome, back!  Please create a new password for your account.':
-      'Welcome!  You\'ve been invited to ' + communityDefaults.name + ' so all we need is for you to create a password to activate your membership account.';
+      invitationMessageHtml;
 
     return (
 
