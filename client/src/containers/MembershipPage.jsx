@@ -8,6 +8,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import {NotificationManager} from 'react-notifications';
+import PapaParse from 'papaparse';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
@@ -16,6 +17,7 @@ import * as memberActions from '../actions/member-actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
 import IconAdd from 'material-ui/svg-icons/content/add';
+import IconDownload from 'material-ui/svg-icons/file/file-download';
 import 'react-notifications/lib/notifications.css';
 
 class MembershipPage extends Component {
@@ -81,6 +83,18 @@ class MembershipPage extends Component {
     this.props.actions.refreshMembersFromServer();
   }
 
+  handleExportTouchTap() {
+    var csv = PapaParse.unparse(this.state.filteredList);
+
+    var blob = new Blob([csv]);
+		var a = window.document.createElement("a");
+    a.href = window.URL.createObjectURL(blob, {type: "text/csv"});
+    a.download = "export.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
   handleSearch(results) {
     //TODO: use options to include score and matches to apply highlighting.  The results will come back in a modified object structure
     // http://fusejs.io/
@@ -110,6 +124,7 @@ class MembershipPage extends Component {
   };
 
   render() {
+
     const {selectedMember, userData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
@@ -136,6 +151,13 @@ class MembershipPage extends Component {
        weight: 0.1
     }];
 
+    const adminButtons = isAdmin && '' || (
+      <div style={{display: 'inline'}}>
+        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
+        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
+      </div>
+    );
+
 
     return (
       <div className="jumbotron">
@@ -156,7 +178,8 @@ class MembershipPage extends Component {
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
-        {isAdmin && ( <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton> )}
+        {adminButtons}
+
         <div style={{clear:'both', marginTop:'5px'}}></div>
         <Grid>
           <Row className="show-grid">
