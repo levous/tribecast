@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import * as userActions from '../actions/user-actions';
+import * as allActions from '../actions';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import {NotificationContainer} from 'react-notifications';
@@ -24,6 +24,14 @@ class PasswordResetPage extends React.Component {
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
     this.textFieldChanged = this.textFieldChanged.bind(this);
     //TODO: call out to api /invite/:passwordResetToken to check the token.  Display the username to the user to indicate that we know who they are
+  }
+
+  componentWillReceiveProps(nextProps){
+    debugger;
+    if(nextProps.loggedInUser){
+      this.props.actions.refreshMembersFromServer();
+      this.context.router.replace('/membership');
+    }
   }
 
   textFieldChanged(event) {
@@ -59,6 +67,8 @@ class PasswordResetPage extends React.Component {
     this.props.actions.updateUserPassword(fields.password, this.props.params.token);
   }
 
+
+
   render() {
     const invitationMessageHtml = (
       <div>
@@ -70,7 +80,7 @@ class PasswordResetPage extends React.Component {
 
     const {errors, fields} = this.state;
 
-    if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
+    //if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
 
     const userMessage = this.props.location.pathname.includes('forgot-password') ?
       'Welcome, back!  Please create a new password for your account.':
@@ -117,13 +127,14 @@ PasswordResetPage.contextTypes = {
 
 function mapStateToProps(state) {
   return {
-    passwordResetSucceeded: state.userApp.passwordResetSucceeded
+    passwordResetSucceeded: state.userApp.passwordResetSucceeded,
+    loggedInUser: state.userApp.userData
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(userActions, dispatch)
+    actions: bindActionCreators(allActions, dispatch)
   };
 }
 

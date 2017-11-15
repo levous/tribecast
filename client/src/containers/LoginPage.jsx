@@ -47,6 +47,42 @@ class LoginPage extends React.Component {
 
   }
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.loggedInUser){
+      return this.context.router.replace('/membership');
+    }
+
+    if(nextProps.loginFailureMessage){
+      this.setState({errors: {summary: nextProps.loginFailureMessage}});
+    }
+  }
+
+  validateLoginForm(userData) {
+    const errors = {};
+    let isFormValid = true;
+    let message = '';
+
+    if (!userData || typeof userData.email !== 'string' || userData.email.trim().length === 0) {
+      isFormValid = false;
+      errors.email = 'Please provide your email address.';
+    }
+
+    if (!userData || typeof userData.password !== 'string' || userData.password.trim().length === 0) {
+      isFormValid = false;
+      errors.password = 'Please provide your password.';
+    }
+
+    if (!isFormValid) {
+      message = 'Unable to login.  Please review problems.';
+    }
+
+    return {
+      success: isFormValid,
+      message,
+      errors
+    };
+  }
+
   /**
    * Process the form.
    *
@@ -55,47 +91,16 @@ class LoginPage extends React.Component {
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
+    const validationResult = this.validateLoginForm(this.state.user);
+    if(!validationResult.success){
 
-    // create a string for an HTTP body message
-    const email = encodeURIComponent(this.state.user.email);
-    const password = encodeURIComponent(this.state.user.password);
-    const formData = `email=${email}&password=${password}`;
+      this.setState({
+        errors: validationResult.errors
+      });
+      return;
+    }
 
-    //TODO: refactor into login service
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/login');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        // success
-
-        // change the component-container state
-        this.setState({
-          errors: {}
-        });
-
-        // save the token
-        this.auth.authenticateUser(xhr.response.token);
-        // send login action
-        this.props.actions.userLoggedIn(xhr.response.user);
-
-        // change the current URL to /
-        this.context.router.replace('/membership');
-      } else {
-        // failure
-
-        // change the component state
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
-
-        this.setState({
-          errors
-        });
-      }
-    });
-    xhr.send(formData);
+    this.props.actions.logInUser(this.state.user);
   }
 
   /**
@@ -124,7 +129,6 @@ class LoginPage extends React.Component {
     }
 
     Logger.logWarn({description: `${this.state.user.email} resetting password`});
-    debugger;
     this.props.actions.resetPassword(this.state.user.email);
   }
 
@@ -176,7 +180,9 @@ LoginPage.contextTypes = {
 
 function mapStateToProps(state) {
   return {
-    passwordResetSucceeded: state.userApp.passwordResetSucceeded
+    passwordResetSucceeded: state.userApp.passwordResetSucceeded,
+    loggedInUser: state.userApp.userData,
+    loginFailureMessage: state.userApp.loginFailureMessage
   };
 }
 

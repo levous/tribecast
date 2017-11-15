@@ -2,7 +2,7 @@
 
 const errors = {
   makeErrFromCode: (errorCode, errorDescription) => {
-    const error = new Error(`${errorDescription} code:${errorCode}`);
+    const error = new Error(`${errorDescription}`);
     error.statusCode = errorCode;
     return error;
   }
@@ -11,7 +11,20 @@ const errors = {
 errors.NotAuthorizedError = class NotAuthorizedError extends Error {};
 errors.PreconditionFailedError = class PreconditionFailedError extends Error {};
 errors.ResourceNotFoundError = class ResourceNotFoundError extends Error {};
-
+errors.BadRequestError = class BadRequestError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.statusCode = 400;
+    this.name = 'BadRequestError';
+  }
+};
+errors.InvalidCredentialsError = class BadRequestError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.statusCode = 401;
+    this.name = 'InvalidCredentialsError';
+  }
+};
 module.exports = errors;
 
 /*

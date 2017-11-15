@@ -2,6 +2,7 @@
 //  and this git repos: https://github.com/rabbitfighter81/yodagram
 
 import fetch from 'isomorphic-fetch';
+import qs from 'qs';
 import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types, member_data_sources} from '../actions/member-actions';
@@ -236,6 +237,33 @@ const dataService = store => next => action => {
         });
       });
       break;
+    case user_action_types.LOG_IN_USER:
+      const {userData} = action;
+
+      return fetch('/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: qs.stringify({
+          email: userData.email,
+          password: userData.password
+        })
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        auth.authenticateUser(responseJson.token);
+        return next({
+          type: user_action_types.USER_LOGGED_IN,
+          user: responseJson.user
+        });
+      })
+      .catch(err => {
+        return next({
+          type: user_action_types.USER_LOG_IN_FAILED,
+          error: err
+        });
+      });
 
     case user_action_types.UPDATE_PASSWORD:
       const {password, resetToken} = action;
@@ -249,8 +277,8 @@ const dataService = store => next => action => {
       })
       .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
-        const message = responseJson.message;
-        store.dispatch({type: user_action_types.UPDATE_PASSWORD_SUCCESS});
+        auth.authenticateUser(responseJson.token);
+        store.dispatch({type: user_action_types.UPDATE_PASSWORD_SUCCESS, user: responseJson.user, message: responseJson.message});
         return next(action);
       })
       .catch(err => {

@@ -3,6 +3,7 @@ import {NotificationManager} from 'react-notifications';
 
 const initialState = {
   userData: undefined,
+  loginFailureMessage: undefined,
   passwordResetSucceeded: undefined,
   loading: false
 };
@@ -35,7 +36,7 @@ let userApp = function(state = initialState, action) {
   switch (action.type) {
     case user_action_types.USER_LOGGED_IN:
       return Object.assign({}, state, {
-        userData: action.userData,
+        userData: action.user,
         passwordResetSucceeded: undefined
       });
     case user_action_types.USER_LOGGED_OUT:
@@ -43,9 +44,17 @@ let userApp = function(state = initialState, action) {
         userData: null,
         passwordResetSucceeded: undefined
       });
-    case user_action_types.UPDATE_PASSWORD_SUCCESS:
+    case user_action_types.USER_LOG_IN_FAILED:
+      const error = action.error;
       return Object.assign({}, state, {
-        passwordResetSucceeded: true
+        loginFailureMessage: error.message
+      });
+    case user_action_types.UPDATE_PASSWORD_SUCCESS:
+      NotificationManager.success(action.message);
+
+      return Object.assign({}, state, {
+        passwordResetSucceeded: true,
+        userData: action.user
       });
     case user_action_types.RESET_PASSWORD:
       return Object.assign({}, state, {

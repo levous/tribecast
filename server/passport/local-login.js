@@ -2,7 +2,7 @@
 const User = require('mongoose').model('User');
 const PassportLocalStrategy = require('passport-local').Strategy;
 const AuthData = require('./AuthData');
-
+const errors = require('../../shared-modules/http-errors')
 
 /**
  * Return the Passport Local Strategy object.
@@ -23,10 +23,7 @@ module.exports = new PassportLocalStrategy({
     if (err) { return done(err); }
 
     if (!user) {
-      const error = new Error('Incorrect email or password');
-      error.name = 'IncorrectCredentialsError';
-
-      return done(error);
+      return done(new errors.InvalidCredentialsError('Incorrect email or password'));
     }
 
     // check if a hashed user's password is equal to a value saved in the database
@@ -34,10 +31,7 @@ module.exports = new PassportLocalStrategy({
       if (err) { return done(err); }
 
       if (!isMatch) {
-        const error = new Error('Incorrect email or password');
-        error.name = 'IncorrectCredentialsError';
-
-        return done(error);
+          return done(new errors.InvalidCredentialsError('Incorrect email or password'));
       }
 
       const authData = new AuthData(user);

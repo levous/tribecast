@@ -129,29 +129,16 @@ exports.setup = function (basePath, app) {
   router.post('/login', (req, res, next) => {
     const validationResult = validateLoginForm(req.body);
     if (!validationResult.success) {
-      return res.status(400).json({
-        success: false,
-        message: validationResult.message,
-        errors: validationResult.errors
-      });
+      const error = new errors.BadRequestError(validationResult.message);
+      //TODO: not using this and not sure we should.  Either implement a serialization strategy to send this to the client or remove
+      error.errorFields = validationResult.errorFields;
+      return next(error);
     }
-    //TODO: if we move the passport logic to the userController, it can be reused by password reset, etc
 
     return passport.authenticate('local-login', (err, token, userData) => {
       if (err) {
-        if (err.name === 'IncorrectCredentialsError') {
-          return res.status(400).json({
-            success: false,
-            message: err.message
-          });
-        }
-
-        return res.status(400).json({
-          success: false,
-          message: 'Could not process the form.'
-        });
+        return next(err);
       }
-
 
       return res.status(200).json({
         success: true,
@@ -238,13 +225,26 @@ exports.setup = function (basePath, app) {
     if(!passwordResetToken || !passwordResetToken.length) return next(new errors.MissingParameterError('Missing required parameter "passwordResetToken"'));
     if(!newPassword || !newPassword.length) return next(new errors.MissingParameterError('Missing required parameter "newPassword"'));
 
-
     userController.updatePasswordUsingResetToken(passwordResetToken, newPassword)
       .then(user => {
         if(!user) return next(new errors.ResourceNotFoundError('User for provided key not found'));
-        res.status(200);
-        const responseBody = {message: 'password reset successful'};
-        return res.json(responseBody);
+        
+        // add to the request so that passport will log me in
+        req.body.email = user.email;
+        req.body.password = newPassword;
+        return passport.authenticate('local-login', (err, token, userData) => {
+          if (err) {
+            return next(err);
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: 'Password reset successfully!',
+            token,
+            user: user
+          });
+
+        })(req, res, next);
 
       })
       .catch(next);

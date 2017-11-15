@@ -13,7 +13,7 @@ const serializeErrors = (errors) => {
     };
     if(process.env.NODE_ENV === 'development'){
       errJson.stack = error.stack;
-    }
+    } 
     return errJson;
   });
 

@@ -1,7 +1,9 @@
 export const user_action_types = {
   GET_ALL: 'GET_USERS',
+  LOG_IN_USER: 'USER_LOG_IN',
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
+  USER_LOG_IN_FAILED: 'USER_LOG_IN_FAILED',
   UPDATE_PASSWORD: 'UPDATE_PASSWORD',
   RESET_PASSWORD: 'RESET_PASSWORD',
   RESET_PASSWORD_RESPONSE_RECEIVED: 'RESET_PASSWORD_RESPONSE_RECEIVED',
@@ -23,6 +25,14 @@ export function getAllUsers() {
     type: user_action_types.GET_ALL
   };
 };
+
+export function logInUser(userData) {
+  return {
+    type: user_action_types.LOG_IN_USER,
+    userData
+  };
+};
+
 
 export function userLoggedIn(userData) {
   return {
