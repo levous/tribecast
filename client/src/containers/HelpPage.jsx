@@ -20,7 +20,7 @@ class HelpPage extends React.Component {
     return (
         <div className="jumbotron">
           <h1>Uh oh!  You need help?</h1>
-          <p>The best way to get help is to:<br /> <a href='mailto:${communityDefaults.supportEmail.address}'>send an email to {communityDefaults.supportEmail.address}</a></p>
+          <p>The best way to get help is to:<br /> <a href={`mailto:${communityDefaults.supportEmail.address}`}>send an email to {communityDefaults.supportEmail.address}</a></p>
           <p>You'll receive an auto-reply from our ticketing system and support personnel will handle it from there.</p>
           <p><img src='/images/help-image.jpg' width='100%'/></p>
         </div>

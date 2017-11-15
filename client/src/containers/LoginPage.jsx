@@ -6,7 +6,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardHeader, CardMedia, CardText, CardTitle } from 'material-ui/Card';
 import LoginForm from '../components/auth/LoginForm.jsx';
-import * as userActions from '../actions/user-actions';
+import * as allActions from '../actions';
 import communityDefaults from '../../../config/community-defaults';
 import Validator from '../../../shared-modules/Validator';
 import Logger from '../modules/Logger';
@@ -49,6 +49,7 @@ class LoginPage extends React.Component {
 
   componentWillReceiveProps(nextProps){
     if(nextProps.loggedInUser){
+      this.props.actions.refreshMembersFromServer();
       return this.context.router.replace('/membership');
     }
 
@@ -188,7 +189,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(userActions, dispatch)
+    actions: bindActionCreators(allActions, dispatch)
   };
 }
 
