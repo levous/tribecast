@@ -50,7 +50,11 @@ let MemberSchema = new Mongoose.Schema({
   directorySubscription: Boolean,
   recordOriginNote: String,
   lastInvitedAt: Date,
-  inviteCount: { type: Number, default: 0 }
+  inviteCount: { type: Number, default: 0 },
+  profilePhoto:{
+    thumbNailURL: String,
+    fullSizeURL: String
+  }
 },
 {
   timestamps: true

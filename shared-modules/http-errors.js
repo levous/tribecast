@@ -10,7 +10,13 @@ const errors = {
 
 errors.NotAuthorizedError = class NotAuthorizedError extends Error {};
 errors.PreconditionFailedError = class PreconditionFailedError extends Error {};
-errors.ResourceNotFoundError = class ResourceNotFoundError extends Error {};
+errors.ResourceNotFoundError = class ResourceNotFoundError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.statusCode = 404;
+    this.name = 'ResourceNotFoundError';
+  }
+};
 errors.BadRequestError = class BadRequestError extends Error {
   constructor(...args) {
     super(...args);

@@ -10,6 +10,7 @@ import StyledLabel from '../forms/StyledLabel'
 import MemberContactView from './MemberContactView'
 import MemberPeopleView from './MemberPeopleView'
 import MemberPersonalView from './MemberPersonalView'
+import MemberProfilePhotoEditor from './MemberProfilePhotoEditor'
 
 export default class Member extends Component {
   constructor(){
@@ -87,6 +88,7 @@ export default class Member extends Component {
           <Tab label="Contact" value={0} />
           <Tab label="People" value={1} />
           <Tab label="Personal" value={2} />
+          <Tab label="Photo" value={3} />
         </Tabs>
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={(index) => this.handleTabChange(index)}>
           { /* tab index 0 */ }
@@ -110,6 +112,7 @@ export default class Member extends Component {
             editing={editing}
             canEdit={canEdit}
           />
+          <MemberProfilePhotoEditor />
         </SwipeableViews>
       </div>
     );

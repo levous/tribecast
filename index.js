@@ -14,24 +14,36 @@ function setupRoutes(directoryPath, app){
   const routesBasePath = path.join(__dirname, 'server/routes');
   // load each file in the routes dir
   // dynamically include routes (Controllers)
+  let indexFound = false;
   fs.readdirSync(directoryPath).forEach(function (fileOrDir){
     const fullPath = path.join(directoryPath, fileOrDir);
     if(fullPath.substr(-3) === '.js') {
       // dynamically load route
-      let route = require(fullPath);
-      let basePath = fullPath.substr(routesBasePath.length, fullPath.length - routesBasePath.length - 3);
+      const route = require(fullPath);
+      const basePath = fullPath.substr(routesBasePath.length, fullPath.length - routesBasePath.length - 3);
       if(basePath.substr(-6) === '/index'){
-        basePath = basePath.substr(0, basePath.length-6);
+        indexFound = true;
+        // index last as it may have overridden paths
+      }else{
+        log.info('********* Setup Route:', fullPath, 'base:', basePath);
+        route.setup(basePath, app);
       }
-      log.info('********* Setup Route:', fullPath, 'base:', basePath);
-      route.setup(basePath, app);
     }else{
+      // directory? recurse
       let pathStat = fs.statSync(fullPath);
       if(pathStat.isDirectory){
         setupRoutes(fullPath, app);
       }
     }
   });
+  // defered index until last
+  if(indexFound) {
+    const fullPath = path.join(directoryPath, 'index.js');
+    const basePath = fullPath.substr(routesBasePath.length, fullPath.length - routesBasePath.length - 9); //remove /index.js
+    const route = require(fullPath);
+    log.info('********* Setup INDEX Route:', fullPath, 'base:', basePath);
+    route.setup(basePath, app);
+  }
 }
 
 // connect to the database and load models
@@ -53,7 +65,8 @@ app.use(express.static(path.join(__dirname, 'server/static/')));
 app.use(express.static('./client/dist/'));
 // tell the app to parse HTTP body messages
 app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
 // pass the passport middleware
 app.use(passport.initialize());
 

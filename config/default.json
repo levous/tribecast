@@ -7,5 +7,10 @@
       "token": "89bbf1fb-38b6-4803-b61e-f9b320b65f50",
       "subdomain": "rustyzarse"
     }
+  },
+  "aws": {
+    "assetBucket": "tribecast-assets",
+    "cloudfrontBaseURL": "//d19q2adhqzm1vd.cloudfront.net",
+    "region": "us-east-1",
   }
 }
