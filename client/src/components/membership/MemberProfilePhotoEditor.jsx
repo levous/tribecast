@@ -1,6 +1,8 @@
 import React from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import Dropzone from 'react-dropzone';
+import Slider from 'nw-react-slider';
+import 'nw-react-slider/dist/nw-react-slider.min.css';
 
 class MemberProfilePhotoEditor extends React.Component {
 
@@ -19,7 +21,6 @@ class MemberProfilePhotoEditor extends React.Component {
     }
   }
 
-
   onSave = () => {
     if (this.editor) {
       // This returns a HTMLCanvasElement, it can be made into a data URL or a blob,
@@ -29,6 +30,10 @@ class MemberProfilePhotoEditor extends React.Component {
       // If you want the image resized to the canvas size (also a HTMLCanvasElement)
       const canvasScaled = this.editor.getImageScaledToCanvas()
     }
+  }
+
+  onSlide(value, position) {
+    console.log(value);
   }
 
   setEditorRef = (editor) => this.editor = editor
@@ -42,12 +47,26 @@ class MemberProfilePhotoEditor extends React.Component {
           width={250}
           height={250}
           border={50}
-          scale={1.2}
+          scale={1.2 * this.state.zoom}
         />
+
 
         <Dropzone onDrop={ (acceptedFiles, rejectedFiles) => this.onDrop(acceptedFiles, rejectedFiles) }>
           <div>Try dropping some files here, or click to select files to upload.</div>
         </Dropzone>
+
+        <br />hi
+
+        <Slider
+                  value={0}
+                  min={0}
+                  max={10}
+
+
+                  onChange={this.onSlide}/>
+
+
+
       </div>
     )
   }

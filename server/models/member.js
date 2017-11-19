@@ -52,8 +52,8 @@ let MemberSchema = new Mongoose.Schema({
   lastInvitedAt: Date,
   inviteCount: { type: Number, default: 0 },
   profilePhoto:{
-    thumbNailURL: String,
-    fullSizeURL: String
+    thumbnailURL: String,
+    fullsizeURL: String
   }
 },
 {

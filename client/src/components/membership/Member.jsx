@@ -10,6 +10,7 @@ import StyledLabel from '../forms/StyledLabel'
 import MemberContactView from './MemberContactView'
 import MemberPeopleView from './MemberPeopleView'
 import MemberPersonalView from './MemberPersonalView'
+import ProfilePhotoIcon from './ProfilePhotoIcon'
 import MemberProfilePhotoEditor from './MemberProfilePhotoEditor'
 
 export default class Member extends Component {
@@ -51,8 +52,17 @@ export default class Member extends Component {
     });
   }
 
+  handleProfileImageTouchTap(img){
+    debugger;
+  }
+
   render() {
     const member = this.props.member;
+    member.profilePhoto = {
+      thumbnailURL: 'https://pbs.twimg.com/profile_images/725013638411489280/4wx8EcIA.jpg',
+      fullsizeURL: 'https://pbs.twimg.com/profile_images/725013638411489280/4wx8EcIA.jpg'
+    };
+
     const editing = this.state.editing;
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
@@ -74,8 +84,8 @@ export default class Member extends Component {
       <div key={`member${member.id}`} style={{}}>
         {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
         {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={() => this.handleInviteButtonTouchTap(member)}/>)}
+        <ProfilePhotoIcon thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} />
         <StyledLabel htmlFor='first-name' text='name' />
-
         <h2 style={{marginTop: 0}}>
           <PropertyTextInput object={member} propertySelectorPath='firstName'
             placeholder='First Name' editing={editing} canEdit={canEdit} autoFocus={true}
@@ -90,7 +100,20 @@ export default class Member extends Component {
           <Tab label="Personal" value={2} />
           <Tab label="Photo" value={3} />
         </Tabs>
-        <SwipeableViews index={this.state.slideIndex} onChangeIndex={(index) => this.handleTabChange(index)}>
+
+        <div style={
+            {
+              position:'fixed', left: 0, right: 0, zIndex: -1,
+              backgroundImage: 'url(https://avatars3.githubusercontent.com/u/471278?s=88&v=4)',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+              height: '800px', width: '1200px', display: 'block',
+              WebkitFilter: 'blur(10px) brightness(200%) contrast(75%) saturate(20%) opacity(20%)'
+            }
+          }></div>
+
+
+        <SwipeableViews index={this.state.slideIndex} onChangeIndex={(index) => this.handleTabChange(index)} >
           { /* tab index 0 */ }
           <MemberContactView
             member={member}
