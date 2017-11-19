@@ -5,6 +5,8 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import Address from './Address.jsx';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
 import PropertyTextInput from '../forms/PropertyTextInput.jsx'
 import StyledLabel from '../forms/StyledLabel'
 import MemberContactView from './MemberContactView'
@@ -18,7 +20,8 @@ export default class Member extends Component {
     super()
     this.state = {
 			editing: false,
-      swipeIndex: 0
+      swipeIndex: 0,
+      profileImageEditing: false
 		};
   }
 
@@ -52,9 +55,13 @@ export default class Member extends Component {
     });
   }
 
-  handleProfileImageTouchTap(img){
+  handleProfileImageEditTouchTap(img){
     debugger;
   }
+
+  handleProfileImageEditClose = () => {
+    this.setState({profileImageEditing: false});
+  };
 
   render() {
     const member = this.props.member;
@@ -67,7 +74,7 @@ export default class Member extends Component {
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
     const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
-
+    const handleProfileImageTap = editing ? this.handleProfileImageEditTouchTap : null;
     const styles = {
       headline: {
         fontSize: 24,
@@ -84,7 +91,7 @@ export default class Member extends Component {
       <div key={`member${member.id}`} style={{}}>
         {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
         {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={() => this.handleInviteButtonTouchTap(member)}/>)}
-        <ProfilePhotoIcon thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} />
+        <ProfilePhotoIcon thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} onProfileImageTouchTap={handleProfileImageTap} />
         <StyledLabel htmlFor='first-name' text='name' />
         <h2 style={{marginTop: 0}}>
           <PropertyTextInput object={member} propertySelectorPath='firstName'
@@ -137,6 +144,20 @@ export default class Member extends Component {
           />
           <MemberProfilePhotoEditor />
         </SwipeableViews>
+
+        <div>
+          <RaisedButton label="Dialog With Date Picker" onClick={() => this.setState({profileImageEditing: true})} />
+          <Dialog
+            title="Dialog With Date Picker"
+            actions={<FlatButton label="Ok" primary={true} keyboardFocused={true} onClick={this.handleProfileImageEditClose} />}
+            modal={true}
+            open={this.state.profileImageEditing}
+            onRequestClose={this.handleProfileImageEditClose}
+          >
+            <MemberProfilePhotoEditor />
+          </Dialog>
+        </div>
+
       </div>
     );
   }

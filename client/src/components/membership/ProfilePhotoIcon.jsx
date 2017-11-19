@@ -4,6 +4,9 @@ import React, {PropTypes} from 'react';
 export default class ProfilePhotoIcon extends React.Component {
 
   handleProfileImageTouchTap(img){
+    if(this.props.onProfileImageTouchTap){
+      return this.props.onProfileImageTouchTap(img)
+    }
     debugger;
   }
 
@@ -19,4 +22,5 @@ export default class ProfilePhotoIcon extends React.Component {
 ProfilePhotoIcon.propTypes = {
   thumbnailURL: PropTypes.string.isRequired,
   fullsizeURL: PropTypes.string.isRequired,
+  onProfileImageTouchTap: PropTypes.string
 };

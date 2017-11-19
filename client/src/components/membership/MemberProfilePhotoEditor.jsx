@@ -3,6 +3,7 @@ import AvatarEditor from 'react-avatar-editor'
 import Dropzone from 'react-dropzone';
 import Slider from 'nw-react-slider';
 import 'nw-react-slider/dist/nw-react-slider.min.css';
+import '../../../stylesheets/components/_slider.scss';
 
 class MemberProfilePhotoEditor extends React.Component {
 
@@ -10,14 +11,17 @@ class MemberProfilePhotoEditor extends React.Component {
     super(props, context);
 
     this.state = {
-      photo: 'https://media2.fdncms.com/sacurrent/imager/5-of-the-most-interesting-commercials-in-t/u/big/2258219/46933380jpg?cb=1454774688'
+      photo: this.props.photoURL || 'https://media2.fdncms.com/sacurrent/imager/5-of-the-most-interesting-commercials-in-t/u/big/2258219/46933380jpg?cb=1454774688',
+      zoom: 1,
+      dropMessage: 'Drop an image here or tap to select an image to upload'
     };
   }
 
   onDrop = (acceptedFiles, rejectedFiles) => {
-    debugger;
-    if(acceptedFiles.length === 1 ){ //&& acceptedFiles[0].type == 'text/csv'){
+    if(acceptedFiles.length === 1 && acceptedFiles[0].type.substr(0, 5) === 'image'){
       this.setState({photo: acceptedFiles[0]});
+    } else {
+      this.setState({dropMessage: 'Please drop or upload only one image file'});
     }
   }
 
@@ -33,7 +37,7 @@ class MemberProfilePhotoEditor extends React.Component {
   }
 
   onSlide(value, position) {
-    console.log(value);
+    this.setState({zoom: value / 10});
   }
 
   setEditorRef = (editor) => this.editor = editor
@@ -41,35 +45,32 @@ class MemberProfilePhotoEditor extends React.Component {
   render () {
     return (
       <div>
+        <style>{
+          ``
+        }</style>
         <AvatarEditor
           ref={this.setEditorRef}
           image={this.state.photo}
-          width={250}
-          height={250}
-          border={50}
-          scale={1.2 * this.state.zoom}
+          width={180}
+          height={180}
+          border={30}
+          scale={this.state.zoom}
+          borderRadius={90}
+          color={[255, 255, 255, 0.8]}
         />
 
-
-        <Dropzone onDrop={ (acceptedFiles, rejectedFiles) => this.onDrop(acceptedFiles, rejectedFiles) }>
-          <div>Try dropping some files here, or click to select files to upload.</div>
+      <Slider value={this.state.zoom * 10} min={1} max={20} onChange={(value, position) => this.onSlide(value, position)} />
+        <Dropzone onDrop={ (acceptedFiles, rejectedFiles) => this.onDrop(acceptedFiles, rejectedFiles) } style={{textAlign:'center', height:'40px', backgroundColor:'#efefef'}}>
+          <div style={{textAlign:'center', height:'40px'}}>{this.state.dropMessage}</div>
         </Dropzone>
-
-        <br />hi
-
-        <Slider
-                  value={0}
-                  min={0}
-                  max={10}
-
-
-                  onChange={this.onSlide}/>
-
-
 
       </div>
     )
   }
 }
+
+MemberProfilePhotoEditor.propTypes = {
+  photoURL: React.PropTypes.string
+};
 
 export default MemberProfilePhotoEditor
