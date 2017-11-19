@@ -56,7 +56,7 @@ export default class Member extends Component {
   }
 
   handleProfileImageEditTouchTap(img){
-    debugger;
+    this.setState({profileImageEditing: true});
   }
 
   handleProfileImageEditClose = () => {
@@ -74,7 +74,7 @@ export default class Member extends Component {
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
     const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
-    const handleProfileImageTap = editing ? this.handleProfileImageEditTouchTap : null;
+    const handleProfileImageTap = editing ? (img) => {this.handleProfileImageEditTouchTap(img)} : undefined;
     const styles = {
       headline: {
         fontSize: 24,
@@ -105,17 +105,17 @@ export default class Member extends Component {
           <Tab label="Contact" value={0} />
           <Tab label="People" value={1} />
           <Tab label="Personal" value={2} />
-          <Tab label="Photo" value={3} />
+
         </Tabs>
 
         <div style={
             {
               position:'fixed', left: 0, right: 0, zIndex: -1,
-              backgroundImage: 'url(https://avatars3.githubusercontent.com/u/471278?s=88&v=4)',
+              backgroundImage:  `url(${member.profilePhoto.fullsizeURL})`,
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'contain',
               height: '800px', width: '1200px', display: 'block',
-              WebkitFilter: 'blur(10px) brightness(200%) contrast(75%) saturate(20%) opacity(20%)'
+              WebkitFilter: 'blur(8px) brightness(200%) contrast(75%) saturate(20%) opacity(60%)'
             }
           }></div>
 
@@ -142,21 +142,20 @@ export default class Member extends Component {
             editing={editing}
             canEdit={canEdit}
           />
-          <MemberProfilePhotoEditor />
+
         </SwipeableViews>
 
-        <div>
-          <RaisedButton label="Dialog With Date Picker" onClick={() => this.setState({profileImageEditing: true})} />
-          <Dialog
-            title="Dialog With Date Picker"
-            actions={<FlatButton label="Ok" primary={true} keyboardFocused={true} onClick={this.handleProfileImageEditClose} />}
-            modal={true}
-            open={this.state.profileImageEditing}
-            onRequestClose={this.handleProfileImageEditClose}
-          >
-            <MemberProfilePhotoEditor />
-          </Dialog>
-        </div>
+
+        <Dialog
+          title="Dialog With Date Picker"
+          actions={<FlatButton label="Ok" primary={true} keyboardFocused={true} onClick={this.handleProfileImageEditClose} />}
+          modal={true}
+          open={this.state.profileImageEditing}
+          onRequestClose={this.handleProfileImageEditClose}
+        >
+          <MemberProfilePhotoEditor photoURL={member.profilePhoto.fullsizeURL}/>
+        </Dialog>
+
 
       </div>
     );
