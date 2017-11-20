@@ -108,6 +108,41 @@ const dataService = store => next => action => {
           err
         });
       });
+
+      case member_action_types.UPDATE_PROFILE_IMAGE: {
+
+        // only dispatch api call if data source is API
+        if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+          return Promise.resolve();
+        }
+
+        const member = action.member;
+        const url = `/api/members/${member._id}/profile-photo`;
+        const formdata = new FormData();
+        formdata.append('profile-photo', action.fullsizeImage);
+        formdata.append('extra', 'forces multipart');
+        const authHeadersNoJson = { 'Authorization': authHeaders.Authorization };
+        return fetch(url, {
+          method: 'post',
+          headers: authHeadersNoJson,
+          body: formdata
+        })
+        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+        .then(responseJson => {
+          let updatedMember = responseJson.data;
+          return next({
+            type: member_action_types.UPDATE_SUCCESS_RECEIVED,
+            id: updatedMember._id,
+            member: updatedMember
+          });
+        })
+        .catch(err => {
+          return next({
+            type: member_action_types.UPDATE_FAILURE_RECEIVED,
+            err
+          });
+        });
+      }
     case member_action_types.UPLOAD_PUBLISH:
       const publishMembers = action.members.map(member => {
         if(member.apiMatch && member.apiMatch.apiRecord) return Object.assign(member, {_id: member.apiMatch.apiRecord._id, recordOriginNote: `${member.apiMatch.apiRecord.recordOriginNote}\n${member.importNote}`})

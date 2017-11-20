@@ -119,6 +119,10 @@ class MembershipPage extends Component {
     this.props.router.push('/invitations');
   }
 
+  handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage){
+    this.props.actions.updateMemberProfileImage(this.props.selectedMember, thumbnailImage, fullsizeImage, unEditedImage);
+  }
+
   handleCancelLoading(button) {
     this.props.actions.cancelLoading();
   };
@@ -207,6 +211,7 @@ class MembershipPage extends Component {
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
                   onInvite={(member) => this.handleInvite(member)}
+                  onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
                 />
               )}
             </Col>

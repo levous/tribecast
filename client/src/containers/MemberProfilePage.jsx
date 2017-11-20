@@ -11,7 +11,7 @@ import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
 import 'react-notifications/lib/notifications.css';
 
-class MembershipPage extends Component {
+class MemberProfilePage extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -38,6 +38,10 @@ class MembershipPage extends Component {
     this.props.actions.updateMember(member);
   }
 
+  handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage){
+    this.props.actions.updateMemberProfileImage(this.state.userMember, thumbnailImage, fullsizeImage, unEditedImage);
+  }
+
   render() {
     if(!(this.state && this.state.userMember)) return <div className='jumbotron'>Sorry, I don't have a member record matched to your user account.</div>
     const {userMember, canEditUserMember} = this.state;
@@ -56,6 +60,7 @@ class MembershipPage extends Component {
                   canEdit={canEditUserMember}
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
+                  onProfileImageChanged={(thumbnailImage, fullsizeImage, unEditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage)}
                 />
               )}
               {!userMember && (<p>No Member Listing to Edit</p>)}
@@ -67,7 +72,7 @@ class MembershipPage extends Component {
   }
 }
 
-MembershipPage.contextTypes = {
+MemberProfilePage.contextTypes = {
   router: PropTypes.object.isRequired,
   store: PropTypes.object.isRequired
 };
@@ -86,4 +91,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MembershipPage);
+export default connect(mapStateToProps, mapDispatchToProps)(MemberProfilePage);

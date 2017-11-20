@@ -59,18 +59,20 @@ export default class Member extends Component {
     this.setState({profileImageEditing: true});
   }
 
-  handleProfileImageEditClose = () => {
+  handleProfileImageEditClose() {
     this.setState({profileImageEditing: false});
-  };
+  }
 
+  handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage){
+    this.props.onProfileImageChanged(this.props.member, thumbnailImage, fullsizeImage, unEditedImage);
+    this.setState({profileImageEditing: false});
+  }
   render() {
     const member = this.props.member;
-    member.profilePhoto = {
-      thumbnailURL: 'https://pbs.twimg.com/profile_images/725013638411489280/4wx8EcIA.jpg',
-      fullsizeURL: 'https://pbs.twimg.com/profile_images/725013638411489280/4wx8EcIA.jpg'
-    };
-
     const editing = this.state.editing;
+    const hasProfilePhoto = member.profilePhoto && member.profilePhoto.thumbnailURL;
+
+
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
     const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
@@ -87,11 +89,24 @@ export default class Member extends Component {
       },
     };
 
+    const profileIcon = (() => {
+      // if a profile photo is present, show that instead.  It supports editing
+      if (hasProfilePhoto) {
+        return (<ProfilePhotoIcon thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} onProfileImageTouchTap={handleProfileImageTap} />);
+      }
+      // present a button for adding if editing
+      if (editing){
+        return (<RaisedButton secondary={true} label='Photo' onTouchTap={() => this.handleProfileImageEditTouchTap()}/>);
+      }
+      // no presentation if not editing and no image available
+      return '';
+    })();
+
     return (
       <div key={`member${member.id}`} style={{}}>
         {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
         {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={() => this.handleInviteButtonTouchTap(member)}/>)}
-        <ProfilePhotoIcon thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} onProfileImageTouchTap={handleProfileImageTap} />
+        {profileIcon}
         <StyledLabel htmlFor='first-name' text='name' />
         <h2 style={{marginTop: 0}}>
           <PropertyTextInput object={member} propertySelectorPath='firstName'
@@ -108,16 +123,27 @@ export default class Member extends Component {
 
         </Tabs>
 
-        <div style={
+        {hasProfilePhoto && (
+          <div style={
             {
-              position:'fixed', left: 0, right: 0, zIndex: -1,
-              backgroundImage:  `url(${member.profilePhoto.fullsizeURL})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'contain',
+              position:'fixed', left: '-20px', right: 0, zIndex: -2,
+              backgroundColor: '#ffffff',
               height: '800px', width: '1200px', display: 'block',
-              WebkitFilter: 'blur(8px) brightness(200%) contrast(75%) saturate(20%) opacity(60%)'
+              WebkitFilter: 'blur(10px)'
             }
-          }></div>
+          }>
+            <div style={
+              {
+                position:'fixed', left: -20, right: 0, zIndex: -1,
+                backgroundImage:  `url(${member.profilePhoto.fullsizeURL})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                height: '800px', width: '1200px', display: 'block',
+                WebkitFilter: 'brightness(200%) contrast(75%) saturate(50%) opacity(40%)'
+              }
+            }></div>
+          </div>
+        )}
 
 
         <SwipeableViews index={this.state.slideIndex} onChangeIndex={(index) => this.handleTabChange(index)} >
@@ -147,13 +173,12 @@ export default class Member extends Component {
 
 
         <Dialog
-          title="Dialog With Date Picker"
-          actions={<FlatButton label="Ok" primary={true} keyboardFocused={true} onClick={this.handleProfileImageEditClose} />}
+          title="Profile Photo Editor"
           modal={true}
           open={this.state.profileImageEditing}
-          onRequestClose={this.handleProfileImageEditClose}
+          onRequestClose={() => this.handleProfileImageEditClose() }
         >
-          <MemberProfilePhotoEditor photoURL={member.profilePhoto.fullsizeURL}/>
+          <MemberProfilePhotoEditor photoURL={member.profilePhoto ? member.profilePhoto.fullsizeURL : null} onImageChanged={(thumbnailImage, fullsizeImage, unEditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage)} onCancelled={() => this.handleProfileImageEditClose() }/>
         </Dialog>
 
 

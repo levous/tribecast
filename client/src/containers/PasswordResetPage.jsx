@@ -27,7 +27,6 @@ class PasswordResetPage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    debugger;
     if(nextProps.loggedInUser){
       this.props.actions.refreshMembersFromServer();
       this.context.router.replace('/membership');

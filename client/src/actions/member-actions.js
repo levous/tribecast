@@ -2,6 +2,7 @@
 export const member_action_types = {
   ADD: 'ADD_MEMBER',
   UPDATE: 'UPDATE_MEMBER',
+  UPDATE_PROFILE_IMAGE: 'UPDATE_PROFILE_IMAGE',
   SELECT_MEMBER: 'SELECT_MEMBER',
   GET_ALL: 'GET_MEMBERS',
   MEMBER_DATA_RECEIVED: 'MEMBER_DATA_RECEIVED',
@@ -40,6 +41,11 @@ export function addMember(member) {
 export function updateMember(member){
   return {type: member_action_types.UPDATE, member};
 }
+
+export function updateMemberProfileImage(member, thumbnailImage, fullsizeImage, unEditedImage){
+  return {type: member_action_types.UPDATE_PROFILE_IMAGE, member, thumbnailImage, fullsizeImage, unEditedImage};
+}
+
 
 export function selectMember(member){
   return {type: member_action_types.SELECT_MEMBER, member};

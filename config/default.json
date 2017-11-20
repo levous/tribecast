@@ -10,7 +10,7 @@
   },
   "aws": {
     "assetBucket": "tribecast-assets",
-    "cloudfrontBaseURL": "//d19q2adhqzm1vd.cloudfront.net",
+    "cloudfrontBaseURL": "d19q2adhqzm1vd.cloudfront.net",
     "region": "us-east-1",
   }
 }

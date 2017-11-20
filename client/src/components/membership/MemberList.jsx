@@ -109,7 +109,7 @@ export default class MemberList extends Component {
               return (
               <ListItem key={`mem${i}`} ref={ref => this.listItems[i] = ref}
                 leftAvatar={
-                  <Avatar md5Email={member.email ? md5(member.email) : ''} name={`${member.firstName} ${member.lastName}`} round={true} size={40} />
+                  <Avatar md5Email={member.email ? md5(member.email) : ''} src={member.profileImage && member.profileImage.thumbnailURL ? member.profileImage.thumbnailURL : null} name={`${member.firstName} ${member.lastName}`} round={true} size={40} />
                 }
                 primaryText={`${member.firstName} ${member.lastName}`}
                 secondaryText={member.propertyAddress && member.propertyAddress.street}

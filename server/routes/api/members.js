@@ -1,7 +1,9 @@
 const express = require('express');
+const multer = require('multer');
 const errors = require('../../../shared-modules/http-errors');
 const moment = require('moment');
 const memberController = require('../../controllers/memberController');
+const assetController = require('../../controllers/assetController');
 const userController = require('../../controllers/userController');
 const log = require('../../modules/log')(module);
 const MongooseObjectId = require('mongoose').Types.ObjectId;
@@ -122,6 +124,42 @@ exports.setup = function (basePath, app) {
           message: `found member ${member._id}`,
           data: member
         }
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    // file size limitation in bytes
+    limits: { fileSize: 52428800 },
+  });
+
+
+  //TODO: accept all three files in one request?
+  router.post('/:id/profile-photo', upload.single('profile-photo'), function(req, res, next){
+    const memberId = req.params.id;
+    // validate id
+    if (!MongooseObjectId.isValid(memberId)) return next(new errors.ResourceNotFoundError('Provided id not valid'));
+
+    let fullsizeURL;
+    assetController.publishMemberProfilePhoto(memberId, req.file)
+      .then(result => {
+        fullsizeURL = result;
+        return memberController.findById(memberId);
+      })
+      .then(member => {
+          if(!member.profilePhoto) member.profilePhoto = {};
+          member.profilePhoto.fullsizeURL = fullsizeURL;
+          member.profilePhoto.thumbnailURL = fullsizeURL;
+          return member.save();
+      })
+      .then(member => {
+        const responseBody = {
+          message: `successfully updated profile image for member ${member._id}`,
+          data: member
+        };
+        //TODO: update the member record with the new URL(s)
         res.json(responseBody);
       })
       .catch(next);
