@@ -1,0 +1,6 @@
+{
+  "aws": {
+    "S3_key":  "AWS_ACCESS_KEY_ID",
+    "S3_secret":  "AWS_SECRET_ACCESS_KEY"
+  }
+}

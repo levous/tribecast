@@ -5,8 +5,8 @@ class S3Publisher {
 
   constructor() {
     AWS.config.update({
-      accessKeyId: config.get('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: config.get('AWS_SECRET_ACCESS_KEY'),
+      accessKeyId: config.get('aws.S3_key'),
+      secretAccessKey: config.get('aws.S3_secret'),
       subregion: config.get('aws.region'),
     });
   }
