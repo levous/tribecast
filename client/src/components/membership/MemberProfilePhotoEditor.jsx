@@ -17,7 +17,7 @@ class MemberProfilePhotoEditor extends React.Component {
       photo: this.props.photoURL || 'https://media2.fdncms.com/sacurrent/imager/5-of-the-most-interesting-commercials-in-t/u/big/2258219/46933380jpg?cb=1454774688',
       zoom: 1,
       rotate: 0,
-      dropMessage: 'Drop an image here or tap to select an image to upload'
+      dropMessage: 'Tap HERE to upload a new PHOTO'
     };
   }
 
@@ -61,11 +61,10 @@ class MemberProfilePhotoEditor extends React.Component {
   setEditorRef = (editor) => this.editor = editor
 
   render () {
+    // check because there is an iOS11 bug
+    const runningAsWebApp = window.navigator.standalone;
     return (
       <div>
-        <style>{
-          ``
-        }</style>
 
         <AvatarEditor
           ref={this.setEditorRef}
@@ -83,6 +82,12 @@ class MemberProfilePhotoEditor extends React.Component {
           <IconRotateRight />
         </IconButton>
         <Slider value={this.state.zoom * 10} min={1} max={20} onChange={(value, position) => this.onSlide(value, position)} />
+        {runningAsWebApp && (
+          <div>
+            <h3 style={{color:'red'}}>iOS11 Camera Bug!</h3>
+            <small>iOS 11 will not show the camera when running as a web app.  Until Apple fixes this, please select a photo from your camera roll.</small>
+          </div>
+        )}
         <Dropzone onDrop={ (acceptedFiles, rejectedFiles) => this.onDrop(acceptedFiles, rejectedFiles) } style={{textAlign:'center', height:'40px', backgroundColor:'#efefef', clear: 'both'}}>
           <div style={{textAlign:'center', height:'40px'}}>{this.state.dropMessage}</div>
         </Dropzone>
