@@ -26,6 +26,7 @@ class MembershipPage extends Component {
     super(props, context);
     this.state = {
       filteredList: props.members,
+      editingSelectedMember: false
     }
 
     this.auth = new Auth(context.store);
@@ -125,7 +126,11 @@ class MembershipPage extends Component {
 
   handleCancelLoading(button) {
     this.props.actions.cancelLoading();
-  };
+  }
+
+  handleMemberEditing(editing) {
+    this.setState({editingSelectedMember: editing});
+  }
 
   render() {
 
@@ -134,6 +139,7 @@ class MembershipPage extends Component {
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
+    const shouldSuppressListAutoScroll = this.state.editingSelectedMember;
     const weightedSearchKeys = [{
       name: 'lastName',
       weight: 0.3
@@ -198,7 +204,8 @@ class MembershipPage extends Component {
               <br/>
               <MemberList members={this.state.filteredList}
                 onSelectItem={(member) => this.handleMemberItemSelection(member)}
-                selectedMemberId={selectedMemberId}/>
+                selectedMemberId={selectedMemberId}
+                suppressAutoScroll={shouldSuppressListAutoScroll}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
 
@@ -206,11 +213,13 @@ class MembershipPage extends Component {
 
                 <Member key={`memberdiv${selectedMember.id}`}
                   member={selectedMember}
+                  editing={this.state.editingSelectedMember}
                   canEdit={canEditSelectedMember}
                   canInvite={isAdmin}
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
                   onInvite={(member) => this.handleInvite(member)}
+                  onEditing={(editing) => this.handleMemberEditing(editing)}
                   onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
                 />
               )}

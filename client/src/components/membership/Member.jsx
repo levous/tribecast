@@ -19,7 +19,6 @@ export default class Member extends Component {
   constructor(){
     super()
     this.state = {
-			editing: false,
       swipeIndex: 0,
       profileImageEditing: false
 		};
@@ -35,10 +34,7 @@ export default class Member extends Component {
   }
 
   handleEditButtonTouchTap(){
-    //TODO: move this up to the page component so that editing can be passed in through props and automatcially invoked by new member creation
-    this.setState({
-      editing: !this.state.editing
-    });
+    this.props.onEditing(!this.props.editing);
   }
 
   handleInviteButtonTouchTap(member){
@@ -67,12 +63,11 @@ export default class Member extends Component {
     this.props.onProfileImageChanged(this.props.member, thumbnailImage, fullsizeImage, unEditedImage);
     this.setState({profileImageEditing: false});
   }
+
   render() {
     const member = this.props.member;
-    const editing = this.state.editing;
+    const editing = this.props.editing;
     const hasProfilePhoto = member.profilePhoto && member.profilePhoto.thumbnailURL;
-
-
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit;
     const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
@@ -96,7 +91,7 @@ export default class Member extends Component {
       }
       // present a button for adding if editing
       if (editing){
-        return (<RaisedButton secondary={true} label='Photo' onTouchTap={() => this.handleProfileImageEditTouchTap()}/>);
+        return (<RaisedButton secondary={true} label='Photo' onTouchTap={(e) => {e.preventDefault(); this.handleProfileImageEditTouchTap()}}/>);
       }
       // no presentation if not editing and no image available
       return '';
@@ -104,8 +99,8 @@ export default class Member extends Component {
 
     return (
       <div key={`member${member.id}`} style={{}}>
-        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={() => this.handleEditButtonTouchTap()}/>)}
-        {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={() => this.handleInviteButtonTouchTap(member)}/>)}
+        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
+        {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
         {profileIcon}
         <StyledLabel htmlFor='first-name' text='name' />
         <h2 style={{marginTop: 0}}>
@@ -188,5 +183,7 @@ export default class Member extends Component {
 }
 
 Member.propTypes = {
-  member: PropTypes.object.isRequired
+  member: PropTypes.object.isRequired,
+  onEditing: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
 };

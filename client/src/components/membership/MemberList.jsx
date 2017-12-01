@@ -32,13 +32,8 @@ export default class MemberList extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps){
-    if(nextProps.members !== this.props.members){
-      this.setState({shouldScrollTop: true});
-    }
-  }
-
-  componentDidUpdate(){
+  maybePerformAutoScroll(){
+    if(this.props.suppressAutoScroll) return;
     // return above was not hit, scroll top if indicated by new member list
     if(this.state.shouldScrollTop){
       scrollIntoView(findDOMNode(this.listItems[0]));
@@ -46,6 +41,16 @@ export default class MemberList extends Component {
     } else {
       this.scrollSelectedItemIntoView(this.props.selectedMemberId);
     }
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.members !== this.props.members && !this.props.suppressAutoScroll){
+      this.setState({shouldScrollTop: true});
+    }
+  }
+
+  componentDidUpdate(){
+    this.maybePerformAutoScroll();
   }
 
   handleItemTouchTap(member){
@@ -127,5 +132,6 @@ export default class MemberList extends Component {
 }
 
 MemberList.propTypes = {
-  members: PropTypes.array
+  members: PropTypes.array,
+  suppressAutoScroll: PropTypes.bool
 };
