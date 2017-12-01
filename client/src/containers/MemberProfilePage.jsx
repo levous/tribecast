@@ -15,7 +15,9 @@ class MemberProfilePage extends Component {
 
   constructor(props, context) {
     super(props, context);
-
+    this.state = {
+      editingSelectedMember: false
+    }
     this.auth = new Auth(context.store);
   }
 
@@ -38,9 +40,14 @@ class MemberProfilePage extends Component {
     this.props.actions.updateMember(member);
   }
 
+  handleMemberEditing(editing) {
+    this.setState({editingSelectedMember: editing});
+  }
+
   handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage){
     this.props.actions.updateMemberProfileImage(this.state.userMember, thumbnailImage, fullsizeImage, unEditedImage);
   }
+
 
   render() {
     if(!(this.state && this.state.userMember)) return <div className='jumbotron'>Sorry, I don't have a member record matched to your user account.</div>
@@ -57,9 +64,11 @@ class MemberProfilePage extends Component {
               {userMember && (
                 <Member key={`memberdiv${userMember.id}`}
                   member={userMember}
+                  editing={this.state.editingSelectedMember}
                   canEdit={canEditUserMember}
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
+                  onEditing={(editing) => this.handleMemberEditing(editing)}
                   onProfileImageChanged={(thumbnailImage, fullsizeImage, unEditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage)}
                 />
               )}

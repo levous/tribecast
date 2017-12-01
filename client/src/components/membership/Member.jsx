@@ -87,7 +87,9 @@ export default class Member extends Component {
     const profileIcon = (() => {
       // if a profile photo is present, show that instead.  It supports editing
       if (hasProfilePhoto) {
-        return (<ProfilePhotoIcon thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} onProfileImageTouchTap={handleProfileImageTap} />);
+        const icon = (<ProfilePhotoIcon key='icon' thumbnailURL={member.profilePhoto.thumbnailURL} fullsizeURL={member.profilePhoto.fullsizeURL} onProfileImageTouchTap={handleProfileImageTap} />);
+        if(editing) return [icon, (<div key='overlay' style={{backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3))', color: 'white', position: 'absolute', width: '50px', margin: '10px', fontSize: '.7em', textAlign: 'center'}} onClick={handleProfileImageTap}>tap to edit</div>)];
+        return icon;
       }
       // present a button for adding if editing
       if (editing){

@@ -113,7 +113,7 @@ export default class MemberList extends Component {
 
 
               const avatarSrc = member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
-              console.log(member.firstName, avatarSrc);
+          
 
               return (
               <ListItem key={`mem${i}`} ref={ref => this.listItems[i] = ref}
