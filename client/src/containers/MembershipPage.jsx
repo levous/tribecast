@@ -57,6 +57,7 @@ class MembershipPage extends Component {
   }
 
   handleMemberItemSelection(member) {
+    this.setState({editingSelectedMember: false});
     this.props.actions.selectMember(member);
   }
 
