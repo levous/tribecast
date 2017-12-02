@@ -199,6 +199,27 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  router.delete('/:id',function(req, res, next){
+
+    const memberId = req.params.id;
+    // validate id
+    if (!MongooseObjectId.isValid(memberId)) return next(new errors.ResourceNotFoundError('Provided id not valid'));
+
+    // pass to controller.update
+    memberController.delete(memberId)
+      .then(function(){
+        // Set "Success" status
+        res.status(200);
+        const responseBody = {
+          message: `successfully DELETED member ${memberId}`,
+          data: memberId
+        };
+        if(req.io) req.io.emit('member:delete', {data: {editingUserID: req.user._id, memberId}});
+        res.json(responseBody);
+      })
+      .catch(next);
+  });
+
   router.post('/invite-all-new', function(req, res, next){
 
     const urlRoot = `${req.protocol}://${req.hostname}`;

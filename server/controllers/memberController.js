@@ -4,6 +4,7 @@ const MongooseObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
 const log = require('../modules/log')(module);
 const Member = require('../models/member');
+const AuditArchive = require('../models/auditArchive');
 const User = require('../models/user');
 const userController = require('./userController');
 const sendmail = require('../modules/sendmail');
@@ -222,6 +223,29 @@ exports.update = function(id, member){
 
   const query = {'_id': id };
   return Member.findOneAndUpdate(query, member, {upsert:false, new: true, runValidators: true}).exec();
+}
+
+
+/**
+ * Update existing Member
+ * @param {string} memberId
+ * @returns (Promise) deleted {memberId}
+ */
+exports.delete = function(id){
+
+  if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
+
+  const query = {'_id': id };
+
+  return Member.findOne(query).exec()
+  .then(member => {
+    const archive = new AuditArchive({member: member, operation: 'DELETE'});
+    return Promise.all([archive.save(), member.remove()]);
+  })
+  .then(results => {
+    const archiveResult = results[0];
+    return {archiveId: archiveResult._id};
+  });
 }
 
 /**
