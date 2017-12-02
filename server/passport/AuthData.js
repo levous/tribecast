@@ -11,6 +11,7 @@ class AuthData{
 
     this.token = jwt.sign(payload, config.get('jwtSecret'));
     this.userData = {
+      id: user.id,
       name: user.name,
       memberUserKey: user.memberUserKey,
       roles: user.roles

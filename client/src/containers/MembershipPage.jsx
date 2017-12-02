@@ -162,7 +162,7 @@ class MembershipPage extends Component {
        weight: 0.1
     }];
 
-//TODO: WRONG WRONG DAMMIT!
+
     const adminButtons = (!isAdmin && '') || (
       <div style={{display: 'inline'}}>
         <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()} tooltip='New Member'><IconAdd /></FloatingActionButton>

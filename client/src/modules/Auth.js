@@ -62,6 +62,20 @@ class Auth {
   }
 
   /**
+   * Return the ID of a user if authenticated.  Null if not authenticated.
+   *
+   * @returns {string}
+   */
+  loggedInUserID() {
+    if (!this.isUserAuthenticated()) return null;
+    try {
+      return this.userData.id
+    }catch(err){
+      return null
+    };
+  }
+
+  /**
    * Deauthenticate a user. Remove a token from Local Storage.
    *
    */

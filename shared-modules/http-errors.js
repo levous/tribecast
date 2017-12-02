@@ -31,6 +31,13 @@ errors.InvalidCredentialsError = class BadRequestError extends Error {
     this.name = 'InvalidCredentialsError';
   }
 };
+errors.InvalidArgumentError = class InvalidArgumentError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.statusCode = 409;
+    this.name = 'InvalidArgumentError';
+  }
+};
 module.exports = errors;
 
 /*

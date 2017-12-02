@@ -31,7 +31,8 @@ exports.setup = function (basePath, app) {
           message: `successfully created member ${member._id}`,
           data: member
         }
-        if(req.io) req.io.emit('member:new', member);
+        if(req.io) req.io.emit('member:new', {data: {editingUserID: req.user._id, member}});
+
         res.json(responseBody);
       })
       .catch(next);
@@ -192,7 +193,7 @@ exports.setup = function (basePath, app) {
           message: `successfully updated member ${memberId}`,
           data: member
         };
-        if(req.io) req.io.emit('member:update', member);
+        if(req.io) req.io.emit('member:update', {data: {editingUserID: req.user._id, member}});
         res.json(responseBody);
       })
       .catch(next);

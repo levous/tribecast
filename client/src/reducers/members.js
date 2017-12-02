@@ -155,16 +155,18 @@ let memberApp = function(state = initialState, action) {
       NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
       const memberId = action.id || action.member.id;
       let member = action.member;
+
       // ensure that if member._id is present, a server record identifier, that it matches the id.
       //   If not, this was a new record with a temp id.  Update without mutating
       if(member._id && member._id !== member.id) member = Object.assign({}, member, {id: member._id});
-      const newState = updateMemberInList(state, memberId, member);
+      let newState = updateMemberInList(state, memberId, member);
 
       // updated selected member if action id matches selectedMember id
-      if(action.id === state.selectedMember.id) return Object.assign({}, newState, {selectedMember: member});
-
+      if(action.id === state.selectedMember.id) newState = Object.assign({}, newState, {selectedMember: member});
+      
       return newState;
     }
+
     case member_action_types.UPDATE: {
       const memberId = action.id || action.member.id;
       return updateMemberInList(state, memberId, action.member);
