@@ -165,8 +165,8 @@ class MembershipPage extends Component {
 
     const adminButtons = (!isAdmin && '') || (
       <div style={{display: 'inline'}}>
-        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()} tooltip='New Member'><IconAdd /></FloatingActionButton>
-        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()} tooltip='Export CSV'><IconDownload /></FloatingActionButton>
+        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
+        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
       </div>
     );
 
@@ -189,7 +189,7 @@ class MembershipPage extends Component {
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
-        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()} tooltip='Refresh from Server'><IconRefresh /></FloatingActionButton> )}
+        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {adminButtons}
 
         <div style={{clear:'both', marginTop:'5px'}}></div>
