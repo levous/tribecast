@@ -123,7 +123,7 @@ class MembershipPage extends Component {
   }
 
   presentDeleteConfirmation(present){
-    this.setState({deleteDialogOpen: present});
+    this.setState({deleteDialogOpen: present, editingSelectedMember: false});
   }
   handleDeleteMember(member) {
     this.props.actions.deleteMember(member);
