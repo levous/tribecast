@@ -232,21 +232,17 @@ class MembershipPage extends Component {
                     onEditing={(editing) => this.handleMemberEditing(editing)}
                     onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
                   />
-                {isAdmin && this.state.editingSelectedMember && (
-                  <div>
-                    <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />
-                    <Dialog
-                      title={`DELETE ${selectedMember.firstName} ${selectedMember.lastName}?`}
-                      modal={true}
-                      open={this.state.deleteDialogOpen}
-                      actions={[
-                        <RaisedButton backgroundColor='red' labelColor='white' label="Confirm DELETE" onClick={(button) => this.handleDeleteMember(selectedMember)} />,
-                        <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentDeleteConfirmation(false)} />
-                      ]}>
-                      Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
-                    </Dialog>
-                  </div>
-                )}
+                  {isAdmin && this.state.editingSelectedMember && <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />}
+                  <Dialog
+                    title={`DELETE ${selectedMember.firstName} ${selectedMember.lastName}?`}
+                    modal={true}
+                    open={this.state.deleteDialogOpen}
+                    actions={[
+                      <RaisedButton backgroundColor='red' labelColor='white' label="Confirm DELETE" onClick={(button) => this.handleDeleteMember(selectedMember)} />,
+                      <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentDeleteConfirmation(false)} />
+                    ]}>
+                    Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
+                  </Dialog>
                 </div>
               )}
             </Col>
