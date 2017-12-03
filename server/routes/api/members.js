@@ -212,9 +212,12 @@ exports.setup = function (basePath, app) {
         res.status(200);
         const responseBody = {
           message: `successfully DELETED member ${memberId}`,
-          data: memberId
+          data: {memberId: memberId}
         };
-        if(req.io) req.io.emit('member:delete', {data: {editingUserID: req.user._id, memberId}});
+
+        if(req.io){
+          req.io.emit('member:delete', {data: {editingUserID: req.user._id, memberId: memberId}});
+        }
         res.json(responseBody);
       })
       .catch(next);

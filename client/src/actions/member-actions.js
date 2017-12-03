@@ -2,6 +2,7 @@
 export const member_action_types = {
   ADD: 'ADD_MEMBER',
   UPDATE: 'UPDATE_MEMBER',
+  DELETE: 'DELETE_MEMBER',
   UPDATE_PROFILE_IMAGE: 'UPDATE_PROFILE_IMAGE',
   SELECT_MEMBER: 'SELECT_MEMBER',
   GET_ALL: 'GET_MEMBERS',
@@ -10,6 +11,7 @@ export const member_action_types = {
   UPLOAD_PUBLISH: 'MEMBER_UPLOAD_PUBLISH',
   MEMBER_DATA_FAILED: 'MEMBER_DATA_FAILED',
   UPDATE_SUCCESS_RECEIVED: 'MEMBER_UPDATE_SUCCESS',
+  DELETE_SUCCESS_RECEIVED: 'DELETE_SUCCESS_RECEIVED',
   UPDATE_FAILURE_RECEIVED: 'MEMBER_UPDATE_FAILURE',
   ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER',
   INVITE_MEMBER: 'INVITE_MEMBER',
@@ -40,6 +42,10 @@ export function addMember(member) {
 
 export function updateMember(member){
   return {type: member_action_types.UPDATE, member};
+}
+
+export function deleteMember(member){
+  return {type: member_action_types.DELETE, member};
 }
 
 export function updateMemberProfileImage(member, thumbnailImage, fullsizeImage, unEditedImage){

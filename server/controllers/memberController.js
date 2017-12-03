@@ -227,7 +227,7 @@ exports.update = function(id, member){
 
 
 /**
- * Update existing Member
+ * Delete existing Member
  * @param {string} memberId
  * @returns (Promise) deleted {memberId}
  */

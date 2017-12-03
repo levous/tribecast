@@ -46,6 +46,14 @@ class Auth {
     return this.userIsInRole(this.userData, [user_roles.administrator]);
   }
 
+  /**
+   * Check if a user is a super administrator
+   *
+   * @returns {boolean}
+   */
+  isUserSuperAdmin() {
+    return this.userIsInRole(this.userData, [user_roles.super_admin]);
+  }
 
   /**
    * Return the name of a user if authenticated.  Null if not authenticated.

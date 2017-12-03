@@ -163,8 +163,19 @@ let memberApp = function(state = initialState, action) {
 
       // updated selected member if action id matches selectedMember id
       if(action.id === state.selectedMember.id) newState = Object.assign({}, newState, {selectedMember: member});
-      
+
       return newState;
+    }
+
+    case member_action_types.DELETE_SUCCESS_RECEIVED: {
+      NotificationManager.success(`${action.id} successfully DELETED!`);
+      const memberId = action.id;
+      const newList = state.members.filter( member => member.id !== memberId );
+      let selectedMember = memberId === state.selectedMember.id ? null : state.selectedMember;
+      return Object.assign({}, state, {
+        members: newList,
+        selectedMember: selectedMember
+      });
     }
 
     case member_action_types.UPDATE: {

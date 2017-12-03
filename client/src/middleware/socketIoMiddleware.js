@@ -20,6 +20,17 @@ const socketIoMiddleware = store => {
       });
     }
   });
+  socket.on('member:delete', payload => {
+    debugger;
+    const data = payload.data;
+    // TODO: enahnce this to allow the editing user to passed along.  If an edit is received on a record being edited, notify the user who is editing it.
+    if(data.editingUserID !== auth.loggedInUserID()){
+      store.dispatch({
+        type: member_action_types.DELETE_SUCCESS_RECEIVED,
+        id:  data.memberId
+      });
+    }
+  });
   socket.on('member:new', payload => {
     console.log(payload);
   });

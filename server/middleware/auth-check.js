@@ -14,17 +14,45 @@ module.exports = (req, res, next) => {
   const authorizedWithRole = function(user) {
     // look for configured authorization node
     const rootPath = req.baseUrl + req.path;
+
     const matchingNodes = authorization.filter(authNode => rootPath.toLowerCase().startsWith(authNode.route));
+
     if(matchingNodes){
-      // sort by length and use the most qualified path
-      const matchingNode = matchingNodes.sort((a, b) => b.route.length - a.route.length)[0];
+      debugger;
+      // sort by length and start with the most qualified path
+      const sortedNodes = matchingNodes.sort((a, b) => b.route.length - a.route.length);
+      const operationQualifiedNodes = sortedNodes.filter(authNode => authNode.operations && authNode.operations.length > 0);
+      // inspect each operation qualified node, from most specific path to least
+      for(let i = 0, l = operationQualifiedNodes.length; i < l; i++){
+        const candidateNode = operationQualifiedNodes[i];
+
+        // check for matching operation (method)
+        if(candidateNode.operations.includes(req.method)){
+          // operation matches and path matches.  Check roles.
+          // loop each allowed role
+          for(let cni = 0, cnrl = candidateNode.roles.length; cni < cnrl; cni++) {
+            if(user.roles.find(role => role === candidateNode.roles[cni])){
+              // matching user roles
+              return true
+            }
+          }
+          // path and operation matched, role was not present, disallowed
+          return false;
+        }
+      }
+
+      // operation qualified paths didn't match http method, check most specific matching path
+      const candidateNode = sortedNodes[0];
+
       // loop each allowed role
-      for(let i = 0; i < matchingNode.roles.length; i++) {
-        if(user.roles.find(role => role === matchingNode.roles[i])){
+      for(let cni = 0, cnrl = candidateNode.roles.length; cni < cnrl; cni++) {
+        if(user.roles.find(role => role === candidateNode.roles[cni])){
           // matching user roles
           return true
         }
       }
+
+
       // no matching user role
       return false;
     }

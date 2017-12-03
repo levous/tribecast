@@ -26,7 +26,8 @@ class MembershipPage extends Component {
     super(props, context);
     this.state = {
       filteredList: props.members,
-      editingSelectedMember: false
+      editingSelectedMember: false,
+      deleteDialogOpen: false
     }
 
     this.auth = new Auth(context.store);
@@ -121,6 +122,14 @@ class MembershipPage extends Component {
     this.props.router.push('/invitations');
   }
 
+  presentDeleteConfirmation(present){
+    this.setState({deleteDialogOpen: present});
+  }
+  handleDeleteMember(member) {
+    this.props.actions.deleteMember(member);
+    this.setState({deleteDialogOpen: false});
+  }
+
   handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage){
     this.props.actions.updateMemberProfileImage(this.props.selectedMember, thumbnailImage, fullsizeImage, unEditedImage);
   }
@@ -138,6 +147,7 @@ class MembershipPage extends Component {
     const {selectedMember, userData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
+    const isSuperAdmin = isLoggedIn && this.auth.isUserSuperAdmin();
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     const shouldSuppressListAutoScroll = this.state.editingSelectedMember;
@@ -211,18 +221,34 @@ class MembershipPage extends Component {
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
 
               {selectedMember && (
-
-                <Member key={`memberdiv${selectedMember.id}`}
-                  member={selectedMember}
-                  editing={this.state.editingSelectedMember}
-                  canEdit={canEditSelectedMember}
-                  canInvite={isAdmin}
-                  style={{postion: 'relative'}}
-                  onUpdate={(member) => this.handleUpdate(member)}
-                  onInvite={(member) => this.handleInvite(member)}
-                  onEditing={(editing) => this.handleMemberEditing(editing)}
-                  onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
-                />
+                <div>
+                  <Member key={`memberdiv${selectedMember.id}`}
+                    member={selectedMember}
+                    editing={this.state.editingSelectedMember}
+                    canEdit={canEditSelectedMember}
+                    canInvite={isAdmin}
+                    style={{postion: 'relative'}}
+                    onUpdate={(member) => this.handleUpdate(member)}
+                    onInvite={(member) => this.handleInvite(member)}
+                    onEditing={(editing) => this.handleMemberEditing(editing)}
+                    onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
+                  />
+                {isSuperAdmin && this.state.editingSelectedMember && (
+                  <div>
+                    <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />
+                    <Dialog
+                      title={`DELETE ${selectedMember.firstName} ${selectedMember.lastName}?`}
+                      modal={true}
+                      open={this.state.deleteDialogOpen}
+                      actions={[
+                        <RaisedButton backgroundColor='red' labelColor='white' label="Confirm DELETE" onClick={(button) => this.handleDeleteMember(selectedMember)} />,
+                        <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentDeleteConfirmation(false)} />
+                      ]}>
+                      Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
+                    </Dialog>
+                  </div>
+                )}
+                </div>
               )}
             </Col>
           </Row>

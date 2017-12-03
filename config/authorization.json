@@ -6,5 +6,10 @@
   {
     "route": "/api/members/publish",
     "roles": ["administrator"]
+  },
+  {
+    "route": "/api/members",
+    "roles": ["super-admin"],
+    "operations": ["DELETE"]
   }
 ]

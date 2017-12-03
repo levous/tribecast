@@ -109,40 +109,69 @@ const dataService = store => next => action => {
         });
       });
 
-      case member_action_types.UPDATE_PROFILE_IMAGE: {
 
-        // only dispatch api call if data source is API
-        if(store.getState().memberApp.dataSource !== member_data_sources.API) {
-          return Promise.resolve();
-        }
+    case member_action_types.DELETE:{
 
-        const member = action.member;
-        const url = `/api/members/${member._id}/profile-photo`;
-        const formdata = new FormData();
-        formdata.append('profile-photo', action.fullsizeImage);
-        formdata.append('extra', 'forces multipart');
-        const authHeadersNoJson = { 'Authorization': authHeaders.Authorization };
-        return fetch(url, {
-          method: 'post',
-          headers: authHeadersNoJson,
-          body: formdata
-        })
-        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
-        .then(responseJson => {
-          let updatedMember = responseJson.data;
-          return next({
-            type: member_action_types.UPDATE_SUCCESS_RECEIVED,
-            id: updatedMember._id,
-            member: updatedMember
-          });
-        })
-        .catch(err => {
-          return next({
-            type: member_action_types.UPDATE_FAILURE_RECEIVED,
-            err
-          });
-        });
+      // only dispatch api call if data source is API
+      if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+        return Promise.resolve();
       }
+
+      const member = action.member;
+      return fetch(`/api/members/${member._id}`, {
+        method: 'delete',
+        headers: authHeaders,
+        body: JSON.stringify(member)
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        let deletedMemberId = responseJson.data.memberId;
+        return next({
+          type: member_action_types.DELETE_SUCCESS_RECEIVED,
+          id: deletedMemberId
+        });
+      })
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+    }
+    case member_action_types.UPDATE_PROFILE_IMAGE: {
+
+      // only dispatch api call if data source is API
+      if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+        return Promise.resolve();
+      }
+
+      const member = action.member;
+      const url = `/api/members/${member._id}/profile-photo`;
+      const formdata = new FormData();
+      formdata.append('profile-photo', action.fullsizeImage);
+      formdata.append('extra', 'forces multipart');
+      const authHeadersNoJson = { 'Authorization': authHeaders.Authorization };
+      return fetch(url, {
+        method: 'post',
+        headers: authHeadersNoJson,
+        body: formdata
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        let updatedMember = responseJson.data;
+        return next({
+          type: member_action_types.UPDATE_SUCCESS_RECEIVED,
+          id: updatedMember._id,
+          member: updatedMember
+        });
+      })
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+    }
     case member_action_types.UPLOAD_PUBLISH:
       const publishMembers = action.members.map(member => {
         if(member.apiMatch && member.apiMatch.apiRecord) return Object.assign(member, {_id: member.apiMatch.apiRecord._id, recordOriginNote: `${member.apiMatch.apiRecord.recordOriginNote}\n${member.importNote}`})
@@ -166,32 +195,32 @@ const dataService = store => next => action => {
         return Promise.reject(err)
       });
 
-      case member_action_types.ASSIGN_USER_MEMBER:
+    case member_action_types.ASSIGN_USER_MEMBER:
 
-        // only dispatch api call if data source is API
-        if(store.getState().memberApp.dataSource !== member_data_sources.API) {
-          const unpublishedMembersError = new errors.PreconditionFailedError('Cannot assign a member to a user using unpublished member.  Publish or cancel any imports first or refresh members from the server.');
-          return Promise.reject(unpublishedMembersError);
-        }
+      // only dispatch api call if data source is API
+      if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+        const unpublishedMembersError = new errors.PreconditionFailedError('Cannot assign a member to a user using unpublished member.  Publish or cancel any imports first or refresh members from the server.');
+        return Promise.reject(unpublishedMembersError);
+      }
 
-        const userMember = action.member;
-        return fetch('/api/me/assign-user-member', {
-          method: 'post',
-          headers: authHeaders,
-          body: JSON.stringify({memberId: userMember.id})
-        })
-        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
-        .then(responseJson => {
-          // nothing to do
-          return next(action);
-        })
-        .catch(err => {
-          // need something more specific?
-          return next({
-            type: member_action_types.UPDATE_FAILURE_RECEIVED,
-            err
-          });
+      const userMember = action.member;
+      return fetch('/api/me/assign-user-member', {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify({memberId: userMember.id})
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        // nothing to do
+        return next(action);
+      })
+      .catch(err => {
+        // need something more specific?
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
         });
+      });
 
     case member_action_types.INVITE_MEMBER:
 
@@ -381,8 +410,7 @@ const dataService = store => next => action => {
     // Already passed action along so no need to pass through again.
     default:
       return;
-  }
-
+    }
 };
 
 export default dataService;
