@@ -147,7 +147,6 @@ class MembershipPage extends Component {
     const {selectedMember, userData, auth, loading} = this.props;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
-    const isSuperAdmin = isLoggedIn && this.auth.isUserSuperAdmin();
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     const shouldSuppressListAutoScroll = this.state.editingSelectedMember;
@@ -233,7 +232,7 @@ class MembershipPage extends Component {
                     onEditing={(editing) => this.handleMemberEditing(editing)}
                     onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
                   />
-                {isSuperAdmin && this.state.editingSelectedMember && (
+                {isAdmin && this.state.editingSelectedMember && (
                   <div>
                     <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />
                     <Dialog
