@@ -1,4 +1,6 @@
 const Mongoose = require('mongoose');
+const moment = require('moment');
+
 //const Promise = require ('bluebird');
 const Member = require('../models/member');
 const User = require('../models/user');
@@ -144,3 +146,9 @@ exports.removeUserFromRole = function(user, role){
     return Promise.reject(`User was not assigned to the '${role}' role`);
   }
 };
+
+exports.auditAuthCheck = function(user){
+  // consider using a queue such as redis for performance if needed to scale
+  user.lastAuthCheckAt = new moment().toDate();
+  return user.save();
+}
