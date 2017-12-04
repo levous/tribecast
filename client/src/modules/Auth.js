@@ -4,12 +4,25 @@ import user_roles from '../../../config/user_roles';
 
 class Auth {
 
-//TODO: fix this shit.  Totally hackable.
+  //TODO: fix this shit.  Totally hackable.
 
   constructor(store) {
+
     this.store = store;
+    //FIXME: store.subscribe is supposed to be there but it is not a function.  Not important enough to deal with right now.
+    // this.unsubscribe = store ? store.subscribe(this.handleStateChange) : (()=>{});
     this.userData = (store && store.getState().userApp.userData) || null;
   }
+
+  // if the userData value changes (login or out event), update the ref
+  handleStateChange() {
+    const currentUserData = this.store.getState().userApp.userData;
+
+    if (currentUserData !== this.userData) {
+      this.userData = currentUserData;
+    }
+  }
+
   /**
    * Authenticate a user. Save a token string in Local Storage
    *

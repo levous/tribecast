@@ -21,6 +21,11 @@ exports.getAll = function(){
     .exec();
 };
 
+exports.findByUserAuthenticationToken = function(token) {
+  // find a user by authentication token.  For now, this is simly user id
+  return User.findById(token);
+};
+
 exports.findByEmail = function(email) {
   // find a user by email address
   return User.findOne({ email: email.toLowerCase() }).exec();
@@ -148,7 +153,7 @@ exports.removeUserFromRole = function(user, role){
 };
 
 exports.auditAuthCheck = function(user){
-  // consider using a queue such as redis for performance if needed to scale
+  //TODO: consider using a queue such as redis for performance if needed to scale
   user.lastAuthCheckAt = new moment().toDate();
   return user.save();
 }

@@ -1,7 +1,9 @@
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const userController = require('../controllers/UserController')
 const config = require('config');
+const log = require('../modules/log')(module);
 const authorization = require('../../config/authorization');
 
 //TODO: Shouldn't this just use the passport middleware?
@@ -18,7 +20,6 @@ module.exports = (req, res, next) => {
     const matchingNodes = authorization.filter(authNode => rootPath.toLowerCase().startsWith(authNode.route));
 
     if(matchingNodes){
-      debugger;
       // sort by length and start with the most qualified path
       const sortedNodes = matchingNodes.sort((a, b) => b.route.length - a.route.length);
       const operationQualifiedNodes = sortedNodes.filter(authNode => authNode.operations && authNode.operations.length > 0);
@@ -75,20 +76,24 @@ module.exports = (req, res, next) => {
     //TODO: as noted in ../passport/AuthData.js, use an authentication key, rather than the user id,
     //      so that the token has no permanant relationship to the user account
     const userId = decoded.sub;
-
     // check if a user exists
-    return User.findById(userId, (userErr, user) => {
-      if (userErr || !user) {
+    return userController.findByUserAuthenticationToken(userId)
+    .then(user => {
+      if(!user) {
+        log.warn(`userToken: ${userId} NOT FOUND`);
         return res.status(401).end();
       }
+      userController.auditAuthCheck(user);
       req.user = user;
 
       if(!authorizedWithRole(user)) {
-        res.status(401).json({"message":"Role Not Authorized"}).end();
-        return;
+        return res.status(401).json({"message":"Role Not Authorized"}).end();
       }
-
       return next();
+    })
+    .catch(userErr => {
+      log.error(`userToken: ${userId} error:${err.message}`);
+      return res.status(401).end();
     });
   });
 };

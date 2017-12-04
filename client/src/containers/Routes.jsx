@@ -23,7 +23,7 @@ class Routes extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.store = configureStore()
+    this.store = configureStore();
     this.auth = new Auth(this.store);
   }
 
@@ -43,6 +43,7 @@ class Routes extends Component {
   }
 
   showMembersIfAuthorized(nextState, replace){
+  
      if (this.auth.isUserAuthorizedToView()){
        replace('/membership');
      }

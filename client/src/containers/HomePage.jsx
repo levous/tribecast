@@ -12,8 +12,12 @@ class HomePage extends React.Component {
   }
 
   render() {
-    console.log(this.auth.isUserAuthorizedToView());
-    if(this.auth.isUserAuthorizedToView()) return this.props.router.push('/membership');
+    const authorized = this.auth.isUserAuthorizedToView();
+    if(authorized) return this.props.router.push('/membership');
+
+    // The auth componet initialized in ctor keeps a reference after authentication has changed.
+    // IOW, when the user data values change due to a log in or log out event, this page doesn't know about it
+
 
     return (
       <Card>
