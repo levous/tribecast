@@ -230,14 +230,16 @@ class MembershipPage extends Component {
     }];
 
 
-    const adminButtons = (!isAdmin && '') || (
-      <div style={{display: 'inline'}}>
-        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
-        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
-        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.presentBulkSearch(true)}><IconBulkSearch /></FloatingActionButton>
-      </div>
-    );
-
+    let adminButtons = ''
+    if(isAdmin){
+      adminButtons = (
+        <div style={{display: 'inline'}}>
+          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
+          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
+          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.presentBulkSearch(true)}><IconBulkSearch /></FloatingActionButton>
+        </div>
+      );
+    }
 
     return (
       <div className="jumbotron">
@@ -251,7 +253,6 @@ class MembershipPage extends Component {
               >
               ...loading <CircularProgress />
             </Dialog>
-            {`${loading}`}
           </div>
         )}
         <DataSourceModePanel dataSource={this.props.dataSource}
