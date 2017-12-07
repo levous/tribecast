@@ -24,9 +24,17 @@ class UploadPage extends React.Component {
     PapaParse.parse(file, {
       header: true,
       complete: results => {
-        const fieldMap = this.mapFields(results.data);
+        debugger;
+        const records = results.data.filter(row => {
+          // ensure not an empty row
+            for(const field in row){
+            if(row[field] && row[field].length > 0) return true;
+          }
+          return false;
+        });
+        const fieldMap = this.mapFields(records);
         let importNote = `importedFile:${file.name}`;
-        this.setState({importData: results.data, importNote, fieldMap});
+        this.setState({importData: records, importNote, fieldMap});
       }
     });
   }
