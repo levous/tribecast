@@ -53,7 +53,25 @@ exports.setup = function (basePath, app) {
    *        }, ...]
    */
   router.post('/publish', function(req, res, next){
-    const members = req.body;
+    const trimStringFields = (maybeString) => {
+      if (!maybeString) return maybeString;
+      if (typeof maybeString === 'string') {
+        return maybeString.trim();
+      }
+      if (typeof maybeString === 'object') {
+        // recurse
+        for(const field in maybeString){
+          maybeString[field] = trimStringFields(maybeString[field]);
+        }
+      }
+      return maybeString;
+    }
+
+    const members = req.body.map(member => {
+      let copy = trimStringFields(Object.assign({}, member));
+
+      return copy;
+    });
 
     //TODO: Validate this shit!
     memberController.publish(members)
