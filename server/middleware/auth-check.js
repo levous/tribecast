@@ -26,7 +26,7 @@ module.exports = (req, res, next) => {
       // inspect each operation qualified node, from most specific path to least
       for(let i = 0, l = operationQualifiedNodes.length; i < l; i++){
         const candidateNode = operationQualifiedNodes[i];
-
+        
         // check for matching operation (method)
         if(candidateNode.operations.includes(req.method)){
           // operation matches and path matches.  Check roles.
@@ -42,8 +42,8 @@ module.exports = (req, res, next) => {
         }
       }
 
-      // operation qualified paths didn't match http method, check most specific matching path
-      const candidateNode = sortedNodes[0];
+      // operation qualified paths didn't match http method, check most specific matching path that doesn't define a method
+      const candidateNode = sortedNodes.filter(node => !node.operations || node.operations.length === 0)[0];
 
       // loop each allowed role
       for(let cni = 0, cnrl = candidateNode.roles.length; cni < cnrl; cni++) {
