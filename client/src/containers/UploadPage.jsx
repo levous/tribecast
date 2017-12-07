@@ -24,7 +24,7 @@ class UploadPage extends React.Component {
     PapaParse.parse(file, {
       header: true,
       complete: results => {
-        debugger;
+        
         const records = results.data.filter(row => {
           // ensure not an empty row
             for(const field in row){

@@ -116,7 +116,7 @@ class MembershipPage extends Component {
   executeBulkSearch() {
     const nameStringToObject = (nameString) => {
       // nameString can be 'Jack Johnson' or 'Johnson'.  Obviously, if a first or last name includes spaces, SOL
-      const nameArray = nameString.trim().split(' ');
+      const nameArray = nameString.split(/(\s+)/).filter(s => s.trim().length > 0);
       if(nameArray.length > 1) {
         return {firstName: nameArray[0].trim(), lastName: nameArray[nameArray.length - 1].trim()};
       } else {
