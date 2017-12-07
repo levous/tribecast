@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Grid, Row, Col} from 'react-bootstrap';
+import {Grid, Row, Col, Panel} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -18,6 +18,7 @@ import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
 import IconAdd from 'material-ui/svg-icons/content/add';
 import IconDownload from 'material-ui/svg-icons/file/file-download';
+import IconBulkSearch from 'material-ui/svg-icons/social/group';
 import 'react-notifications/lib/notifications.css';
 
 class MembershipPage extends Component {
@@ -27,7 +28,9 @@ class MembershipPage extends Component {
     this.state = {
       filteredList: props.members,
       editingSelectedMember: false,
-      deleteDialogOpen: false
+      deleteDialogOpen: false,
+      bulkSearchDialogOpen: false,
+      bulkSearchResultsMeta: null
     }
 
     this.auth = new Auth(context.store);
@@ -98,6 +101,60 @@ class MembershipPage extends Component {
     document.body.removeChild(a);
   }
 
+  presentBulkSearch(present) {
+      const bulkSearchResultsMeta = present ? this.state.bulkSearchResultsMeta : null;
+      // filtered list should be reset when hiding the bulk search
+      const filteredList = present ? this.state.filteredList : this.props.members;
+      this.setState({
+        bulkSearchDialogOpen: present,
+        editingSelectedMember: false,
+        bulkSearchResultsMeta: bulkSearchResultsMeta,
+        filteredList: filteredList
+      });
+  }
+
+  executeBulkSearch() {
+    const nameStringToObject = (nameString) => {
+      // nameString can be 'Jack Johnson' or 'Johnson'.  Obviously, if a first or last name includes spaces, SOL
+      const nameArray = nameString.trim().split(' ');
+      if(nameArray.length > 1) {
+        return {firstName: nameArray[0].trim(), lastName: nameArray[nameArray.length - 1].trim()};
+      } else {
+        return {firstName: '', lastName: nameArray[0].trim()};
+      }
+    };
+
+    const namesText = this.bulkSearchTextField.value  ;
+    const names = namesText.split('\n').filter(nameString => nameString.trim().length > 0).map(nameStringToObject);
+    let foundNames = [];
+
+    const matches = this.props.members.filter(member => {
+      for(let i=0, l=names.length;i < l;i++){
+        const name = names[i];
+
+          if (name.lastName.toLowerCase() === member.lastName.toLowerCase()) {
+            if(name.firstName.length === 0 || name.firstName.toLowerCase() === member.firstName.toLowerCase()) {
+              foundNames.push(name);
+              return true;
+            }
+          }
+      }
+      return false;
+    });
+
+    const notFoundNames = names.filter(name => !foundNames.includes(name));
+
+    this.setState({
+      bulkSearchDialogOpen: false,
+      bulkSearchResultsMeta: {
+        names: names,
+        notFoundNames: notFoundNames
+      },
+      filteredList: matches,
+
+    });
+  }
+
   handleSearch(results) {
     //TODO: use options to include score and matches to apply highlighting.  The results will come back in a modified object structure
     // http://fusejs.io/
@@ -125,6 +182,7 @@ class MembershipPage extends Component {
   presentDeleteConfirmation(present){
     this.setState({deleteDialogOpen: present, editingSelectedMember: false});
   }
+
   handleDeleteMember(member) {
     this.props.actions.deleteMember(member);
     this.setState({deleteDialogOpen: false});
@@ -176,6 +234,7 @@ class MembershipPage extends Component {
       <div style={{display: 'inline'}}>
         <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
         <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
+        <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.presentBulkSearch(true)}><IconBulkSearch /></FloatingActionButton>
       </div>
     );
 
@@ -198,6 +257,13 @@ class MembershipPage extends Component {
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
+        {this.state.bulkSearchResultsMeta && (
+          <Panel collapsible={true} defaultExpanded={true} header='Bulk Search Results' bsStyle="info">
+            <p>Searched for: {this.state.bulkSearchResultsMeta.names.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>
+            <p>Didn't find: {this.state.bulkSearchResultsMeta.notFoundNames.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>
+            <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
+          </Panel>
+        )}
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {adminButtons}
 
@@ -205,13 +271,17 @@ class MembershipPage extends Component {
         <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>
-              <SearchField
-                list={this.props.members}
-                keys={weightedSearchKeys}
-                placeholder='fuzzy finder'
-                style={{width:'100%', border: 'solid 1px rgb(136, 208, 1)', padding: '3px', borderRadius: '5px'}}
-                onSearch={filteredList => this.handleSearch(filteredList)} />
-              <br/>
+              {(!this.state.bulkSearchResultsMeta) && (
+                <div>
+                  <SearchField
+                    list={this.props.members}
+                    keys={weightedSearchKeys}
+                    placeholder='fuzzy finder'
+                    style={{width:'100%', border: 'solid 1px rgb(136, 208, 1)', padding: '3px', borderRadius: '5px'}}
+                    onSearch={filteredList => this.handleSearch(filteredList)} />
+                </div>
+              )}
+
               <MemberList members={this.state.filteredList}
                 onSelectItem={(member) => this.handleMemberItemSelection(member)}
                 selectedMemberId={selectedMemberId}
@@ -242,6 +312,20 @@ class MembershipPage extends Component {
                       <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentDeleteConfirmation(false)} />
                     ]}>
                     Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
+                  </Dialog>
+                  <Dialog
+                    title="Bulk Search"
+                    modal={true}
+                    open={this.state.bulkSearchDialogOpen}
+                    actions={[
+                      <RaisedButton primary={true} labelColor='white' label="Search" onClick={(button) => this.executeBulkSearch()} />,
+                      <RaisedButton style={{marginLeft: '10px'}} secondary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
+                    ]}>
+                    <p>Paste a list of names to match, one name per line</p>
+                    <label>Names</label>
+                    <div>
+                      <textarea name="bulk-search-text" ref={(el) => { this.bulkSearchTextField = el }} style={{width:'100%'}} rows={10}/>
+                    </div>
                   </Dialog>
                 </div>
               )}
