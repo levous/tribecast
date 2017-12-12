@@ -244,7 +244,7 @@ let memberApp = function(state = initialState, action) {
           const street = parsedAddress.prefix ? `${parsedAddress.number} ${parsedAddress.prefix} ${parsedAddress.street} ${parsedAddress.type}` : `${parsedAddress.number} ${parsedAddress.street} ${parsedAddress.type}`
           altAddress = {
             street : street,
-            street2: parsedAddress.sec_unit_num ? `${parsedAddress.sec_unit_type} ${parsedAddress.sec_unit_num}` : undefined,
+            street2: parsedAddress.sec_unit_num ? `${parsedAddress.sec_unit_type} ${parsedAddress.sec_unit_num}` : null,
             city   : parsedAddress.city,
             state  : parsedAddress.state,
             zip    : parsedAddress.zip
@@ -260,8 +260,8 @@ let memberApp = function(state = initialState, action) {
           id: ++tempId,
           firstName:    record[fieldMap['First Name']],
           lastName:     record[fieldMap['Last Name']],
-          homePhone:    homePhone && homePhone.isValid() ? homePhone.getNumber( 'national' ): '',
-          mobilePhone:  mobilePhone && mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): '',
+          homePhone:    homePhone && homePhone.isValid() ? homePhone.getNumber( 'national' ): null,
+          mobilePhone:  mobilePhone && mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): null,
           email:        record[fieldMap['Email']],
           neighborhood: record[fieldMap['Neighborhood']],
           lotCode: record[fieldMap['Lot']],

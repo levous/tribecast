@@ -13,6 +13,7 @@ import PasswordResetPage from './PasswordResetPage';
 import InvitationsPage from './InvitationsPage';
 import MemberProfilePage from './MemberProfilePage';
 import MembershipPage from './MembershipPage';
+import AddressListPage from './AddressListPage';
 import UserAccountManagementPage from './UserAccountManagementPage';
 import UploadPage from './UploadPage';
 import HelpPage from './HelpPage';
@@ -43,7 +44,7 @@ class Routes extends Component {
   }
 
   showMembersIfAuthorized(nextState, replace){
-  
+
      if (this.auth.isUserAuthorizedToView()){
        replace('/membership');
      }
@@ -61,6 +62,7 @@ class Routes extends Component {
             <Route path='/signup' component={SignUpPage} />
             <Route path='/logout' onEnter={(nextState, replace) => this.logOut(nextState, replace)} />
             <Route path='/membership' component={MembershipPage} />
+            <Route path='/address-view' component={AddressListPage} />
             <Route path='/admin' component={AdminDashboardPage} />
             <Route path='/user-accounts' component={UserAccountManagementPage} />
             <Route path='/invitations' component={InvitationsPage} />

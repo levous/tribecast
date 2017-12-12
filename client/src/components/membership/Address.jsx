@@ -1,6 +1,8 @@
 import React, {PropTypes, Component} from 'react';
 
-const Address = (address) => {
+const Address = (props) => {
+
+  const {address} = props;
   let streetFull;
   if (address.street2) {
     streetFull = `${address.street}, ${address.street2}`;

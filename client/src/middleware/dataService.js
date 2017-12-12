@@ -174,7 +174,20 @@ const dataService = store => next => action => {
     }
     case member_action_types.UPLOAD_PUBLISH:
       const publishMembers = action.members.map(member => {
-        if(member.apiMatch && member.apiMatch.apiRecord) return Object.assign(member, {_id: member.apiMatch.apiRecord._id, recordOriginNote: `${member.apiMatch.apiRecord.recordOriginNote}\n${member.importNote}`})
+        
+        if(member.apiMatch && member.apiMatch.apiRecord){
+          // apply only fields with values that aren't null
+          // note: this is only a shallow check
+          const newRecord = Object.assign({}, member);
+          for(const prop in newRecord){
+            if(newRecord[prop] === null){
+              delete newRecord[prop];
+            }
+          }
+          const recordOriginNote = `${member.apiMatch.apiRecord.recordOriginNote}\n${member.importNote}`;
+          const mergedMember = Object.assign({}, member.apiMatch.apiRecord, newRecord, {recordOriginNote: recordOriginNote});
+          return mergedMember;
+        }
         return Object.assign(member, {recordOriginNote: member.importNote});
       });
       return fetch('/api/members/publish', {

@@ -5,6 +5,8 @@ import {Grid, Row, Col, Panel} from 'react-bootstrap';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import {NotificationManager} from 'react-notifications';
@@ -30,6 +32,7 @@ class MembershipPage extends Component {
       editingSelectedMember: false,
       deleteDialogOpen: false,
       bulkSearchDialogOpen: false,
+      bulkSearchMode: 'names',
       bulkSearchResultsMeta: null
     }
 
@@ -124,20 +127,27 @@ class MembershipPage extends Component {
       }
     };
 
-    const namesText = this.bulkSearchTextField.value  ;
+    const namesText = this.bulkSearchTextField.value;
     const names = namesText.split('\n').filter(nameString => nameString.trim().length > 0).map(nameStringToObject);
     let foundNames = [];
+
 
     const matches = this.props.members.filter(member => {
       for(let i=0, l=names.length;i < l;i++){
         const name = names[i];
+        //HACK: unhappy with this but tired and lazy
+        //FIXME: Refactor this hack
+        if(member.email && this.state.bulkSearchMode === 'emails' && name.lastName.toLowerCase() === member.email.toLowerCase()) {
+          foundNames.push(name);
+          return true;
+        }
 
-          if (name.lastName.toLowerCase() === member.lastName.toLowerCase()) {
-            if(name.firstName.length === 0 || name.firstName.toLowerCase() === member.firstName.toLowerCase()) {
-              foundNames.push(name);
-              return true;
-            }
+        if (name.lastName.toLowerCase() === member.lastName.toLowerCase()) {
+          if(name.firstName.length === 0 || name.firstName.toLowerCase() === member.firstName.toLowerCase()) {
+            foundNames.push(name);
+            return true;
           }
+        }
       }
       return false;
     });
@@ -202,7 +212,8 @@ class MembershipPage extends Component {
 
   render() {
 
-    const {selectedMember, userData, auth, loading} = this.props;
+    const {selectedMember, userData, loading} = this.props;
+    const bulk_search_modes = ['names', 'emails'];
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
@@ -315,15 +326,35 @@ class MembershipPage extends Component {
                     Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
                   </Dialog>
                   <Dialog
-                    title="Bulk Search"
+                    title={(
+                      <div>
+                        <span>Bulk Search</span>
+                          <SelectField
+                            style={{float:'right', margin: '5px'}}
+                            floatingLabelText="Search On"
+                            value={this.state.bulkSearchMode}
+                            onChange={(event, index, value) => this.setState({bulkSearchMode: value})}
+                            >
+                            { bulk_search_modes.map((mode) => (
+                                <MenuItem
+                                  key={mode}
+                                  insetChildren={true}
+                                  value={mode}
+                                  primaryText={mode}
+                                />
+                            ))}
+                          </SelectField>
+                          <div style={{clear: 'both'}} />
+                      </div>
+                    )}
                     modal={true}
                     open={this.state.bulkSearchDialogOpen}
                     actions={[
                       <RaisedButton primary={true} labelColor='white' label="Search" onClick={(button) => this.executeBulkSearch()} />,
                       <RaisedButton style={{marginLeft: '10px'}} secondary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
                     ]}>
-                    <p>Paste a list of names to match, one name per line</p>
-                    <label>Names</label>
+                    <p>Paste a list of {this.state.bulkSearchMode} to match, one per line</p>
+                    <label>{this.state.bulkSearchMode}</label>
                     <div>
                       <textarea name="bulk-search-text" ref={(el) => { this.bulkSearchTextField = el }} style={{width:'100%'}} rows={10}/>
                     </div>

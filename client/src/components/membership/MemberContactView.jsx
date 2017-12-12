@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
-import PropertyTextInput from '../forms/PropertyTextInput.jsx'
-import StyledLabel from '../forms/StyledLabel'
+import PropertyTextInput from '../forms/PropertyTextInput.jsx';
+import StyledLabel from '../forms/StyledLabel';
 
 const MemberContactView = ({
   member,
@@ -49,8 +49,7 @@ const MemberContactView = ({
       <PropertyTextInput
         object={member} propertySelectorPath='propertyAddress.city'
         placeholder='Vacationville' editing={editing} canEdit={canEdit}
-        onChange={onPropertyChange} />
-
+        onChange={onPropertyChange} style={{marginRight:'0'}}/>
       <span style={{marginRight:'5px'}}>,</span>
       <PropertyTextInput
         object={member} propertySelectorPath='propertyAddress.state'

@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import TweenMax from 'gsap'
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-import Address from './Address.jsx';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
