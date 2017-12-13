@@ -10,6 +10,8 @@ import Dialog from 'material-ui/Dialog';
 import {NotificationManager} from 'react-notifications';
 import PapaParse from 'papaparse';
 import AddressList from '../components/membership/AddressList.jsx';
+import MemberList from '../components/membership/MemberList.jsx';
+import Address from '../components/membership/Address.jsx';
 import Member from '../components/membership/Member.jsx';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
@@ -40,12 +42,57 @@ class AddressListPage extends Component {
 
   }
 
+  handleAddressItemSelection(address){
+    this.setState({selectedAddress: address, selectedMember: null});
+  }
+
+  handleMemberItemSelection(member) {
+    this.setState({selectedMember: member});
+  }
+
   render() {
 
-    const {selectedMember, userData, loading, addresses} = this.props;
+    // thanks http://www.jstips.co/en/javascript/deduplicate-an-array/
+    const dedup = (arr) => {
+      var hashTable = {};
+
+      return arr.filter(function (el) {
+        if(!el.street) return false;
+
+        var key = JSON.stringify(el);
+        var match = Boolean(hashTable[key]);
+        return (match ? false : hashTable[key] = true);
+      });
+    };
+
+    const addressesMatch = (address1, address2) => {
+      return address1 && address2 && address1.street && address2.street &&
+        address1.street.toLowerCase()   === address2.street.toLowerCase() &&
+        (
+          (!address1.street2 && !address2.street2) ||
+          (address1.street2.toLowerCase() === address2.street2.toLowerCase())
+        ) &&
+        address1.city.toLowerCase()     === address2.city.toLowerCase() &&
+        address1.state.toLowerCase()    === address2.state.toLowerCase() &&
+        address1.zip.toLowerCase()      === address2.zip.toLowerCase()
+    };
+
+    const addressSort = (a, b) => {
+      const aSplit = a.street.trim().split(' ');
+      const bSplit = b.street.trim().split(' ');
+      return aSplit[1].localeCompare(bSplit[1]) || parseInt(aSplit[0]) - parseInt(bSplit[0]);
+    };
+
+    const {userData, loading, members} = this.props;
+    const {selectedMember, selectedAddress} = this.state;
+    const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
-    const selectedAddress = this.state.selectedAddress;
+    const addresses = dedup(members.map(member => member.propertyAddress)).sort(addressSort);
+    let membersAtSelectedAddress = [];
+    if(selectedAddress){
+      membersAtSelectedAddress = members.filter(member => addressesMatch(member.propertyAddress, selectedAddress));
+    }
 
     return (
       <div className="jumbotron">
@@ -68,7 +115,15 @@ class AddressListPage extends Component {
 
               {selectedAddress && (
                 <div>
-                  You selected address {selectedAddress}
+                  You selected address:
+                  <Address address={selectedAddress} />
+                  there are {membersAtSelectedAddress.length} members there
+
+                  <MemberList
+                    members={membersAtSelectedAddress}
+                    selectedMemberId={selectedMemberId}
+                    onSelectItem={(member) => this.handleMemberItemSelection(member)} />
+                  {selectedMember && <Member member={selectedMember} editing={false} canEdit={false} canInvite={false} onEditing={()=>{}} onUpdate={()=>{}} />}
                 </div>
               )}
             </Col>
@@ -85,23 +140,8 @@ AddressListPage.contextTypes = {
 };
 
 function mapStateToProps(state) {
-
-  // thanks http://www.jstips.co/en/javascript/deduplicate-an-array/
-  function dedup(arr) {
-  	var hashTable = {};
-
-  	return arr.filter(function (el) {
-      if(!el.street) return false;
-  		var key = JSON.stringify(el);
-  		var match = Boolean(hashTable[key]);
-  		return (match ? false : hashTable[key] = true);
-  	});
-  }
-
-  const addresses = dedup(state.memberApp.members.map(member => member.propertyAddress)).sort((a,b) => a.street.localeCompare(b.street));
-
   return {
-    addresses: addresses,
+    members: state.memberApp.members,
     selectedMember: state.memberApp.selectedMember,
     userData: state.userApp.userData,
     loading: state.memberApp.loading

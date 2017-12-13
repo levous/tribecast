@@ -3,12 +3,20 @@ import { List, ListItem } from 'material-ui/List';
 import Address from './Address.jsx';
 
 export default class AddressList extends Component {
+
+  handleSelectItem(address) {
+    this.props.onSelectItem(address)
+  }
+
   render() {
 
 
     return (
-      <div>
-
+      <div style={{
+        overflow: 'scroll',
+        WebkitOverflowScrolling: 'touch',
+        maxHeight: '500px'
+      }}>
         <List>
           {
             this.props.addresses.map((address, i) => {
@@ -22,7 +30,7 @@ export default class AddressList extends Component {
               return (
               <ListItem key={`addr${i}`}
                 primaryText={<Address address={address} />}
-                onTouchTap={() => this.handleItemTouchTap(address)}
+                onTouchTap={() => this.handleSelectItem(address)}
               />
             )
             })
@@ -35,5 +43,6 @@ export default class AddressList extends Component {
   }
 
 AddressList.propTypes = {
-  addresses: PropTypes.array
+  addresses: PropTypes.array.isRequired,
+  onSelectItem: PropTypes.func.isRequired
 };
