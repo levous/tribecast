@@ -300,7 +300,6 @@ class MembershipPage extends Component {
                 suppressAutoScroll={shouldSuppressListAutoScroll}/>
             </Col>
             <Col xs={12} md={8} style={{overflow: 'hidden'}}>
-
               {selectedMember && (
                 <div>
                   <Member key={`memberdiv${selectedMember.id}`}
@@ -325,42 +324,42 @@ class MembershipPage extends Component {
                     ]}>
                     Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
                   </Dialog>
-                  <Dialog
-                    title={(
-                      <div>
-                        <span>Bulk Search</span>
-                          <SelectField
-                            style={{float:'right', margin: '5px'}}
-                            floatingLabelText="Search On"
-                            value={this.state.bulkSearchMode}
-                            onChange={(event, index, value) => this.setState({bulkSearchMode: value})}
-                            >
-                            { bulk_search_modes.map((mode) => (
-                                <MenuItem
-                                  key={mode}
-                                  insetChildren={true}
-                                  value={mode}
-                                  primaryText={mode}
-                                />
-                            ))}
-                          </SelectField>
-                          <div style={{clear: 'both'}} />
-                      </div>
-                    )}
-                    modal={true}
-                    open={this.state.bulkSearchDialogOpen}
-                    actions={[
-                      <RaisedButton primary={true} labelColor='white' label="Search" onClick={(button) => this.executeBulkSearch()} />,
-                      <RaisedButton style={{marginLeft: '10px'}} secondary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
-                    ]}>
-                    <p>Paste a list of {this.state.bulkSearchMode} to match, one per line</p>
-                    <label>{this.state.bulkSearchMode}</label>
-                    <div>
-                      <textarea name="bulk-search-text" ref={(el) => { this.bulkSearchTextField = el }} style={{width:'100%'}} rows={10}/>
-                    </div>
-                  </Dialog>
                 </div>
               )}
+              <Dialog
+                title={(
+                  <div>
+                    <span>Bulk Search</span>
+                      <SelectField
+                        style={{float:'right', margin: '5px'}}
+                        floatingLabelText="Search On"
+                        value={this.state.bulkSearchMode}
+                        onChange={(event, index, value) => this.setState({bulkSearchMode: value})}
+                        >
+                        { bulk_search_modes.map((mode) => (
+                            <MenuItem
+                              key={mode}
+                              insetChildren={true}
+                              value={mode}
+                              primaryText={mode}
+                            />
+                        ))}
+                      </SelectField>
+                      <div style={{clear: 'both'}} />
+                  </div>
+                )}
+                modal={true}
+                open={this.state.bulkSearchDialogOpen}
+                actions={[
+                  <RaisedButton primary={true} labelColor='white' label="Search" onClick={(button) => this.executeBulkSearch()} />,
+                  <RaisedButton style={{marginLeft: '10px'}} secondary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
+                ]}>
+                <p>Paste a list of {this.state.bulkSearchMode} to match, one per line</p>
+                <label>{this.state.bulkSearchMode}</label>
+                <div>
+                  <textarea name="bulk-search-text" ref={(el) => { this.bulkSearchTextField = el }} style={{width:'100%'}} rows={10}/>
+                </div>
+              </Dialog>
             </Col>
           </Row>
         </Grid>
