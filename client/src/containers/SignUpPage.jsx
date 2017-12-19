@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
+import { Card } from 'material-ui/Card';
 import {connect} from 'react-redux';
 import * as userActions from '../actions/user-actions';
 import SignUpForm from '../components/auth/SignUpForm';
 import Auth from '../modules/Auth';
 import Validator from '../../../shared-modules/Validator';
+import communityDefaults from '../../../config/community-defaults';
 class SignUpPage extends React.Component {
 
   /**
@@ -126,12 +128,18 @@ class SignUpPage extends React.Component {
   render() {
     return (
       <div className="jumbotron auth-panel">
+        {false && (
         <SignUpForm
           onSubmit={this.processForm}
           onChange={this.changeUser}
           errors={this.state.errors}
           user={this.state.user}
         />
+        )}
+        <Card className="container text-center" style={{backgroundColor:'rgba(255,255,255,0.9)', padding:'20px'}}>
+          <p>Access to the {communityDefaults.name} is private and can only be granted by an administrator.  Please <a href={`mailto:${communityDefaults.supportEmail.address}`}>send an email to {communityDefaults.supportEmail.address}</a> to request an invitation.  </p>
+          <p>Please be sure to include your full name and community address.</p>
+        </Card>
       </div>
     );
   }
