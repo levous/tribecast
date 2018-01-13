@@ -31,7 +31,7 @@ let MemberSchema = new Mongoose.Schema({
     type: String,
     validate: {
       validator: (value) => {
-        /farmette|mado|selborne|grange|swann ridge/i.test(value);
+        /^(farmette|mado|((upper|lower)\s)*selborne|((hillside)\s)grange|swann ridge|gainey lane|crossroads|textile lofts)$/i.test(value);
       },
       message: 'Invalid neighborhood'
     }
