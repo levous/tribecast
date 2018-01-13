@@ -1,6 +1,7 @@
 import {member_action_types, member_data_sources, member_sort_keys} from '../actions/member-actions.js';
 import {user_action_types} from '../actions/user-actions.js';
 import {NotificationManager} from 'react-notifications';
+import PapaParse from 'papaparse';
 import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
 import PhoneNumber from 'awesome-phonenumber';
@@ -350,6 +351,56 @@ let memberApp = function(state = initialState, action) {
         invites: action.inviteResponse,
         invites_loading: false
       });
+    case member_action_types.GENERATE_CSV_FROM_MEMBERS:{
+      // flatten property address and alt address for csv export
+      const flattenedMemberList = action.memberList.map( member => {
+        let flattened = {};
+        Object.keys(member).forEach(function(key) {
+            switch(key)
+            {
+              case 'propertyAddress': {
+                const propAddress = member.propertyAddress;
+                Object.keys(propAddress).forEach(function(keyPa) {
+                  flattened[keyPa] = propAddress[keyPa];
+                });
+                break;
+              }
+              case 'alternateAddress': {
+                const altAddress = member.alternateAddress;
+                Object.keys(altAddress).forEach(function(keyAa) {
+                  flattened[`alt_${keyAa}`] = altAddress[keyAa];
+                });
+                break;
+              }
+              /* skip all these */
+              case '_id':
+              case '__v':
+              case 'createdAt':
+              case 'inviteCount':
+              case 'lastInvitedAt':
+              case 'memberUserKey':
+              case 'updatedAt':
+                break;
+              default: {
+                flattened[key] = member[key];
+                break;
+              }
+            }
+        });
+        return flattened;
+      });
+
+      const csv = PapaParse.unparse(flattenedMemberList);
+      return Object.assign({}, state, {
+        csv_member_download: csv
+      });
+    }
+
+    case member_action_types.CSV_DOWNLOADED:
+      return Object.assign({}, state, {
+        csv_member_download: null
+      });
+
     case user_action_types.USER_LOGGED_OUT:
       return initialState;
     default:

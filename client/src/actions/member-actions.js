@@ -18,6 +18,8 @@ export const member_action_types = {
   INVITE_MEMBER_RESPONSE_RECEIVED: 'INVITE_MEMBER_RESPONSE_RECEIVED',
   UPLOAD_DATA_REQUEST_MATCH_CHECK: 'MEMBER_UPLOAD_MATCH_CHECK',
   UPLOAD_DATA_RECEIVE_MATCH_CHECK: 'MEMBER_UPLOAD_MATCH_CHECK_RCV',
+  GENERATE_CSV_FROM_MEMBERS: 'GENERATE_CSV_FROM_MEMBERS',
+  CSV_DOWNLOADED: 'CSV_DOWNLOADED',
   CANCEL_LOADING: 'MEMBER_CANCEL_LOADING',
   SET_SORT: 'MEMBER_SET_SORT'
 };
@@ -89,6 +91,14 @@ export function inviteMember(member){
   return {type: member_action_types.INVITE_MEMBER, member};
 }
 
-export function setMemberSort(){
+export function setMemberSort(sort){
   return {type: member_action_types.MEMBER_SET_SORT, sort};
+}
+
+export function generateCsvFromMemberlist(memberList){
+  return {type: member_action_types.GENERATE_CSV_FROM_MEMBERS, memberList};
+}
+
+export function csvFromMemberlistDownloaded(){
+  return {type: member_action_types.CSV_DOWNLOADED};
 }

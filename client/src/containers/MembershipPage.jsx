@@ -63,6 +63,13 @@ class MembershipPage extends Component {
     }
   }
 
+  componentDidUpdate() {
+
+    if(this.props.csvMemberDownload) {
+      this.downloadMemberCsvMemberList(this.props.csvMemberDownload);
+    }
+  }
+
   handleMemberItemSelection(member) {
     this.setState({editingSelectedMember: false});
     this.props.actions.selectMember(member);
@@ -93,8 +100,12 @@ class MembershipPage extends Component {
   }
 
   handleExportTouchTap() {
-    var csv = PapaParse.unparse(this.state.filteredList);
+    this.props.actions.generateCsvFromMemberlist(this.state.filteredList);
+  }
 
+  downloadMemberCsvMemberList(csv) {
+
+    // this happens when the file is passed as a prop
     var blob = new Blob([csv]);
 		var a = window.document.createElement("a");
     a.href = window.URL.createObjectURL(blob, {type: "text/csv"});
@@ -102,6 +113,7 @@ class MembershipPage extends Component {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    this.props.actions.csvFromMemberlistDownloaded();
   }
 
   presentBulkSearch(present) {
@@ -240,7 +252,7 @@ class MembershipPage extends Component {
        weight: 0.1
     }];
 
-
+    const csvURL = this.props.csvMemberDownload ? window.URL.createObjectURL(new Blob([this.props.csvMemberDownload]), {type: "text/csv"}) : null;
     let adminButtons = ''
     if(isAdmin){
       adminButtons = (
@@ -278,6 +290,15 @@ class MembershipPage extends Component {
         )}
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {adminButtons}
+        {/* This panel is a fail-safe as we're doing some finicky browser tricks to invoke a file download.  The panel will close once the trick invokes */}
+        {this.props.csvMemberDownload && (
+          <Panel collapsible={true} defaultExpanded={true} header='CSV Export' bsStyle="info">
+            <p>
+              If the file didn't automatically download, please click here:
+              <a href={csvURL} download="export.csv" onClick={() => this.downloadMemberCsvMemberList(this.props.csvMemberDownload) }>Download CSV</a>
+            </p>
+          </Panel>
+        )}
 
         <div style={{clear:'both', marginTop:'5px'}}></div>
         <Grid>
@@ -380,7 +401,8 @@ function mapStateToProps(state) {
     dataSource: state.memberApp.dataSource,
     importNote: state.memberApp.importNote,
     userData: state.userApp.userData,
-    loading: state.memberApp.loading
+    loading: state.memberApp.loading,
+    csvMemberDownload: state.memberApp.csv_member_download
   };
 }
 
