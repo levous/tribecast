@@ -13,6 +13,11 @@ Uses: [lorenwest/node-config](https://github.com/lorenwest/node-config/wiki/Conf
 
 Node-config reads configuration files in the ./config directory for the running process, typically the application root.  This happens to be outside of the *server* directory.  **TODO: review whether these config files will be exposed to the React client app and fix the config strategy to correct this.**
 
+## Logging
+
+Uses: [winstonjs/winston](https://github.com/winstonjs/winston)
+logging to MongoDB and Loggly
+
 ### Email (SendMail) config
 * Suppress Email Sends
 To suppress attempt to send emails from the service, add or amend the file `config/local.json` to include the JSON key/value `"suppressEmail": true`

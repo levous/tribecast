@@ -2,7 +2,7 @@
   "dbUri": "mongodb://localhost/tribecast-dev", //"mongodb://heroku:s3renBE@ds151008.mlab.com:51008/tribecast"
   "jwtSecret": "a secret phrase!!",
   "logger": {
-    "logLevel": "debug",
+    "logLevel": "warn",
     "Loggly": {
       "token": "89bbf1fb-38b6-4803-b61e-f9b320b65f50",
       "subdomain": "rustyzarse"

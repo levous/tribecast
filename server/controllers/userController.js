@@ -45,7 +45,7 @@ exports.forgotPassword = function(email) {
       }
 
       user.passwordResetToken = uuid();
-      user.passwordResetTokenExpires = Date.now() + 3600000; // 1 hour
+      user.passwordResetTokenExpires = Date.now() + (3600000 * 12); // 12 hour
       log.info(`forgotPassword - reset token: ${user.passwordResetToken}`);
       return user.save();
     })
@@ -97,7 +97,7 @@ exports.createUser = function(userData) {
 exports.generateInvite = function(member) {
 
   let memberUser;
-  const expireDuration = 7 * 24 * 3600000; // 1 week
+  const expireDuration = 4 * 7 * 24 * 3600000; // 4 weeks
   return this.findByEmail(member.email)
     .then(user => {
 

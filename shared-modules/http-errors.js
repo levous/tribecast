@@ -38,6 +38,13 @@ errors.InvalidArgumentError = class InvalidArgumentError extends Error {
     this.name = 'InvalidArgumentError';
   }
 };
+errors.MissingParameterError = class MissingParameterError extends Error {
+  constructor(...args) {
+    super(...args);
+    this.statusCode = 409;
+    this.name = 'MissingParameterError';
+  }
+}
 module.exports = errors;
 
 /*
