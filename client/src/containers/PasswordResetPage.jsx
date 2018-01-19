@@ -1,13 +1,26 @@
 import React, { PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
+import Dialog from 'material-ui/Dialog';
 import {connect} from 'react-redux';
 import * as allActions from '../actions';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import {NotificationContainer} from 'react-notifications';
 import TextField from '../components/forms/ThemedTextField.jsx';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
+import Validator from '../../../shared-modules/Validator';
+import Logger from '../modules/Logger';
+
+/*
+TODO:
+link and instructions to present "reset password"
+add email to fields and errors
+close dialog when sent
+add cancel button to dialog
+send reinvite!
+*/
 
 class PasswordResetPage extends React.Component {
 
@@ -18,7 +31,11 @@ class PasswordResetPage extends React.Component {
     super(props, context);
 
     // set the initial component state
-    this.state = {errors:{}, fields:{}};
+    this.state = {
+      errors:{},
+      fields:{email:'', password: '', passwordConfirmation: ''},
+      sendResetDialogOpen: false
+    };
 
     this.auth = new Auth(context.store);
     this.handleUpdatePassword = this.handleUpdatePassword.bind(this);
@@ -33,6 +50,22 @@ class PasswordResetPage extends React.Component {
     }
   }
 
+  sendResetPasswordLink() {
+    // valid8 email and only send when there is one there
+
+    if (!Validator.isValidEmail(this.state.fields.email)) {
+      this.setState({
+        errors: { email: 'Email address is Not Valid', summary: 'That email address doesn\'t look right.  Please provide a valid email address for password reset.'}
+      });
+      return;
+    }
+
+    Logger.logWarn({description: `${this.state.fields.email} resetting password`});
+    this.props.actions.resetPassword(this.state.fields.email);
+    this.setState({sendResetDialogOpen: false});
+  }
+
+
   textFieldChanged(event) {
     const field = event.target.name;
     const {fields, errors} = this.state;
@@ -46,6 +79,10 @@ class PasswordResetPage extends React.Component {
       fields,
       errors
     });
+  }
+
+  handleNewResetClick(){
+    this.setState({sendResetDialogOpen: true});
   }
 
   handleUpdatePassword(){
@@ -65,8 +102,6 @@ class PasswordResetPage extends React.Component {
 
     this.props.actions.updateUserPassword(fields.password, this.props.params.token);
   }
-
-
 
   render() {
     const invitationMessageHtml = (
@@ -89,7 +124,7 @@ class PasswordResetPage extends React.Component {
 
       <div className="jumbotron auth-panel">
         <Card className="text-center" style={{backgroundColor:'rgba(255,255,255,0.9)', padding:'20px'}}>
-          <p>{userMessage}</p>
+          <div>{userMessage}</div>
           <div>
             <TextField
               floatingLabelText="New Password"
@@ -111,7 +146,30 @@ class PasswordResetPage extends React.Component {
             />
           </div>
           <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
+          <p style={{fontSize: '.7em', marginTop: '10px'}}>
+            If you have trouble with an expired reset link, please <a onClick={ (e) => { e.preventDefault(); this.handleNewResetClick() } } >generate a new reset link </a>.
+          </p>
         </Card>
+
+        <Dialog
+          title="Send Forgot Password Link"
+          modal={true}
+          open={this.state.sendResetDialogOpen}
+          actions={[<RaisedButton label='Cancel' onClick={(button) => this.setState({sendResetDialogOpen: false})} />,<RaisedButton style={{marginLeft: '10px'}} primary={true} label='Send Reset Link' onClick={(button) => this.sendResetPasswordLink()} />]}
+          >
+
+          <p>Please enter your email address and I'll send you a new reset link</p>
+          {this.state.errors.summary && <p className="error-message">{this.state.errors.summary}</p>}
+          <TextField
+            floatingLabelText="Email Address"
+            type="text"
+            name="email"
+            onChange={this.textFieldChanged}
+            errorText={errors.email}
+            value={fields.email}
+          />
+
+        </Dialog>
       </div>
 
     );
