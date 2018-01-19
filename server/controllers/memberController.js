@@ -16,6 +16,25 @@ const communityDefaults = require('../../config/community-defaults');
 // Use bluebird promises
 Mongoose.Promise = Promise;
 
+const copyWithTrimmedFields = function(member) {
+
+  // the following method mutates it's target
+  const deepTrim = function(obj) {
+    for (var prop in obj) {
+      var value = obj[prop], type = typeof value;
+      if (value != null && (type === "string" || type === "object") && obj.hasOwnProperty(prop)) {
+        if (type == "object") {
+          deepTrim(obj[prop]);
+        } else {
+          obj[prop] = obj[prop].trim();
+        }
+      }
+    }
+  }
+  let copy = Object.assign({}, member);
+  deepTrim(copy);
+  return copy;
+}
 /**
  * Get all Members
  * @returns (Promise) [Member]
@@ -128,10 +147,10 @@ exports.publish = function(members){
  *         ]
  */
 exports.checkMatches = function(members){
-  console.log(members);
   if(!Array.isArray(members)) return Promise.reject(new errors.InvalidArgumentError('Expected an array of members'));
 
-  const batch = members.map(member => {
+  const trimmedImport = members.map(copyWithTrimmedFields); // trim all leading trailing whitespace.  Spreadsheets suck
+  const batch = trimmedImport.map(member => {
     let queryParams = [];
 
     //sanity check
@@ -163,7 +182,6 @@ exports.checkMatches = function(members){
   //  the originating record.  Construct a not found error if the indexed result was null for a member with an _id
   return Promise.all(batch)
     .then(matchResults => {
-
       let results = matchResults.map((match, i) => {
         const member = members[i];
         if(!match) return {matchingFields: [], newRecord:member};
