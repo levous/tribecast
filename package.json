@@ -4,8 +4,8 @@
   "description": "Manages membership in a tribe of cool cats",
   "main": "index.js",
   "engines": {
-    "node": ">=8.9.4",
-    "npm": "~5.6.0"
+    "node": ">=7.3.0",
+    "npm": "~4.3.0"
   },
   "scripts": {
     "postinstall": "NODE_ENV=production webpack --progress",
