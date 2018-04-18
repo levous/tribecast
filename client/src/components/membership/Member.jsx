@@ -2,6 +2,7 @@ import React, {PropTypes, Component} from 'react';
 import ReactDOM from 'react-dom'
 import TweenMax from 'gsap'
 import {Tabs, Tab} from 'material-ui/Tabs';
+import Toggle from 'material-ui/Toggle';
 import SwipeableViews from 'react-swipeable-views';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -19,7 +20,8 @@ export default class Member extends Component {
     super()
     this.state = {
       swipeIndex: 0,
-      profileImageEditing: false
+      profileImageEditing: false,
+      recordToggled: false
 		};
   }
 
@@ -63,8 +65,14 @@ export default class Member extends Component {
     this.setState({profileImageEditing: false});
   }
 
+  handleRecordToggle(toggled) {
+    this.setState({recordToggled: toggled});
+    return toggled;
+  }
+
   render() {
-    const member = this.props.member;
+
+    const member = this.state.recordToggled ? this.props.member.apiMatch.apiRecord : this.props.member;
     const editing = this.props.editing;
     const hasProfilePhoto = member.profilePhoto && member.profilePhoto.thumbnailURL;
     const editButtonText = editing ? 'Done': 'Edit'
@@ -98,13 +106,43 @@ export default class Member extends Component {
       return '';
     })();
 
+    //TODO: refactor me!  Probably a separate control and not so ugly
+    const toggleLabelStyle = (isAPI) => {
+      let style = {};
+      if((isAPI && this.state.recordToggled) || (!isAPI && !this.state.recordToggled)) {
+        style.color = 'green';
+      }
+      style.textAlign = isAPI ? 'left': 'right'
+      return style;
+    }
+
     return (
       <div key={`member${member.id}`} style={{}}>
         {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
         {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
         {profileIcon}
+        { this.props.member.apiMatch && this.props.member.apiMatch.apiRecord && (
+            <div style={{ maxWidth: 250, fontSize: '0.7em' }}>
+              <table>
+                <tr>
+                  <td style={toggleLabelStyle(false)}>Imported Record</td>
+                  <td style={{padding: '18px 5px 0px'}}>
+                    <Toggle
+                      style={{marginBottom: 16}}
+                      toggled={this.state.recordToggled}
+                      onToggle={(e, toggled) => { this.handleRecordToggle(toggled) }}
+                    />
+                  </td>
+                  <td style={toggleLabelStyle(true)}>API Record</td>
+                </tr>
+              </table>
+            </div>
+
+          )
+        }
         <StyledLabel htmlFor='first-name' text='name' />
         <h2 style={{marginTop: 0}}>
+
           <PropertyTextInput object={member} propertySelectorPath='firstName'
             placeholder='First Name' editing={editing} canEdit={canEdit} autoFocus={true}
             onChange={(newMember) => this.handlePropertyChange(newMember)} id='first-name'/>
@@ -116,7 +154,6 @@ export default class Member extends Component {
           <Tab label="Contact" value={0} />
           <Tab label="People" value={1} />
           <Tab label="Personal" value={2} />
-
         </Tabs>
 
         {hasProfilePhoto && (
@@ -166,7 +203,6 @@ export default class Member extends Component {
           />
 
         </SwipeableViews>
-
 
         <Dialog
           title="Profile Photo Editor"

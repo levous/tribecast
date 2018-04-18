@@ -202,6 +202,10 @@ let memberApp = function(state = initialState, action) {
 
     case member_action_types.UPLOAD_DATA_RECEIVED:
       NotificationManager.success('Imported data loaded!');
+      const trimIfString = (value) => {
+        if(value && typeof value === 'string') return value.trim();
+        return value;
+      }
 
       const importData = action.data;
       const fieldMap = action.fieldMap;
@@ -210,6 +214,8 @@ let memberApp = function(state = initialState, action) {
       let tempId =  Math.floor(Date.now()/1000);
 
       let members = importData.map(record => {
+
+
         /*
         Lot
         Address
@@ -263,17 +269,17 @@ let memberApp = function(state = initialState, action) {
 
         const member = {
           id: ++tempId,
-          firstName:    record[fieldMap['First Name']],
-          lastName:     record[fieldMap['Last Name']],
-          nameSuffix:   record[fieldMap['Name Suffix']],
+          firstName:    trimIfString(record[fieldMap['First Name']]),
+          lastName:     trimIfString(record[fieldMap['Last Name']]),
+          nameSuffix:   trimIfString(record[fieldMap['Name Suffix']]),
           homePhone:    homePhone && homePhone.isValid() ? homePhone.getNumber( 'national' ): null,
           mobilePhone:  mobilePhone && mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): null,
           officePhone:  officePhone && officePhone.isValid() ? officePhone.getNumber( 'national' ): null,
-          email:        record[fieldMap['Email']],
-          neighborhood: record[fieldMap['Neighborhood']],
-          lotCode: record[fieldMap['Lot']],
+          email:        trimIfString(record[fieldMap['Email']]),
+          neighborhood: trimIfString(record[fieldMap['Neighborhood']]),
+          lotCode: trimIfString(record[fieldMap['Lot']]),
           propertyAddress: {
-            street: record[fieldMap['Property Address']],
+            street: trimIfString(record[fieldMap['Property Address']]),
             city :  communityDefaults.location.city,
             state:  communityDefaults.location.state,
             zip  :  communityDefaults.location.zip
