@@ -13,17 +13,23 @@ const phoneValidator = {
 };
 
 // define the Member model schema
+// I'm wishing I'd defined fields nounAdjective like phoneMobile and nameLast but oh well.
 let MemberSchema = new Mongoose.Schema({
   memberUserKey: String,
   email: String,
   emailStatus:  { type: EmailStatusSchema, default: EmailStatusSchema },
   firstName: String,
   lastName: String,
+  nameSuffix: String,
   mobilePhone: {
     type: String,
     validate: phoneValidator
   },
   homePhone: {
+    type: String,
+    validate: phoneValidator
+  },
+  officePhone: {
     type: String,
     validate: phoneValidator
   },
@@ -41,11 +47,13 @@ let MemberSchema = new Mongoose.Schema({
   alternateAddress: { type: AddressSchema, default: AddressSchema },
   originallyFrom: String,
   profession: String,
+  employer: String,
   passionsInterests:String,
   hobbies:String,
   children: String,
   adultResidents: String,
   websiteURL: String,
+  residentSinceDate: Date,
   optIn: Boolean,
   directorySubscription: Boolean,
   recordOriginNote: String,

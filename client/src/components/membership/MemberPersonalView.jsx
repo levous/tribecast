@@ -22,7 +22,13 @@ const MemberPersonalView = ({
         object={member} propertySelectorPath='profession'
         placeholder='What do you do or, if retired, did you do professionally?' editing={editing} canEdit={canEdit}
         onChange={onPropertyChange} id='profession'/>
-
+    </div>
+    <div>
+      <StyledLabel htmlFor='employer' text='employer/company' />
+      <PropertyTextInput
+        object={member} propertySelectorPath='employer'
+        placeholder='Employer or Company' editing={editing} canEdit={canEdit}
+        onChange={onPropertyChange} id='employer'/>
     </div>
     <div>
       <StyledLabel htmlFor='passions' text='passions/interests' />

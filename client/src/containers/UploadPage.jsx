@@ -24,7 +24,7 @@ class UploadPage extends React.Component {
     PapaParse.parse(file, {
       header: true,
       complete: results => {
-        
+
         const records = results.data.filter(row => {
           // ensure not an empty row
             for(const field in row){
@@ -54,8 +54,10 @@ class UploadPage extends React.Component {
       'Email': null,
       'First Name': null,
       'Last Name': null,
+      'Name Suffix': null,
       'Home Phone': null,
       'Mobile Phone': null,
+      'Office Phone': null,
       'Lot': null,
       'Property Address': null,
       'Alternate Address': null,
@@ -64,9 +66,11 @@ class UploadPage extends React.Component {
       'Adult Residents': null,
       'Children': null,
       'Opt-In Directory': null,
+      'Move-In Date': null,
       'Originally From': null,
       'Passions/Interests': null,
       'Profession': null,
+      'Employer': null,
       'Website': null
     };
 

@@ -59,14 +59,16 @@ export default class Member extends Component {
                   <caption>legend</caption>
                   <tbody>
                     <tr><td style={{backgroundColor:'#daf1d0'}}>new member</td><td rowSpan='3' style={{padding:'10px', fontSize:'0.7em'}}>
-                      New members will be added.  Confidently matched records already exist and will be updated.  Possible matches might result in duplicates.
+                      New members will be added.  Confidently matched records already exist and will be updated.  Possible matches could result in unintended overwrite.
                       <br/>
                       <IconButton onTouchTap={this.toggleDevNote}>
                         <IconCake />
                       </IconButton>
-                    </td></tr>
-                  <tr><td style={{backgroundColor:'#cdecf0', width: '150px'}}>confident match</td></tr>
+                      </td>
+                    </tr>
+                    <tr><td style={{backgroundColor:'#cdecf0', width: '150px'}}>confident match</td></tr>
                     <tr><td style={{backgroundColor:'#fcf8e3'}}>possible match</td></tr>
+                    <tr><td style={{backgroundColor:'#ffdddd'}}>failed validation, bad record</td></tr>
                   </tbody>
                 </table>
 

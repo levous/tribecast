@@ -184,9 +184,12 @@ exports.checkMatches = function(members){
     .then(matchResults => {
       let results = matchResults.map((match, i) => {
         const member = members[i];
-        if(!match) return {matchingFields: [], newRecord:member};
-        let fieldMatches = [];
+        const tempMember = new Member(member);
 
+        const validationErrors = tempMember.validateSync();
+        console.log('>>>> validationErrors',validationErrors);
+        if(!match) return {matchingFields: [], newRecord:member, validationErrors};
+        let fieldMatches = [];
 
         if(match && match.email === member.email) {
           fieldMatches.push('email');
@@ -207,7 +210,8 @@ exports.checkMatches = function(members){
         return {
           matchingFields: fieldMatches,
           newRecord:member,
-          oldRecord:match
+          oldRecord:match,
+          validationErrors: validationErrors
         }
 
       });
@@ -237,6 +241,11 @@ exports.update = function(id, member){
   if(member.homePhone) {
     let homePhone = PhoneNumber(member.homePhone, 'US');
     member.homePhone = homePhone.getNumber( 'national' );
+  }
+
+  if(member.officePhone) {
+    let officePhone = new PhoneNumber(member.officePhone, 'US');
+    member.officePhone = officePhone.getNumber( 'national' );
   }
 
   const query = {'_id': id };

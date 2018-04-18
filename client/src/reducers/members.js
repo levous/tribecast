@@ -222,11 +222,14 @@ let memberApp = function(state = initialState, action) {
         Home Phone
         Last name
         Mobile Phone
+        Office Phone
         Neighborhood
         Opt-In Directory
+        Move-In Date
         Originally From
         Passions/Interests
         Profession
+        Employer
         Website
         */
         let altAddress = record[fieldMap['Alternate Address']];
@@ -256,13 +259,16 @@ let memberApp = function(state = initialState, action) {
 
         let mobilePhone = record[fieldMap['Mobile Phone']] ? new PhoneNumber(record[fieldMap['Mobile Phone']], 'US') : null;
         let homePhone = record[fieldMap['Home Phone']] ? new PhoneNumber(record[fieldMap[fieldMap['Home Phone']]], 'US') : null;
+        let officePhone = record[fieldMap['Office Phone']] ? new PhoneNumber(record[fieldMap[fieldMap['Office Phone']]], 'US') : null;
 
         const member = {
           id: ++tempId,
           firstName:    record[fieldMap['First Name']],
           lastName:     record[fieldMap['Last Name']],
+          nameSuffix:   record[fieldMap['Name Suffix']],
           homePhone:    homePhone && homePhone.isValid() ? homePhone.getNumber( 'national' ): null,
           mobilePhone:  mobilePhone && mobilePhone.isValid() ? mobilePhone.getNumber( 'national' ): null,
+          officePhone:  officePhone && officePhone.isValid() ? officePhone.getNumber( 'national' ): null,
           email:        record[fieldMap['Email']],
           neighborhood: record[fieldMap['Neighborhood']],
           lotCode: record[fieldMap['Lot']],
@@ -274,6 +280,7 @@ let memberApp = function(state = initialState, action) {
           },
           alternateAddress: altAddress,
           optIn:        record[fieldMap['Opt-In Directory']],
+          residentSinceDate: record[fieldMap['Move-In Date']],
           importNote:   importNote
         };
 
@@ -295,7 +302,8 @@ let memberApp = function(state = initialState, action) {
           {
             apiMatch: {
               matchingFields: match.matchingFields,
-              apiRecord: match.oldRecord
+              apiRecord: match.oldRecord,
+              validationErrors: match.validationErrors
             }
           }
         )

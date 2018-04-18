@@ -75,6 +75,9 @@ export default class MemberList extends Component {
       },
       verifiedNewRecord: {
         backgroundColor: '#daf1d0'
+      },
+      failedValidationRecord: {
+        backgroundColor: '#ffdddd'
       }
     };
 
@@ -86,7 +89,9 @@ export default class MemberList extends Component {
       let style = (this.props.selectedMemberId === member.id) ? styles.selectedRow : {};
 
       if(member.apiMatch) {
-        if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
+        if(member.validationErrors){
+            style = Object.assign({}, style, styles.failedValidationRecord);
+        }else if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
           style = Object.assign({}, style, styles.verifiedNewRecord);
         }else if(member.apiMatch.apiRecord._id === member.id || member.apiMatch.matchingFields.length > 2) {
           style = Object.assign({}, style, styles.confidentlyMatchedRecord);
@@ -113,7 +118,9 @@ export default class MemberList extends Component {
 
 
               const avatarSrc = member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
-          
+              const matchTag = member.apiMatch && member.apiMatch.matchingFields && member.apiMatch.matchingFields.length > 0 ? (
+                <div style={{float: 'right', fontSize: '0.8em', color: '#bbbbbb', backgroundColor: 'rgba(255, 255, 255, 0.3)', border: '1px solid rgba(255, 255, 255, 0.3)'}}><span style={{fontWeight: 'bold', fontSize: '0.7em'}}>match</span>: {member.apiMatch.matchingFields.join(', ')}</div>
+              ) : '';
 
               return (
               <ListItem key={`mem${i}`} ref={ref => this.listItems[i] = ref}
@@ -124,7 +131,12 @@ export default class MemberList extends Component {
                     name={`${member.firstName} ${member.lastName}`}
                     round={true} size={40} />
                 }
-                primaryText={`${member.firstName} ${member.lastName}`}
+                primaryText={
+                  <div>
+                  {`${member.firstName} ${member.lastName}`}
+                  {matchTag}
+                  </div>
+                }
                 secondaryText={member.propertyAddress && member.propertyAddress.street}
                 onTouchTap={() => this.handleItemTouchTap(member)}
                 style={computeStyle(member)}
