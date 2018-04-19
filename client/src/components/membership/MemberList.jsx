@@ -141,7 +141,8 @@ class MemberList extends Component {
                 }
                 primaryText={
                   <div>
-                  {`${member.firstName} ${member.lastName} ${member.nameSuffix}`}
+                  {`${member.firstName} ${member.lastName}`}
+                  {member.nameSuffix && ` {member.nameSuffix}`}
                   {matchTag}
                   </div>
                 }
