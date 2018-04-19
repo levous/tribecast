@@ -222,6 +222,31 @@ class MembershipPage extends Component {
     this.setState({editingSelectedMember: editing});
   }
 
+  handleNextMatchType(recordImportMatchType) {
+    //const filteredList = this.props.members.filter(member => member.)
+    const indexOfSelected = this.props.members.findIndex(member => member.id === this.props.selectedMember.id);
+    const nextMatch = null;
+
+    console.log('selected mem', this.props.selectedMember);
+
+    console.log('selected id', this.props.selectedMember.id);
+
+    console.log('selectedIndex', indexOfSelected);
+    // search from selected to end
+    for (let i = indexOfSelected + 1; i < this.props.members.length; i++) {
+      if(MemberList.memberMatchType(this.props.members[i]) === recordImportMatchType) return this.props.actions.selectMember(this.props.members[i]);
+    }
+
+    console.log('didnt find', indexOfSelected);
+    // search from beginning to selected
+    for (let i = 0; i < indexOfSelected; i++) {
+      if(MemberList.memberMatchType(this.props.members[i]) === recordImportMatchType) return this.props.actions.selectMember(this.props.members[i]);
+    }
+
+    // reached here?  There are none
+    NotificationManager.info('There are no imported records with that match type');
+  }
+
   render() {
 
     const {selectedMember, userData, loading} = this.props;
@@ -280,7 +305,8 @@ class MembershipPage extends Component {
         )}
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
-          onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
+          onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)}
+          onNextMatchType={matchType => this.handleNextMatchType(matchType)} />
         {this.state.bulkSearchResultsMeta && (
           <Panel collapsible={true} defaultExpanded={true} header='Bulk Search Results' bsStyle="info">
             <p>Searched for: {this.state.bulkSearchResultsMeta.names.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>

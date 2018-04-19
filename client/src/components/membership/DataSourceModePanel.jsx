@@ -1,20 +1,24 @@
 import React, {PropTypes, Component} from 'react';
 import {Grid, Row, Col, Panel, Button} from 'react-bootstrap'
 import FlatButton from 'material-ui/FlatButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import IconUpload from 'material-ui/svg-icons/file/file-upload';
 import IconCancel from 'material-ui/svg-icons/navigation/cancel';
 import IconButton from 'material-ui/IconButton';
+import IconForward from 'material-ui/svg-icons/content/forward';
 import IconCake from 'material-ui/svg-icons/social/cake';
 import Dialog from 'material-ui/Dialog';
 import {member_data_sources} from '../../actions/member-actions';
 import communityDefaults from '../../../../config/community-defaults';
+import MemberList from './MemberList'; // only to use statics
 
 export default class Member extends Component {
 
   propTypes: {
     dataSource: PropTypes.string.required,
     onModeAccept: PropTypes.func.required,
-    onModeCancel: PropTypes.func.required
+    onModeCancel: PropTypes.func.required,
+    onNextMatchType: PropTypes.func.required
   }
 
   defaultProps: {
@@ -37,6 +41,12 @@ export default class Member extends Component {
     this.props.onModeCancel(this.props.dataSource);
   }
 
+  handleNextMatchTypeTapped(recordImportMatchType) {
+    this.props.onNextMatchType(recordImportMatchType);
+  }
+
+
+
   render(){
       switch (this.props.dataSource) {
         case member_data_sources.SEED:
@@ -55,10 +65,13 @@ export default class Member extends Component {
                 header='CSV Import Preview Mode'
                 bsStyle="warning">
                 You are viewing a preview of your import.  Please review and publish to {communityDefaults.name} or cancel.
-                <table cellPadding={10}>
+                <table cellPadding={10} style={{fontSize: '0.7em', fontWeight: 'bold'}}>
                   <caption>legend</caption>
                   <tbody>
-                    <tr><td style={{backgroundColor:'#daf1d0'}}>new member</td><td rowSpan='3' style={{padding:'10px', fontSize:'0.7em'}}>
+                    <tr>
+                      <td style={{backgroundColor:'#daf1d0'}}>new member</td>
+                      <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.notMatched)}><IconForward /></FloatingActionButton></td>
+                      <td rowSpan='4' style={{padding:'10px', fontSize:'0.7em'}}>
                       New members will be added.  Confidently matched records already exist and will be updated.  Possible matches could result in unintended overwrite.
                       <br/>
                       <IconButton onTouchTap={this.toggleDevNote}>
@@ -66,9 +79,18 @@ export default class Member extends Component {
                       </IconButton>
                       </td>
                     </tr>
-                    <tr><td style={{backgroundColor:'#cdecf0', width: '150px'}}>confident match</td></tr>
-                    <tr><td style={{backgroundColor:'#fcf8e3'}}>possible match</td></tr>
-                    <tr><td style={{backgroundColor:'#ffdddd'}}>failed validation, bad record</td></tr>
+                    <tr>
+                      <td style={{backgroundColor:'#cdecf0', width: '170px'}}>confident match</td>
+                      <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.confidentlyMatchedRecord)}><IconForward /></FloatingActionButton></td>
+                    </tr>
+                    <tr>
+                      <td style={{backgroundColor:'#fcf8e3'}}>possible match</td>
+                        <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.questionablyMatchedRecord)}><IconForward /></FloatingActionButton></td>
+                    </tr>
+                    <tr>
+                      <td style={{backgroundColor:'#ffdddd'}}>failed validation, bad record</td>
+                      <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.invalid)}><IconForward /></FloatingActionButton></td>
+                    </tr>
                   </tbody>
                 </table>
 

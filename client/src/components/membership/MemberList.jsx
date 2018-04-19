@@ -7,7 +7,7 @@ import scrollIntoView from "scroll-into-view";
 import defaults from '../../../../config/community-defaults';
 //TODO: convert styles.listStyle to className
 
-export default class MemberList extends Component {
+class MemberList extends Component {
   constructor(props, context) {
     super(props, context);
     this.listItems = [];
@@ -15,6 +15,7 @@ export default class MemberList extends Component {
     this.state = {
       shouldScrollTop: false
     };
+
   }
 
   scrollSelectedItemIntoView(targetMemberId) {
@@ -88,17 +89,24 @@ export default class MemberList extends Component {
 
       let style = (this.props.selectedMemberId === member.id) ? styles.selectedRow : {};
 
-      if(member.apiMatch) {
-        if(member.validationErrors){
-            style = Object.assign({}, style, styles.failedValidationRecord);
-        }else if(!member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0){
+      switch(MemberList.memberMatchType(member)) {
+        case MemberList.recordImportMatchType.invalid:
+          style = Object.assign({}, style, styles.failedValidationRecord);
+          break;
+        case MemberList.recordImportMatchType.notMatched:
           style = Object.assign({}, style, styles.verifiedNewRecord);
-        }else if(member.apiMatch.apiRecord._id === member.id || member.apiMatch.matchingFields.length > 2) {
+          break;
+        case MemberList.recordImportMatchType.confidentlyMatchedRecord:
           style = Object.assign({}, style, styles.confidentlyMatchedRecord);
-        }else{
+          break;
+        case MemberList.recordImportMatchType.questionablyMatchedRecord:
           style = Object.assign({}, style, styles.questionablyMatchedRecord);
-        }
+          break;
+        default:
+          console.error('recordImportMatchType not right; should not have reached this default case');
+        break;
       }
+
       return style;
     });
 
@@ -133,7 +141,7 @@ export default class MemberList extends Component {
                 }
                 primaryText={
                   <div>
-                  {`${member.firstName} ${member.lastName}`}
+                  {`${member.firstName} ${member.lastName} ${member.nameSuffix}`}
                   {matchTag}
                   </div>
                 }
@@ -155,3 +163,21 @@ MemberList.propTypes = {
   members: PropTypes.array,
   suppressAutoScroll: PropTypes.bool
 };
+
+MemberList.recordImportMatchType = {
+  invalid: 'invalid',
+  notMatched: 'no match found',
+  confidentlyMatchedRecord: 'confident match',
+  questionablyMatchedRecord: 'questionable match'
+};
+
+MemberList.memberMatchType = (member) => {
+
+  if(!member.apiMatch || !member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0) return MemberList.recordImportMatchType.notMatched;
+  if(member.validationErrors) return MemberList.recordImportMatchType.invalid;
+  if(member.apiMatch.apiRecord._id === member.id || member.apiMatch.matchingFields.length > 2) return MemberList.recordImportMatchType.confidentlyMatchedRecord;
+  return MemberList.recordImportMatchType.questionablyMatchedRecord;
+
+};
+
+export default MemberList;

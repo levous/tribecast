@@ -6,6 +6,12 @@ import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
 import PhoneNumber from 'awesome-phonenumber';
 
+
+//TODO: When an imported record's api record is viewed, provide a button that will "unlink" that api record from the imported record, converting it to a new record.  Present a dialog that says, "This will mark the imported record as a "new record" so that it will not overwrite this api record."
+
+
+
+
 const sortComparer = sortKey => {
   switch (sortKey){
     case member_sort_keys.ADDRESS:
@@ -300,6 +306,8 @@ let memberApp = function(state = initialState, action) {
       });
     case member_action_types.UPLOAD_DATA_RECEIVE_MATCH_CHECK:
       const matchResponse = action.matchResponse;
+
+      //check for dupicate id's in the set and present dialog if found.  This indicates that more than one imported record matched a single api record
 
       const decoratedMembers = state.members.map((member, i) => {
         const match = matchResponse.data.find(m => m.newRecord.id === member.id) || { matchingFields:[], oldRecord: null};

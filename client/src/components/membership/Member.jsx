@@ -149,6 +149,9 @@ export default class Member extends Component {
           <PropertyTextInput object={member} propertySelectorPath='lastName'
             placeholder='Last Name' editing={editing} canEdit={canEdit} style={{marginLeft:'10px'}}
             onChange={(newMember) => this.handlePropertyChange(newMember)} id='last-name'/>
+          <PropertyTextInput object={member} propertySelectorPath='nameSuffix'
+            placeholder='Suffix' editing={editing} canEdit={canEdit} style={{marginLeft:'10px', width:'50px'}}
+            onChange={(newMember) => this.handlePropertyChange(newMember)} id='suffix'/>
         </h2>
         <Tabs onChange={(index) => this.handleTabChange(index)} value={this.state.slideIndex} style={{margin: '5px -5px'}}>
           <Tab label="Contact" value={0} />
