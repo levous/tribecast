@@ -59,20 +59,20 @@ module.exports = {
     }),
     //new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('styles/main.css', {allChunks: true}),
-    new webpack.optimize.UglifyJsPlugin()
-    /*new webpack.optimize.UglifyJsPlugin({
+    //new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
         screw_ie8: true
       },
       comments: false,
       sourceMap: false
-    })*/
+    })
 
   ],
-  postcss: () => [autoprefixer],
+  postcss: () => [autoprefixer]
   //debug: true,
-  devtool: 'cheap-module-source-map'
+  //devtool: 'cheap-module-source-map'
   //devtool: 'cheap-module-eval-source-map'
   //,
   // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes

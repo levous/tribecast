@@ -159,7 +159,7 @@ let memberApp = function(state = initialState, action) {
       });
 
     case member_action_types.UPDATE_SUCCESS_RECEIVED: {
-      NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
+      //NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
       const memberId = action.id || action.member.id;
       let member = action.member;
 
