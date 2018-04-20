@@ -61,6 +61,11 @@ class MemberList extends Component {
 
   render() {
     const styles = {
+      defaultStyle: {
+        margin: '2px',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: '8px'
+      },
       selectedRow: {
         border: '1px solid #82b186'
       },
@@ -86,25 +91,26 @@ class MemberList extends Component {
 
     const computeStyle = (member => {
       //TODO: abstract this logic for determining match strength
-
-      let style = (this.props.selectedMemberId === member.id) ? styles.selectedRow : {};
-
-      switch(MemberList.memberMatchType(member)) {
-        case MemberList.recordImportMatchType.invalid:
-          style = Object.assign({}, style, styles.failedValidationRecord);
+      let style = styles.defaultStyle;
+      if(this.props.selectedMemberId === member.id) style = Object.assign({}, style, styles.selectedRow);
+      if(member.apiMatch) {
+        switch(MemberList.memberMatchType(member)) {
+          case MemberList.recordImportMatchType.invalid:
+            style = Object.assign({}, style, styles.failedValidationRecord);
+            break;
+          case MemberList.recordImportMatchType.notMatched:
+            style = Object.assign({}, style, styles.verifiedNewRecord);
+            break;
+          case MemberList.recordImportMatchType.confidentlyMatchedRecord:
+            style = Object.assign({}, style, styles.confidentlyMatchedRecord);
+            break;
+          case MemberList.recordImportMatchType.questionablyMatchedRecord:
+            style = Object.assign({}, style, styles.questionablyMatchedRecord);
+            break;
+          default:
+            console.error('recordImportMatchType not right; should not have reached this default case');
           break;
-        case MemberList.recordImportMatchType.notMatched:
-          style = Object.assign({}, style, styles.verifiedNewRecord);
-          break;
-        case MemberList.recordImportMatchType.confidentlyMatchedRecord:
-          style = Object.assign({}, style, styles.confidentlyMatchedRecord);
-          break;
-        case MemberList.recordImportMatchType.questionablyMatchedRecord:
-          style = Object.assign({}, style, styles.questionablyMatchedRecord);
-          break;
-        default:
-          console.error('recordImportMatchType not right; should not have reached this default case');
-        break;
+        }
       }
 
       return style;
@@ -142,7 +148,7 @@ class MemberList extends Component {
                 primaryText={
                   <div>
                   {`${member.firstName} ${member.lastName}`}
-                  {member.nameSuffix && ` {member.nameSuffix}`}
+                  {member.nameSuffix && ` ${member.nameSuffix}`}
                   {matchTag}
                   </div>
                 }
