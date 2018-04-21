@@ -7,6 +7,7 @@ import SwipeableViews from 'react-swipeable-views';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
+import {member_data_sources} from '../../actions/member-actions';
 import PropertyTextInput from '../forms/PropertyTextInput.jsx'
 import StyledLabel from '../forms/StyledLabel'
 import MemberContactView from './MemberContactView'
@@ -70,14 +71,21 @@ export default class Member extends Component {
     return toggled;
   }
 
+  handleUnLinkApiMatch(member) {
+    this.setState({recordToggled: false});
+    this.props.onUnLinkApiMatch(member)
+  }
+
   render() {
 
     const member = this.state.recordToggled ? this.props.member.apiMatch.apiRecord : this.props.member;
     const editing = this.props.editing;
+    const isImport = this.props.dataSource === member_data_sources.CSV_IMPORT;
     const hasProfilePhoto = member.profilePhoto && member.profilePhoto.thumbnailURL;
     const editButtonText = editing ? 'Done': 'Edit'
-    const canEdit = this.props.canEdit;
-    const canInvite = this.props.canInvite && !member.memberUserKey && member.email;
+    const canEdit = this.props.canEdit && !this.state.recordToggled;
+    const canInvite = !isImport && this.props.canInvite && !this.state.recordToggled && !member.memberUserKey && member.email;
+    const isLinked = this.props.member.apiMatch && this.props.member.apiMatch.apiRecord
     const handleProfileImageTap = editing ? (img) => {this.handleProfileImageEditTouchTap(img)} : undefined;
     const styles = {
       headline: {
@@ -116,12 +124,18 @@ export default class Member extends Component {
       return style;
     }
 
+    const buttonStyle = {
+      float:'right',
+      margin: '3px'
+    }
+
     return (
       <div key={`member${member.id}`} style={{}}>
-        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={{float:'right'}} onTouchTap={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
-        {canInvite && (<RaisedButton secondary={true} label='Invite' style={{float:'right'}} onTouchTap={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
+        {isLinked && (<RaisedButton secondary={true} label='Unlink Record' style={Object.assign({}, buttonStyle, {backgroundColor: 'red'})} onTouchTap={(e) => {e.preventDefault(); this.handleUnLinkApiMatch(this.props.member)}}/>)}
+        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={buttonStyle} onTouchTap={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
+        {canInvite && (<RaisedButton secondary={true} label='Invite' style={buttonStyle} onTouchTap={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
         {profileIcon}
-        { this.props.member.apiMatch && this.props.member.apiMatch.apiRecord && (
+        {isLinked && (
             <div style={{ maxWidth: 250, fontSize: '0.7em' }}>
               <table>
                 <tr>
@@ -224,6 +238,9 @@ export default class Member extends Component {
 
 Member.propTypes = {
   member: PropTypes.object.isRequired,
+  dataSource: PropTypes.string.required,
   onEditing: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired
+  onUpdate: PropTypes.func.isRequired,
+  onProfileImageChanged: PropTypes.func.isRequired,
+  onUnLinkApiMatch: PropTypes.func.isRequired
 };

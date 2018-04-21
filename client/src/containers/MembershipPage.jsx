@@ -247,6 +247,10 @@ class MembershipPage extends Component {
     NotificationManager.info('There are no imported records with that match type');
   }
 
+  handleUnLinkApiMatch(member) {
+    this.props.actions.unlinkImportedMemberFromApiMatch(member);
+  }
+
   render() {
 
     const {selectedMember, userData, loading} = this.props;
@@ -354,11 +358,13 @@ class MembershipPage extends Component {
                     editing={this.state.editingSelectedMember}
                     canEdit={canEditSelectedMember}
                     canInvite={isAdmin}
+                    dataSource={this.props.dataSource}
                     style={{postion: 'relative'}}
                     onUpdate={(member) => this.handleUpdate(member)}
                     onInvite={(member) => this.handleInvite(member)}
                     onEditing={(editing) => this.handleMemberEditing(editing)}
                     onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
+                    onUnLinkApiMatch={(member) => this.handleUnLinkApiMatch(member) }
                   />
                   {isAdmin && this.state.editingSelectedMember && <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />}
                   <Dialog

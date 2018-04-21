@@ -3,6 +3,7 @@ export const member_action_types = {
   ADD: 'ADD_MEMBER',
   UPDATE: 'UPDATE_MEMBER',
   DELETE: 'DELETE_MEMBER',
+  UNLINK_FROM_API_MATCH: 'UNLINK_FROM_API_MATCH',
   UPDATE_PROFILE_IMAGE: 'UPDATE_PROFILE_IMAGE',
   SELECT_MEMBER: 'SELECT_MEMBER',
   GET_ALL: 'GET_MEMBERS',
@@ -57,6 +58,10 @@ export function updateMemberProfileImage(member, thumbnailImage, fullsizeImage, 
 
 export function selectMember(member){
   return {type: member_action_types.SELECT_MEMBER, member};
+}
+
+export function unlinkImportedMemberFromApiMatch(member){
+  return {type: member_action_types.UNLINK_FROM_API_MATCH, member};
 }
 
 export function importCsv(data, fieldMap, importNote){

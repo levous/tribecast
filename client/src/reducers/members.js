@@ -6,12 +6,6 @@ import ParseAddress from 'parse-address';
 import communityDefaults from '../../../config/community-defaults';
 import PhoneNumber from 'awesome-phonenumber';
 
-
-//TODO: When an imported record's api record is viewed, provide a button that will "unlink" that api record from the imported record, converting it to a new record.  Present a dialog that says, "This will mark the imported record as a "new record" so that it will not overwrite this api record."
-
-
-
-
 const sortComparer = sortKey => {
   switch (sortKey){
     case member_sort_keys.ADDRESS:
@@ -189,6 +183,32 @@ let memberApp = function(state = initialState, action) {
       const memberId = action.id || action.member.id;
       return updateMemberInList(state, memberId, action.member);
     }
+
+    case member_action_types.UNLINK_FROM_API_MATCH: {
+      debugger;
+      const memberId = action.id || action.member.id;
+      const match = state.members.find(member => member.id === memberId);
+
+      if(!match) {
+        return NotificationManager.error('Not Found', 'Member record not found in state', 15000);
+      }
+
+      const updated = Object.assign(
+        match,
+        {
+          apiMatch: {
+            matchingFields: [],
+            apiRecord: null,
+            validationErrors: match.validationErrors
+          }
+        }
+      );
+
+      NotificationManager.info(`${updated.firstName} ${updated.lastName} unlinked`);
+
+      return updateMemberInList(state, memberId, updated);
+    }
+
     case member_action_types.MEMBER_DATA_RECEIVED:
 
       NotificationManager.success('Server data loaded');
@@ -305,9 +325,54 @@ let memberApp = function(state = initialState, action) {
         importNote
       });
     case member_action_types.UPLOAD_DATA_RECEIVE_MATCH_CHECK:
-      const matchResponse = action.matchResponse;
+      const matchResponse = Object.assign({}, action.matchResponse);
 
-      //check for dupicate id's in the set and present dialog if found.  This indicates that more than one imported record matched a single api record
+
+      let matchIds = [];
+      let duplicateIds = [];
+      for(let i=0, l=matchResponse.data.length; i < l; i++) {
+        if(!matchResponse.data[i].oldRecord) continue;
+        //TODO: not sure why id is not populated.  Check into that.  Would rather not use _id outside of serverside
+        const id = matchResponse.data[i].oldRecord._id;
+        if(matchIds.includes(id)) {
+          duplicateIds.push(id)
+        } else {
+          matchIds.push(id);
+        }
+      }
+
+      /* TODO:  loop through duplicateIds
+                collect all matches from response data
+                keep the best match (most field matches)
+                in the case of a tie, mark as duplicate match
+                add that to the display of import proof
+
+
+      */
+      let unresolvedDuplicates = [];
+      debugger;
+      duplicateIds.forEach(id => {
+        const dups = matchResponse.data
+          .filter(m => m.oldRecord && m.oldRecord._id === id)
+          .sort((a, b) => b.matchingFields.length - a.matchingFields.length); // reverse sort.  Most matches to least matches
+        if(dups.length < 2) {
+          // why is this happneing?
+          console.log(`${dups[0].newRecord.firstName} ${dups[0].newRecord.lastName} found in dups list all lonesome like.  WHy?`);
+
+        } else if(dups[0].matchingFields.length > dups[1].matchingFields.length) {
+          for(let i=1; i < dups.length; i++){
+            const idx = matchResponse.data.findIndex(m => m.newRecord.id === dups[i].newRecord.id);
+            matchResponse.data.splice(idx, 1);
+          }
+        } else {
+          unresolvedDuplicates.concat(dups);
+        }
+      });
+
+      if(unresolvedDuplicates.length > 0) {
+        const namesList = unresolvedDuplicates.map(m => `${m.newRecord.firstName} ${m.newRecord.lastName}` );
+        NotificationManager.warn(`The system was unable to resolve multiple records that matched the same existing record.  Please resolve questionable matches: ${namesList.join(', ')}`);
+      }
 
       const decoratedMembers = state.members.map((member, i) => {
         const match = matchResponse.data.find(m => m.newRecord.id === member.id) || { matchingFields:[], oldRecord: null};
@@ -321,7 +386,10 @@ let memberApp = function(state = initialState, action) {
             }
           }
         )
-      })
+      });
+
+
+
       return Object.assign({}, state, {
         members: decoratedMembers,
         dataSource: member_data_sources.CSV_IMPORT
