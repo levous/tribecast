@@ -26,10 +26,18 @@ export default class AddressList extends Component {
                 return <ListItem key={`addr${i}`} primaryText='address null' secondaryText='This indicates a problem.  Please contact support.' />
               }
 
+              const memberCount = this.props.memberCountAtAddressArray && this.props.memberCountAtAddressArray[i];
+              const memberCountTag = memberCount && <div style={{height: '30px', width: '30px', backgroundColor:'#aaaaaa', color: '#ffffff', borderRadius: '50%', float: 'right', margin: '5px', textAlign: 'center', lineHeight: '30px'}}>{memberCount}</div>
+
 
               return (
               <ListItem key={`addr${i}`}
-                primaryText={<Address address={address} />}
+                primaryText={
+                  <div>
+                    {memberCountTag}
+                    <Address address={address} />
+                  </div>
+                }
                 onTouchTap={() => this.handleSelectItem(address)}
               />
             )
@@ -44,5 +52,6 @@ export default class AddressList extends Component {
 
 AddressList.propTypes = {
   addresses: PropTypes.array.isRequired,
+  memberCountAtAddressArray: PropTypes.array,
   onSelectItem: PropTypes.func.isRequired
 };

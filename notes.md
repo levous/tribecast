@@ -1,5 +1,9 @@
 # Notes
 
+## TODO
+
+redirect from login to membership when logged in
+
 ## Rusty needs to learn
 
 

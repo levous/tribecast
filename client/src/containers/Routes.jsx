@@ -58,7 +58,9 @@ class Routes extends Component {
           <Route path='/invite/:token' component={PasswordResetPage} />
           <Route path='/' component={Base}>
             <IndexRoute component={HomePage} onEnter={(nextState, replace) => this.showMembersIfAuthorized(nextState, replace)} />
-            <Route path='/login' component={LoginPage} />
+            <Route path='/login' component={LoginPage} onEnter={(nextState, replace) => {
+              if (this.auth.isUserAuthenticated()) { replace('/membership') }
+            }}/>
             <Route path='/signup' component={SignUpPage} />
             <Route path='/logout' onEnter={(nextState, replace) => this.logOut(nextState, replace)} />
             <Route path='/membership' component={MembershipPage} />

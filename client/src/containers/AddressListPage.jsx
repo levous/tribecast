@@ -66,6 +66,8 @@ class AddressListPage extends Component {
     };
 
     const addressesMatch = (address1, address2) => {
+      //TODO: use the above hash technique from dedup... var key = JSON.stringify(el);
+
       return address1 && address2 && address1.street && address2.street &&
         address1.street.toLowerCase()   === address2.street.toLowerCase() &&
         (
@@ -80,6 +82,7 @@ class AddressListPage extends Component {
     const addressSort = (a, b) => {
       const aSplit = a.street.trim().split(' ');
       const bSplit = b.street.trim().split(' ');
+      // sort by street name, skipping preceding street number
       return aSplit[1].localeCompare(bSplit[1]) || parseInt(aSplit[0]) - parseInt(bSplit[0]);
     };
 
@@ -88,15 +91,36 @@ class AddressListPage extends Component {
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const isLoggedIn = this.auth.isUserAuthenticated();
     const isAdmin = isLoggedIn && this.auth.isUserAdmin();
-    const addresses = dedup(members.map(member => member.propertyAddress)).sort(addressSort);
+    const addresses = dedup(members.map(member => Object.assign({},member.propertyAddress))).sort(addressSort);
+
+
+    // this could be done with same pass to dedup but that might get messy.  If performance is acceptable, this is clearer
+    // actually, this is weird.  Refactor this to collect a nicely structured state
+    const memberAddressHash = members.reduce((hashTable, m) => {
+      const memberAddressKey = JSON.stringify(m.propertyAddress);
+      if(!hashTable[memberAddressKey]) {
+        hashTable[memberAddressKey] = [];
+      }
+      hashTable[memberAddressKey].push(m);
+      return hashTable;
+    }, {});
+
+    const memberCountAtAddressArray = addresses.map(address => {
+      const addressKey = JSON.stringify(address);
+      return memberAddressHash[addressKey] ? memberAddressHash[addressKey].length : 0;
+    });
+
     let membersAtSelectedAddress = [];
     if(selectedAddress){
       membersAtSelectedAddress = members.filter(member => addressesMatch(member.propertyAddress, selectedAddress));
     }
 
+
+
+
     return (
       <div className="jumbotron">
-
+        <FlatButton label="Member List View" onClick={(button) => this.props.router.push('/membership')} style={{float:'right', margin: '5px'}} />
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />
@@ -107,6 +131,7 @@ class AddressListPage extends Component {
             <Col xs={12} md={4}>
 
               <AddressList addresses={addresses}
+                memberCountAtAddressArray={memberCountAtAddressArray}
                 onSelectItem={(address) => this.handleAddressItemSelection(address)}
                 selectedAddress={selectedAddress}
                 />

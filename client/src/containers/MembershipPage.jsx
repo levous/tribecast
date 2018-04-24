@@ -319,6 +319,8 @@ class MembershipPage extends Component {
           </Panel>
         )}
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
+
+        <FlatButton label="Address View" onClick={(button) => this.props.router.push('/address-view')} style={{float:'right', margin: '5px'}} />
         {adminButtons}
         {/* This panel is a fail-safe as we're doing some finicky browser tricks to invoke a file download.  The panel will close once the trick invokes */}
         {this.props.csvMemberDownload && (
