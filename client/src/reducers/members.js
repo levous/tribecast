@@ -12,7 +12,14 @@ const sortComparer = sortKey => {
       //TODO: ensure it don't break when property address is not there
       return (a, b) => a.propertyAddress.street.localeCompare(b.propertyAddress.street);
     default: //member_sort_keys.NAME:
-      return (a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName);
+      return (a, b) => {
+        // create a name string and then sort by the last item in the name.
+        // This handles people who have two last names.
+        // They should sort in the last non-hyphenated name
+        const aNameArray = `${a.firstName} ${a.lastName}`.trim().split(' ');
+        const bNameArray = `${b.firstName} ${b.lastName}`.trim().split(' ');
+        return aNameArray[aNameArray.length - 1].localeCompare(bNameArray[bNameArray.length - 1]) || a.firstName.localeCompare(b.firstName);
+      }
   }
 };
 
