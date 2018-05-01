@@ -2,7 +2,9 @@
 
 ## TODO
 
-redirect from login to membership when logged in
+- Look into Cypress testing https://github.com/bahmutov/cypress-react-unit-test
+  http://cypress.io
+  
 
 ## Rusty needs to learn
 
