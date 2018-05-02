@@ -1,4 +1,5 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { List, ListItem } from 'material-ui/List';
 import Address from './Address.jsx';
 

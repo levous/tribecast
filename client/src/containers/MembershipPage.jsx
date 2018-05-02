@@ -1,7 +1,9 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Grid, Row, Col, Panel} from 'react-bootstrap';
+import QS from 'qs';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
@@ -40,19 +42,20 @@ class MembershipPage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.location.query.notification){
-      NotificationManager.info(this.props.location.query.notification);
+    const qs = QS.parse(this.props.location.search);
+    if(qs.notification){
+      NotificationManager.info(qs.notification);
     }
 
-    if(this.props.location.query.clearLocalStorage){
+    if(qs.clearLocalStorage){
       localStorage.clear();
     }
 
-    if(this.props.location.query.cancelLoading){
+    if(qs.cancelLoading){
       this.props.actions.cancelLoading();
     }
 
-    if(this.props.location.query.refresh){
+    if(qs.refresh){
       this.props.actions.refreshMembersFromServer();
     }
   }

@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 import AvatarEditor from 'react-avatar-editor'
 import Dropzone from 'react-dropzone';
-import Slider from 'nw-react-slider';
+import Slider from 'rc-slider';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import IconRotateRight from 'material-ui/svg-icons/image/rotate-right';
-import 'nw-react-slider/dist/nw-react-slider.min.css';
-import '../../../stylesheets/components/_slider.scss';
+import 'rc-slider/assets/index.css';
 
 class MemberProfilePhotoEditor extends React.Component {
 
@@ -54,7 +54,7 @@ class MemberProfilePhotoEditor extends React.Component {
     }
   }
 
-  onSlide(value, position) {
+  onSlide(value) {
     this.setState({zoom: value / 10});
   }
 
@@ -81,7 +81,9 @@ class MemberProfilePhotoEditor extends React.Component {
         <IconButton onTouchTap={() => this.rotateRight()} style={{float: 'right', margin: '-40px 5px 0 5px'}}>
           <IconRotateRight />
         </IconButton>
-        <Slider value={this.state.zoom * 10} min={1} max={20} onChange={(value, position) => this.onSlide(value, position)} />
+
+        <Slider value={this.state.zoom * 10} min={1} max={20} onChange={(value) => this.onSlide(value)}/>
+
         {runningAsWebApp && (
           <div>
             <h3 style={{color:'red'}}>iOS11 Camera Bug!</h3>
@@ -101,9 +103,9 @@ class MemberProfilePhotoEditor extends React.Component {
 }
 
 MemberProfilePhotoEditor.propTypes = {
-  photoURL: React.PropTypes.string,
-  onCancelled: React.PropTypes.func.isRequired,
-  onImageChanged: React.PropTypes.func.isRequired
+  photoURL: PropTypes.string,
+  onCancelled: PropTypes.func.isRequired,
+  onImageChanged: PropTypes.func.isRequired
 };
 
 export default MemberProfilePhotoEditor

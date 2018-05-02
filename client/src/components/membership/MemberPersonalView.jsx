@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import PropertyTextInput from '../forms/PropertyTextInput.jsx'
 import StyledLabel from '../forms/StyledLabel'
 

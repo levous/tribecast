@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Classnames from 'classnames';
 import Fuse from 'fuse.js';
 import Logger from '../../modules/Logger';

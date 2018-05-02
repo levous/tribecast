@@ -1,6 +1,12 @@
-import React, {Component, PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDom from 'react-dom';
-import {browserHistory, Router, Route, IndexRoute, pushState} from 'react-router';
+
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import configureStore from '../store/configureStore';
 import Auth from '../modules/Auth';
@@ -20,7 +26,7 @@ import HelpPage from './HelpPage';
 import AdminDashboardPage from './AdminDashboardPage';
 import NotFound from './NotFound';
 
-class Routes extends Component {
+class Routes extends React.Component {
 
   constructor(props, context) {
     super(props, context);
@@ -54,29 +60,40 @@ class Routes extends Component {
 
     return (
       <Provider store={this.store}>
-        <Router history={browserHistory}>
-          <Route path='/invite/:token' component={PasswordResetPage} />
-          <Route path='/' component={Base}>
-            <IndexRoute component={HomePage} onEnter={(nextState, replace) => this.showMembersIfAuthorized(nextState, replace)} />
-            <Route path='/login' component={LoginPage} onEnter={(nextState, replace) => {
-              if (this.auth.isUserAuthenticated()) { replace('/membership') }
-            }}/>
-            <Route path='/signup' component={SignUpPage} />
-            <Route path='/logout' onEnter={(nextState, replace) => this.logOut(nextState, replace)} />
+        <Router>
+          <div>
             <Route path='/membership' component={MembershipPage} />
-            <Route path='/address-view' component={AddressListPage} />
-            <Route path='/admin' component={AdminDashboardPage} />
-            <Route path='/user-accounts' component={UserAccountManagementPage} />
-            <Route path='/invitations' component={InvitationsPage} />
-            <Route path='/forgot-password/:token' component={PasswordResetPage} />
-            <Route path='/profile' component={MemberProfilePage} onEnter={(nextState, replace) => this.requireAuth(nextState, replace)} />
-            <Route path='/upload' component={UploadPage} onEnter={(nextState, replace) => this.requireAuth(nextState, replace)} />
-            <Route path='/help' component={HelpPage} />
-            <Route path='/*' component={NotFound} />
-          </Route>
+          </div>
         </Router>
       </Provider>
-  );
+      /*
+      <Provider store={this.store}>
+        <BrowserRouter>
+          <div>
+            <Route path='/invite/:token' component={PasswordResetPage} />
+            <Route path='/' component={Base}>
+              <IndexRoute component={HomePage} onEnter={(nextState, replace) => this.showMembersIfAuthorized(nextState, replace)} />
+              <Route path='/login' component={LoginPage} onEnter={(nextState, replace) => {
+                if (this.auth.isUserAuthenticated()) { replace('/membership') }
+              }}/>
+              <Route path='/signup' component={SignUpPage} />
+              <Route path='/logout' onEnter={(nextState, replace) => this.logOut(nextState, replace)} />
+              <Route path='/membership' component={MembershipPage} />
+              <Route path='/address-view' component={AddressListPage} />
+              <Route path='/admin' component={AdminDashboardPage} />
+              <Route path='/user-accounts' component={UserAccountManagementPage} />
+              <Route path='/invitations' component={InvitationsPage} />
+              <Route path='/forgot-password/:token' component={PasswordResetPage} />
+              <Route path='/profile' component={MemberProfilePage} onEnter={(nextState, replace) => this.requireAuth(nextState, replace)} />
+              <Route path='/upload' component={UploadPage} onEnter={(nextState, replace) => this.requireAuth(nextState, replace)} />
+              <Route path='/help' component={HelpPage} />
+              <Route path='/*' component={NotFound} />
+            </Route>
+          </div>
+        </BrowserRouter>
+      </Provider>
+      */
+    );
   }
 }
 

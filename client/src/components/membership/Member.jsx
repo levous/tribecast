@@ -1,4 +1,5 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom'
 import TweenMax from 'gsap'
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -238,7 +239,7 @@ export default class Member extends Component {
 
 Member.propTypes = {
   member: PropTypes.object.isRequired,
-  dataSource: PropTypes.string.required,
+  dataSource: PropTypes.string.isRequired,
   onEditing: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onProfileImageChanged: PropTypes.func.isRequired,

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, IndexLink } from 'react-router';
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import IconHelp from 'material-ui/svg-icons/action/help-outline';
