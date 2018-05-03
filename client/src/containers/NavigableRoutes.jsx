@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, IndexLink } from 'react-router';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Link,
+  NavLink
+} from 'react-router-dom';
+
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import IconHelp from 'material-ui/svg-icons/action/help-outline';
 import { white, lightBlue500 } from 'material-ui/styles/colors';
@@ -9,7 +16,22 @@ import {NotificationContainer} from 'react-notifications';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
 
-const Base = ({ children }, {store}) => {
+import RequireAuth from '../components/auth/RequireAuth';
+import HomePage from './HomePage';
+import LoginPage from './LoginPage';
+import SignUpPage from './SignUpPage';
+import InvitationsPage from './InvitationsPage';
+import MemberProfilePage from './MemberProfilePage';
+import MembershipPage from './MembershipPage';
+import AddressListPage from './AddressListPage';
+import UserAccountManagementPage from './UserAccountManagementPage';
+import UploadPage from './UploadPage';
+import HelpPage from './HelpPage';
+import AdminDashboardPage from './AdminDashboardPage';
+import NotFound from './NotFound';
+
+
+const NavigableRoutes = (props, {store}) => {
   const auth = new Auth(store);
   const userIsAuthenticated = auth.isUserAuthenticated();
   const userIsAdmin = auth.isUserAdmin();
@@ -20,7 +42,13 @@ const Base = ({ children }, {store}) => {
     <Navbar inverse collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <IndexLink className="navbar-brand page-scroll" to="/">{communityDefaults.name}</IndexLink>
+          <NavLink
+            exact
+            className="navbar-brand page-scroll"
+            activeClassName="active" activeStyle={{fontWeight: 'bold'}}
+            to="/" >
+            {communityDefaults.name}
+          </NavLink>
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
@@ -68,19 +96,32 @@ const Base = ({ children }, {store}) => {
     </Navbar>
 
     <div className="container">
-
-      {children}
-
+      <Switch>
+        <Route exact path='/' component={HomePage} />
+        <Route path='/login' component={LoginPage} onEnter={(nextState, replace) => {
+          if (this.auth.isUserAuthenticated()) { replace('/membership') }
+        }} />
+        <Route path='/signup' component={SignUpPage} />
+        <Route path='/membership' component={MembershipPage} />
+        <Route path='/address-view' component={AddressListPage} />
+        <Route path='/admin' component={AdminDashboardPage} />
+        <Route path='/user-accounts' component={UserAccountManagementPage} />
+        <Route path='/invitations' component={InvitationsPage} />
+        <RequireAuth path='/profile' component={MemberProfilePage}
+          isAuthenticated={userIsAuthenticated} isLoading={false} />
+        <RequireAuth path='/upload' component={UploadPage}
+          isAuthenticated={userIsAuthenticated} isLoading={false} />
+        <Route path='/help' component={HelpPage} />
+        <Route path='/*' component={NotFound} />
+      </Switch>
     </div>
     <NotificationContainer />
   </div>
   );
 };
 
-Base.propTypes = {
-  children: PropTypes.object.isRequired
-};
+NavigableRoutes.propTypes = {};
 
-Base.contextTypes = { store: PropTypes.object };
+NavigableRoutes.contextTypes = { store: PropTypes.object };
 
-export default Base;
+export default NavigableRoutes;
