@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import  { Redirect } from 'react-router-dom'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Auth from '../modules/Auth';
@@ -36,7 +37,8 @@ class LoginPage extends React.Component {
         email: '',
         password: ''
       },
-      passwordResetDialogOpen: props.passwordResetSucceeded || false
+      passwordResetDialogOpen: props.passwordResetSucceeded || false,
+      loggedIn: false
     };
 
     this.auth = new Auth(context.store);
@@ -51,7 +53,7 @@ class LoginPage extends React.Component {
   componentWillReceiveProps(nextProps){
     if(nextProps.loggedInUser){
       this.props.actions.refreshMembersFromServer();
-      return this.context.router.replace('/membership');
+      this.setState({loggedIn: true})
     }
 
     if(nextProps.loginFailureMessage){
@@ -142,6 +144,10 @@ class LoginPage extends React.Component {
    * Render the component.
    */
   render() {
+
+    if (this.state.loggedIn) {
+      return <Redirect to="/membership" />
+    }
 
     return (
       <div className="jumbotron auth-panel">

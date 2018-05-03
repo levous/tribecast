@@ -25,25 +25,6 @@ class Routes extends React.Component {
     this.auth = new Auth(this.store);
   }
 
-  requireAuth(nextState, replace) {
-    if (!this.auth.isUserAuthenticated()) {
-      replace({
-        pathname: '/login',
-        state: { nextPathname: nextState.location.pathname }
-      });
-    }
-  }
-
-
-
-  showMembersIfAuthorized(nextState, replace){
-
-     if (this.auth.isUserAuthorizedToView()){
-       replace('/membership');
-     }
-  }
-
-
   render() {
 
     return (
@@ -52,7 +33,7 @@ class Routes extends React.Component {
           <Switch>
             <Route path='/invite/:token' component={PasswordResetPage} />
             <Route path='/forgot-password/:token' component={PasswordResetPage} />
-            <Route path='/logout' component={LogOut} />
+            <Route path='/logout' render={(props) => <LogOut auth={this.auth} />} />
             <Route path='/' component={NavigableRoutes} />
           </Switch>
         </Router>

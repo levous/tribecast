@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import  { Redirect } from 'react-router-dom'
 
 const LogOut = ({auth}) => {
@@ -5,4 +7,4 @@ const LogOut = ({auth}) => {
   return <Redirect to="/login" />
 };
 
-export { LogOut };
+export default LogOut;
