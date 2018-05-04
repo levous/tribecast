@@ -17,7 +17,7 @@ class MemberList extends Component {
       shouldScrollTop: false
     };
 
-    this.renderCount = 0;
+    
 
   }
 
@@ -57,7 +57,7 @@ class MemberList extends Component {
     this.maybePerformAutoScroll();
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  xshouldComponentUpdate(nextProps, nextState) {
     if(nextProps.members !== this.props.members){
       return true;
     }
@@ -70,7 +70,7 @@ class MemberList extends Component {
   }
 
   handleItemTouchTap(member){
-    console.log('handleItemTouchTap', member.id);
+    
     this.props.onSelectItem(member);
   }
 
@@ -131,11 +131,10 @@ class MemberList extends Component {
       return style;
     });
 
-    console.log('member count',this.props.members.length);
+    
 
     return (
       <div style={styles.listStyle} className={className}>
-        {`I should be rendered only 1 time. actual times rendered: ${++this.renderCount}`}
         <List>
           {
             this.props.members.map((member, i) => {

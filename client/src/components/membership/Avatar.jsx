@@ -43,7 +43,7 @@ const Avatar = (props) => {
     }
 
     const renderAsText = () => {
-        console.log(size);
+        
         const textSizeRatio = 3;
         const name = `${member.firstName || ''} ${member.lastName || ''}`;
         const color = getRandomColor(name);
