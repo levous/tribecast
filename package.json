@@ -8,12 +8,12 @@
     "npm": "~4.3.0"
   },
   "scripts": {
-    "postinstall": "NODE_ENV=production webpack --progress",
+    "postinstall": "NODE_ENV=production webpack --config ./webpack/prod.config.js --progress",
     "start": "NODE_ENV=production node index.js",
     "startdev": "NODE_ENV=development nodemon --use-strict index.js",
     "debugdev": "NODE_ENV=development nodemon --inspect index.js",
-    "bundle": "webpack",
-    "bundledev": "webpack -w",
+    "bundle": "NODE_ENV=production webpack --config ./webpack/prod.config.js --progress",
+    "bundledev": "webpack --config ./webpack/dev.config.js -w",
     "test": "NODE_ENV=test mocha --recursive -w --compilers js:babel-core/register ./server/controllers/something.test.js",
     "clienttest": "jest"
   },
@@ -54,7 +54,6 @@
     "qs": "^6.5.1",
     "rc-slider": "^8.6.1",
     "react": "^16.3.2",
-    "react-avatar": "^2.5.1",
     "react-avatar-editor": "^10.3.0",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.3.2",
@@ -74,6 +73,7 @@
     "socket.io": "^1.7.3",
     "uuid": "^3.2.1",
     "validator": "^6.2.0",
+    "webpack-merge": "^4.1.2",
     "winston": "^2.4.2",
     "winston-loggly-bulk": "^2.0.2",
     "winston-mongodb": "^2.0.10"

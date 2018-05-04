@@ -7,7 +7,7 @@ const config = require('config');
 function getLogger(module) {
   const logLevel = config.has('logger.logLevel') ? config.get('logger.logLevel') : 'debug';
   const logglyConfig = config.has('logger.Loggly') ? config.get('logger.Loggly') : {token:null, subdomain: null};
-  console.log('log.getLogger/logLevel', logLevel);
+
   
   const path = module.filename.split('\\').slice(-2).join('\\');
   const dbUri = config.get('dbUri');

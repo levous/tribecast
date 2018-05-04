@@ -43,6 +43,9 @@ jspm_packages
 # WebStorm IDE artifacts
 .idea
 
+#VS Code
+.vscode
+
 # Config Files
 stormpath.yml
 config/production.json

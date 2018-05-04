@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { List, ListItem } from 'material-ui/List';
-import Avatar from 'react-avatar';
+import Avatar from './Avatar';
 import md5 from 'js-md5';
 import { findDOMNode } from "react-dom";
 import scrollIntoView from "scroll-into-view";
@@ -16,6 +16,8 @@ class MemberList extends Component {
     this.state = {
       shouldScrollTop: false
     };
+
+    this.renderCount = 0;
 
   }
 
@@ -53,6 +55,18 @@ class MemberList extends Component {
 
   componentDidUpdate(){
     this.maybePerformAutoScroll();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps.members !== this.props.members){
+      return true;
+    }
+    
+    if(nextProps.selectedMemberId !== this.props.selectedMemberId) {
+      return true;
+    }
+
+    return false;
   }
 
   handleItemTouchTap(member){
@@ -121,7 +135,7 @@ class MemberList extends Component {
 
     return (
       <div style={styles.listStyle} className={className}>
-
+        {`I should be rendered only 1 time. actual times rendered: ${++this.renderCount}`}
         <List>
           {
             this.props.members.map((member, i) => {
@@ -132,7 +146,7 @@ class MemberList extends Component {
               }
 
 
-              const avatarSrc = member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
+              //const avatarSrc = member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
               const matchTag = member.apiMatch && member.apiMatch.matchingFields && member.apiMatch.matchingFields.length > 0 ? (
                 <div style={{float: 'right', fontSize: '0.8em', color: '#bbbbbb', backgroundColor: 'rgba(255, 255, 255, 0.3)', border: '1px solid rgba(255, 255, 255, 0.3)'}}><span style={{fontWeight: 'bold', fontSize: '0.7em'}}>match</span>: {member.apiMatch.matchingFields.join(', ')}</div>
               ) : '';
@@ -141,10 +155,7 @@ class MemberList extends Component {
               <ListItem key={`mem${i}`} ref={ref => this.listItems[i] = ref}
                 leftAvatar={
                   <Avatar
-                    src={avatarSrc}
-                    md5Email={member.email ? md5(member.email) : ''}
-                    name={`${member.firstName} ${member.lastName}`}
-                    round={true} size={40} />
+                    member={member} />
                 }
                 primaryText={
                   <div>

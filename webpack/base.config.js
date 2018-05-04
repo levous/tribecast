@@ -1,15 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 
 
 module.exports = {
   // the entry file for the bundle
-  entry: path.join(__dirname, '/client/src/app.jsx'),
+  entry: path.join(__dirname, '../client/src/app.jsx'),
   // the bundle file we will get in the result
   output: {
-    path: path.join(__dirname, '/client/dist/js'),
+    path: path.join(__dirname, '../client/dist/js'),
     filename: 'app.js',
   },
   resolve: {
@@ -23,7 +22,7 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        include: path.join(__dirname, '/client/src'),
+        include: path.join(__dirname, '../client/src'),
         use: [
 
           {
@@ -52,32 +51,11 @@ module.exports = {
 
   plugins: [
 
-    /*new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),*/
-    //new webpack.optimize.OccurrenceOrderPlugin(),
-
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, '/server/static/index.html'),
+      template: path.join(__dirname, '../server/static/index.html'),
       inject: true
-    }),
-    //new webpack.HotModuleReplacementPlugin(),
-    //new ExtractTextPlugin('styles/main.css', {allChunks: true}),
-    //new webpack.optimize.UglifyJsPlugin()
-    /*new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        screw_ie8: true
-      },
-      comments: false,
-      sourceMap: false
-    })*/
+    })
 
-  ],
-  mode: 'development',
-  //devtool: 'cheap-module-source-map'
-  devtool: 'cheap-module-eval-source-map'
+  ]
 
 };
