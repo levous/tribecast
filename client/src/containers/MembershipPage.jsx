@@ -15,6 +15,7 @@ import {NotificationManager} from 'react-notifications';
 import PapaParse from 'papaparse';
 import MemberList from '../components/membership/MemberList.jsx';
 import Member from '../components/membership/Member.jsx';
+import NavigationButton from '../components/NavigationButton';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
@@ -35,7 +36,8 @@ class MembershipPage extends Component {
       deleteDialogOpen: false,
       bulkSearchDialogOpen: false,
       bulkSearchMode: 'names',
-      bulkSearchResultsMeta: null
+      bulkSearchResultsMeta: null,
+      showInvitationsLink: false
     }
 
     this.auth = new Auth(context.store);
@@ -201,7 +203,7 @@ class MembershipPage extends Component {
 
   handleInvite(member) {
     this.props.actions.inviteMember(member);
-    this.props.router.push('/invitations');
+    this.setState({showInvitationsLink: true});
   }
 
   presentDeleteConfirmation(present){
@@ -322,7 +324,7 @@ class MembershipPage extends Component {
           </Panel>
         )}
 
-        <FlatButton label="Address View" onClick={(button) => this.props.router.push('/address-view')} style={{float:'right', margin: '5px'}} />
+        <NavigationButton to='/address-view' label="Address View"  style={{float:'right', margin: '5px'}} />
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {adminButtons}
         {/* This panel is a fail-safe as we're doing some finicky browser tricks to invoke a file download.  The panel will close once the trick invokes */}
@@ -421,6 +423,17 @@ class MembershipPage extends Component {
             </Col>
           </Row>
         </Grid>
+
+        <Dialog
+          title="Invitations Sent"
+          modal={true}
+          open={this.state.showInvitationsLink}
+          actions={[<FlatButton label="OK" onClick={(button) => this.setState({showInvitationsLink: false})} />]}
+          >
+          <p>Invitations were sent via email. It may take a few minutes for email to arrive.  Click the link below to preview what was sent. </p>
+          <a href='/invitations'>View Invitations</a>
+        </Dialog>
+
       </div>
     );
   }

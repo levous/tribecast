@@ -15,6 +15,7 @@ import MemberList from '../components/membership/MemberList.jsx';
 import Address from '../components/membership/Address.jsx';
 import Member from '../components/membership/Member.jsx';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
+import NavigationButton from '../components/NavigationButton';
 import SearchField from '../components/forms/SearchField.jsx';
 import * as memberActions from '../actions/member-actions';
 import Auth from '../modules/Auth'
@@ -121,7 +122,7 @@ class AddressListPage extends Component {
 
     return (
       <div className="jumbotron">
-        <FlatButton label="Member List View" onClick={(button) => this.props.router.push('/membership')} style={{float:'right', margin: '5px'}} />
+        <NavigationButton label="Member List View" to ='/membership' style={{float:'right', margin: '5px'}} />
         <DataSourceModePanel dataSource={this.props.dataSource}
           onModeCancel={dataSource => this.handleDataSourceModeCancel(dataSource)}
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)} />

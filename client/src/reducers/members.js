@@ -192,7 +192,7 @@ let memberApp = function(state = initialState, action) {
     }
 
     case member_action_types.UNLINK_FROM_API_MATCH: {
-      debugger;
+    
       const memberId = action.id || action.member.id;
       const match = state.members.find(member => member.id === memberId);
 
@@ -357,7 +357,7 @@ let memberApp = function(state = initialState, action) {
 
       */
       let unresolvedDuplicates = [];
-      debugger;
+     
       duplicateIds.forEach(id => {
         const dups = matchResponse.data
           .filter(m => m.oldRecord && m.oldRecord._id === id)

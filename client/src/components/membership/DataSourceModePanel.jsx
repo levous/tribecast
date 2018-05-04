@@ -62,7 +62,7 @@ export default class Member extends Component {
         case member_data_sources.CSV_IMPORT:
           return (
             <div style={{marginBottom:'-15px'}}>
-              <Panel collapsible data-toggle='collapse' expanded={this.state.open}
+              <Panel collapsible={'true'} data-toggle='collapse' expanded={this.state.open}
                 header='CSV Import Preview Mode'
                 bsStyle="warning">
                 You are viewing a preview of your import.  Please review and publish to {communityDefaults.name} or cancel.
@@ -114,11 +114,11 @@ export default class Member extends Component {
                   onTouchTap={() => this.handlePublishTouchTap(member_data_sources.CSV_IMPORT)}
                   label="Publish"
                   primary={true}
-                  style={{float:'right'}}
+                  style={{float:'right', marginLeft: '20px'}}
                   icon={<IconUpload />}
                   />
-
               </Panel>
+             
             </div>
           );
 

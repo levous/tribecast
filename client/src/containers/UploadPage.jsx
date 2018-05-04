@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {withRouter} from "react-router-dom";
 import Dropzone from 'react-dropzone';
 import PapaParse from 'papaparse';
 import FlatButton from 'material-ui/FlatButton';
@@ -43,7 +44,8 @@ class UploadPage extends React.Component {
   loadImportedData(data, fieldMap, importNote){
     this.props.actions.importCsv(data, fieldMap, importNote);
     this.props.actions.apiMatchCheck();
-    this.props.router.push({
+    debugger;
+    this.props.history.push({
       pathname: '/membership',
       query: { notification: `Now viewing ${data.length} imported members` }
     });
@@ -174,4 +176,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UploadPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UploadPage));

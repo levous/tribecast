@@ -139,17 +139,19 @@ export default class Member extends Component {
         {isLinked && (
             <div style={{ maxWidth: 250, fontSize: '0.7em' }}>
               <table>
-                <tr>
-                  <td style={toggleLabelStyle(false)}>Imported Record</td>
-                  <td style={{padding: '18px 5px 0px'}}>
-                    <Toggle
-                      style={{marginBottom: 16}}
-                      toggled={this.state.recordToggled}
-                      onToggle={(e, toggled) => { this.handleRecordToggle(toggled) }}
-                    />
-                  </td>
-                  <td style={toggleLabelStyle(true)}>API Record</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td style={toggleLabelStyle(false)}>Imported Record</td>
+                    <td style={{padding: '18px 5px 0px'}}>
+                      <Toggle
+                        style={{marginBottom: 16}}
+                        toggled={this.state.recordToggled}
+                        onToggle={(e, toggled) => { this.handleRecordToggle(toggled) }}
+                      />
+                    </td>
+                    <td style={toggleLabelStyle(true)}>API Record</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
 
