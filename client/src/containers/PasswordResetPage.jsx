@@ -101,7 +101,7 @@ class PasswordResetPage extends React.Component {
 
     if (errors.password || errors.passwordConfirmation) return;
 
-    this.props.actions.updateUserPassword(fields.password, this.props.params.token);
+    this.props.actions.updateUserPassword(fields.password, this.props.match.params.token);
   }
 
   render() {

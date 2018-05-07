@@ -398,7 +398,7 @@ class MembershipPage extends Component {
                   />
                   {isAdmin && this.state.editingSelectedMember && (
                     <div>
-                      <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />
+                      <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} style={{marginRight: '5px'}} />
                       <RaisedButton secondary={true} label="Reset User Account" onClick={(button) => this.presentResetUserAccountConfirmation(true)} />
                     </div>
                   )}
