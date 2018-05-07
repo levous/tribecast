@@ -85,6 +85,7 @@ export default class Member extends Component {
     const hasProfilePhoto = member.profilePhoto && member.profilePhoto.thumbnailURL;
     const editButtonText = editing ? 'Done': 'Edit'
     const canEdit = this.props.canEdit && !this.state.recordToggled;
+   
     const canInvite = !isImport && this.props.canInvite && !this.state.recordToggled && !member.memberUserKey && member.email;
     const isLinked = this.props.member.apiMatch && this.props.member.apiMatch.apiRecord
     const handleProfileImageTap = editing ? (img) => {this.handleProfileImageEditTouchTap(img)} : undefined;

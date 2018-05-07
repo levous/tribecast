@@ -4,6 +4,7 @@ const moment = require('moment');
 //const Promise = require ('bluebird');
 const Member = require('../models/member');
 const User = require('../models/user');
+const AuditArchive = require('../models/auditArchive');
 const errors = require('../../shared-modules/http-errors');
 const log = require('../modules/log')(module);
 const uuid = require('../modules/uuid');
@@ -29,6 +30,11 @@ exports.findByUserAuthenticationToken = function(token) {
 exports.findByEmail = function(email) {
   // find a user by email address
   return User.findOne({ email: email.toLowerCase() }).exec();
+};
+
+exports.findByMemberUserKey = function(memberUserKey) {
+  // find a user by associate member user key
+  return User.findOne({ memberUserKey: memberUserKey }).exec();
 };
 
 exports.findByMemberUserKeys = function(memberUserKeys) {
@@ -151,6 +157,28 @@ exports.removeUserFromRole = function(user, role){
     return Promise.reject(`User was not assigned to the '${role}' role`);
   }
 };
+
+/**
+ * Delete existing User
+ * @param {string} id
+ * @returns (Promise) deleted {userId}
+ */
+exports.delete = function(id){
+
+  if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
+
+  const query = {'_id': id };
+
+  return User.findOne(query).exec()
+  .then(user => {
+    const archive = new AuditArchive({user: user, operation: 'DELETE'});
+    return Promise.all([archive.save(), user.remove()]);
+  })
+  .then(results => {
+    const archiveResult = results[0];
+    return {archiveId: archiveResult._id};
+  });
+}
 
 exports.auditAuthCheck = function(user){
   //TODO: consider using a queue such as redis for performance if needed to scale
