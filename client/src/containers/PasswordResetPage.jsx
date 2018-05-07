@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import Dialog from 'material-ui/Dialog';
@@ -47,7 +48,7 @@ class PasswordResetPage extends React.Component {
   componentWillReceiveProps(nextProps){
     if(nextProps.loggedInUser){
       this.props.actions.refreshMembersFromServer();
-      this.context.router.replace('/membership');
+      this.props.history.push('/membership');
     }
   }
 
@@ -114,8 +115,6 @@ class PasswordResetPage extends React.Component {
     );
 
     const {errors, fields} = this.state;
-
-    //if(this.props.passwordResetSucceeded) this.context.router.replace('/login');
 
     const userMessage = this.props.location.pathname.includes('forgot-password') ?
       'Welcome, back!  Please create a new password for your account.':
@@ -196,4 +195,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PasswordResetPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PasswordResetPage));
