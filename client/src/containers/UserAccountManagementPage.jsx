@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withRouter} from 'react-router-dom'
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
@@ -12,7 +13,7 @@ import {NotificationManager} from 'react-notifications';
 import UserList from '../components/account-management/UserList.jsx';
 import UserAccount from '../components/account-management/UserAccount.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
-import * as userActions from '../actions/user-actions';
+import * as allActions from '../actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
 import IconAdd from 'material-ui/svg-icons/content/add';
@@ -73,6 +74,11 @@ class UserAccountManagementPage extends Component {
     // http://fusejs.io/
     this.setState({filteredList: results});
   }
+  handleViewUserMember(user) {
+    const userMember = this.props.members.find(m => m.memberUserKey === user.memberUserKey);
+    this.props.actions.selectMember(userMember);
+    this.props.history.push('/membership');
+  } 
 
   render() {
     const {selectedUser, currentUserData, auth, loading} = this.props;
@@ -127,6 +133,7 @@ class UserAccountManagementPage extends Component {
                   style={{postion: 'relative'}}
                   onUpdate={(user) => this.handleUpdate(user)}
                   onToggleRole={(user, role) => this.handleToggleRole(user, role)}
+                  onViewUserMember={user => this.handleViewUserMember(user)}
                 />
               )}
             </Col>
@@ -155,8 +162,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(userActions, dispatch)
+    actions: bindActionCreators(allActions, dispatch)
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserAccountManagementPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserAccountManagementPage));
