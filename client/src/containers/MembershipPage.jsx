@@ -34,6 +34,7 @@ class MembershipPage extends Component {
       filteredList: props.members,
       editingSelectedMember: false,
       deleteDialogOpen: false,
+      resetUserAccountDialogOpen: false,
       bulkSearchDialogOpen: false,
       bulkSearchMode: 'names',
       bulkSearchResultsMeta: null,

@@ -67,10 +67,12 @@ class MemberProfilePage extends Component {
                   member={userMember}
                   editing={this.state.editingSelectedMember}
                   canEdit={canEditUserMember}
+                  dataSource={this.props.dataSource}
                   style={{postion: 'relative'}}
                   onUpdate={(member) => this.handleUpdate(member)}
                   onEditing={(editing) => this.handleMemberEditing(editing)}
                   onProfileImageChanged={(thumbnailImage, fullsizeImage, unEditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage)}
+                  onUnLinkApiMatch={(member) => NotificationManager.warning("Unlink your own account?  no.", "Aw, Hell No!") }
                 />
               )}
               {!userMember && (<p>No Member Listing to Edit</p>)}
