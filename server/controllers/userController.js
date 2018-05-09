@@ -158,6 +158,18 @@ exports.removeUserFromRole = function(user, role){
   }
 };
 
+exports.removeUserMembershipByMemberUserKey = function(memberUserKey){
+  return exports.findByMemberUserKey(memberUserKey)
+  .then(user => {
+    if(!user) return Promise.reject(new errors.PreconditionFailedError(`User not found having memberUserKey '${memberUserKey}'`));
+    user.roles = [];
+    user.memberUserKey = null;
+    console.log('saving user with no rols or muk');
+    return user.save();
+  });
+};
+
+
 /**
  * Delete existing User
  * @param {string} id

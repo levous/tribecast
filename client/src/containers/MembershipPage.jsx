@@ -412,6 +412,7 @@ class MembershipPage extends Component {
                       <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentDeleteConfirmation(false)} />
                     ]}>
                     Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
+                    {selectedMember.memberUserKey && <div style={{fontSize: '0.7em'}}>This will also revoke directory access from their user account</div>}
                   </Dialog>
 
                   <Dialog
