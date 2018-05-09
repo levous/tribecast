@@ -17,6 +17,7 @@ export const member_action_types = {
   ASSIGN_USER_MEMBER: 'ASSIGN_USER_MEMBER',
   INVITE_MEMBER: 'INVITE_MEMBER',
   INVITE_MEMBER_RESPONSE_RECEIVED: 'INVITE_MEMBER_RESPONSE_RECEIVED',
+  RESET_MEMBER_USER_ACCOUNT: 'RESET_MEMBER_USER_ACCOUNT',
   UPLOAD_DATA_REQUEST_MATCH_CHECK: 'MEMBER_UPLOAD_MATCH_CHECK',
   UPLOAD_DATA_RECEIVE_MATCH_CHECK: 'MEMBER_UPLOAD_MATCH_CHECK_RCV',
   GENERATE_CSV_FROM_MEMBERS: 'GENERATE_CSV_FROM_MEMBERS',
@@ -50,6 +51,11 @@ export function updateMember(member){
 export function deleteMember(member){
   return {type: member_action_types.DELETE, member};
 }
+
+export function resetMemberUserAccount(member){
+  return {type: member_action_types.RESET_MEMBER_USER_ACCOUNT, member};
+}
+
 
 export function updateMemberProfileImage(member, thumbnailImage, fullsizeImage, unEditedImage){
   return {type: member_action_types.UPDATE_PROFILE_IMAGE, member, thumbnailImage, fullsizeImage, unEditedImage};

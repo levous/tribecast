@@ -1,4 +1,5 @@
 const express = require('express');
+const enforceSSL = require('express-sslify');
 const path = require('path');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -59,6 +60,12 @@ app.use(function(req, res, next) { 'use strict'; req.io = io; next(); });
 
 // Compression
 app.use(compression());
+
+// enforce SSL 
+if ( app.get('env') !== 'development' ) {
+  app.use(enforceSSL.HTTPS({ trustProtoHeader: true }));
+}
+
 
 // tell the app to look for static files in these directories
 app.use(express.static(path.join(__dirname, 'server/static/')));

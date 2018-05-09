@@ -122,6 +122,41 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
+  router.post('/reset-member-user-account', function(req, res, next){
+    const memberId = req.body.id;
+    // validate id
+    if (!MongooseObjectId.isValid(memberId)) return next(new errors.ResourceNotFoundError('Provided id not valid'));
+    let member = null;
+
+    memberController.findById(memberId)
+    .then(memberResponse => {
+      member = memberResponse;
+      if(!member.memberUserKey) return next(new errors.ResourceNotFoundError('Provided member id not associated with any user'));
+      return userController.findByMemberUserKey(member.memberUserKey);
+    })
+    .then(user => {
+      if(!user) return next(new errors.ResourceNotFoundError('Provided member id did not yield a valid user'));
+      return userController.delete(user._id);
+    })
+    .then(ignoreResult => {
+      // successful response indicates delete was successful
+      member.memberUserKey = null;
+      return member.save()
+    })
+    .then(memberResult => {
+      const responseBody = {
+        message: `successfully updated member ${memberResult._id}`,
+        data: memberResult
+      };
+      if(req.io) req.io.emit('member:update', {data: {editingUserID: req.user._id, memberResult}});
+
+      res.json(responseBody);
+    })
+    .catch(next);
+
+
+  });
+
   router.get('/', function(req, res, next){
     memberController.getAll()
     .then((members) => {
@@ -217,7 +252,7 @@ exports.setup = function (basePath, app) {
       .catch(next);
   });
 
-  router.delete('/:id',function(req, res, next){
+  router.delete('/:id', function(req, res, next){
 
     const memberId = req.params.id;
     // validate id

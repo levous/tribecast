@@ -108,7 +108,36 @@ const dataService = store => next => action => {
           err
         });
       });
+    
+    case member_action_types.RESET_MEMBER_USER_ACCOUNT:{
+      // only dispatch api call if data source is API
+      if(store.getState().memberApp.dataSource !== member_data_sources.API) {
+        return Promise.resolve();
+      }
 
+      const member = action.member;
+      return fetch('/api/members/reset-member-user-account', {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify({id: member._id})
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        let updatedMember = responseJson.data;
+ 
+        return next({
+          type: member_action_types.UPDATE_SUCCESS_RECEIVED,
+          id: updatedMember._id,
+          member: updatedMember
+        });
+      })
+      .catch(err => {
+        return next({
+          type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          err
+        });
+      });
+    }
 
     case member_action_types.DELETE:{
 

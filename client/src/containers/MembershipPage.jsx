@@ -34,6 +34,7 @@ class MembershipPage extends Component {
       filteredList: props.members,
       editingSelectedMember: false,
       deleteDialogOpen: false,
+      resetUserAccountDialogOpen: false,
       bulkSearchDialogOpen: false,
       bulkSearchMode: 'names',
       bulkSearchResultsMeta: null,
@@ -210,10 +211,20 @@ class MembershipPage extends Component {
     this.setState({deleteDialogOpen: present, editingSelectedMember: false});
   }
 
+  presentResetUserAccountConfirmation(present){
+    this.setState({resetUserAccountDialogOpen: present, editingSelectedMember: false});
+  }
+
   handleDeleteMember(member) {
     this.props.actions.deleteMember(member);
     this.setState({deleteDialogOpen: false});
   }
+
+  handleResetUserAccount(member) {
+    this.props.actions.resetMemberUserAccount(member);
+    this.setState({resetUserAccountDialogOpen: false});
+  }
+  
 
   handleProfileImageChanged(thumbnailImage, fullsizeImage, unEditedImage){
     this.props.actions.updateMemberProfileImage(this.props.selectedMember, thumbnailImage, fullsizeImage, unEditedImage);
@@ -317,24 +328,37 @@ class MembershipPage extends Component {
           onModeAccept={dataSource => this.handleDataSourceModeAccept(dataSource)}
           onNextMatchType={matchType => this.handleNextMatchType(matchType)} />
         {this.state.bulkSearchResultsMeta && (
-          <Panel collapsible={true} defaultExpanded={true} header='Bulk Search Results' bsStyle="info">
-            <p>Searched for: {this.state.bulkSearchResultsMeta.names.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>
-            <p>Didn't find: {this.state.bulkSearchResultsMeta.notFoundNames.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>
-            <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
+          <Panel defaultExpanded bsStyle='info'>
+            <Panel.Heading>
+              <Panel.Title toggle>
+              Bulk Search Results
+              </Panel.Title>
+            </Panel.Heading>
+            <Panel.Collapse>
+              <Panel.Body>
+                <div>
+                  <p style={{fontSize: '0.8em'}}>Searched for: {this.state.bulkSearchResultsMeta.names.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>
+                  <p style={{fontSize: '0.8em'}}>Didn't find: {this.state.bulkSearchResultsMeta.notFoundNames.map(name => `${name.firstName} ${name.lastName}`).join(', ')}</p>
+                  <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentBulkSearch(false)} />
+                </div>
+              </Panel.Body>
+            </Panel.Collapse>
           </Panel>
         )}
 
         <NavigationButton to='/address-view' label="Address View"  style={{float:'right', margin: '5px'}} />
         {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {adminButtons}
-        {/* This panel is a fail-safe as we're doing some finicky browser tricks to invoke a file download.  The panel will close once the trick invokes */}
+        {/* This panel is a fail-safe as we're doing some finicky browser tricks to invoke a file download.  The panel will close once the trick invokes.  */}
         {this.props.csvMemberDownload && (
-          <Panel collapsible={true} defaultExpanded={true} header='CSV Export' bsStyle="info">
+          
+          <Panel defaultExpanded={true} header='CSV Export' bsStyle="info">
             <p>
               If the file didn't automatically download, please click here:
               <a href={csvURL} download="export.csv" onClick={() => this.downloadMemberCsvMemberList(this.props.csvMemberDownload) }>Download CSV</a>
             </p>
           </Panel>
+         
         )}
 
         <div style={{clear:'both', marginTop:'5px'}}></div>
@@ -373,7 +397,12 @@ class MembershipPage extends Component {
                     onProfileImageChanged={(thumbnailImage, fullsizeImage, uneditedImage) => this.handleProfileImageChanged(thumbnailImage, fullsizeImage, uneditedImage)}
                     onUnLinkApiMatch={(member) => this.handleUnLinkApiMatch(member) }
                   />
-                  {isAdmin && this.state.editingSelectedMember && <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} />}
+                  {isAdmin && this.state.editingSelectedMember && (
+                    <div>
+                      <RaisedButton secondary={true} label="Delete" onClick={(button) => this.presentDeleteConfirmation(true)} style={{marginRight: '5px'}} />
+                      <RaisedButton secondary={true} label="Reset User Account" onClick={(button) => this.presentResetUserAccountConfirmation(true)} />
+                    </div>
+                  )}
                   <Dialog
                     title={`DELETE ${selectedMember.firstName} ${selectedMember.lastName}?`}
                     modal={true}
@@ -383,6 +412,19 @@ class MembershipPage extends Component {
                       <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentDeleteConfirmation(false)} />
                     ]}>
                     Are you sure you want to DELETE {selectedMember.firstName} {selectedMember.lastName}?
+                    {selectedMember.memberUserKey && <div style={{fontSize: '0.7em'}}>This will also revoke directory access from their user account</div>}
+                  </Dialog>
+
+                  <Dialog
+                    title={`RESET ACCOUNT for ${selectedMember.firstName} ${selectedMember.lastName}?`}
+                    modal={true}
+                    open={this.state.resetUserAccountDialogOpen}
+                    actions={[
+                      <RaisedButton backgroundColor='red' labelColor='white' label="Confirm RESET" onClick={(button) => this.handleResetUserAccount(selectedMember)} />,
+                      <RaisedButton style={{marginLeft: '10px'}} primary={true} label="Cancel" onClick={(button) => this.presentResetUserAccountConfirmation(false)} />
+                    ]}>
+                    Are you sure you want to RESET the USER ACCOUNT for {selectedMember.firstName} {selectedMember.lastName}?
+                    <div style={{fontSize: '0.7em'}}>This will remove and archive their current login information and history.  You can then reinvite this member.</div>
                   </Dialog>
                 </div>
               )}

@@ -255,7 +255,7 @@ exports.update = function(id, member){
 
 /**
  * Delete existing Member
- * @param {string} memberId
+ * @param {string} id
  * @returns (Promise) deleted {memberId}
  */
 exports.delete = function(id){
@@ -267,7 +267,16 @@ exports.delete = function(id){
   return Member.findOne(query).exec()
   .then(member => {
     const archive = new AuditArchive({member: member, operation: 'DELETE'});
-    return Promise.all([archive.save(), member.remove()]);
+
+    let promises = [archive.save(), member.remove()];
+    
+    if(member.memberUserKey) {
+      console.log(member.memberUserKey);
+      const clearUserRoles = userController.removeUserMembershipByMemberUserKey(member.memberUserKey);
+      promises.push(clearUserRoles);
+    }
+
+    return Promise.all(promises);
   })
   .then(results => {
     const archiveResult = results[0];

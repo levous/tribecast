@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import { Card } from 'material-ui/Card';
@@ -92,7 +93,7 @@ class SignUpPage extends React.Component {
         this.props.actions.userLoggedIn(xhr.response.user);
 
         // change the current URL to /
-        this.context.router.replace('/membership');
+        this.props.history.push('/membership');
 
       } else {
         // failure
@@ -158,4 +159,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(SignUpPage);
+export default withRouter(connect(null, mapDispatchToProps)(SignUpPage));
