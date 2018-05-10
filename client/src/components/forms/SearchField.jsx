@@ -84,24 +84,24 @@ class SearchField extends Component {
       if(searchText && searchText.trim().length){
 
         const fuse = this.getFuseInstance(this.props.list);
-        results = fuse.search(searchText.trim());
+        results = fuse
+          .search(searchText.trim())
+          .map(record => {
+            const searchMeta = {
+              fuseJSSearchMeta: {
+                score: record.score, 
+                matches: record.matches
+              }
+            }
+            return Object.assign({}, record.item, searchMeta);
+          });
       }
     }
     catch(err){
       Logger.logError({source:'executeSearch/fuse', error: err});
     }
 
-    const scoredResults = results.map(record => {
-      const searchMeta = {
-        fuseJSSearchMeta: {
-          score: record.score, 
-          matches: record.matches
-        }
-      }
-      return Object.assign({}, record.item, searchMeta);
-    });
-
-    this.onSearch(scoredResults);
+    this.onSearch(results);
   }
 
   onSearch(results){

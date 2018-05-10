@@ -146,7 +146,8 @@ class MemberList extends Component {
 
 
               //const avatarSrc = member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
-              const matches = member.fuseJSSearchMeta ? 
+              // create array of fields matches reported by FuseJS Search or API Match report
+              const matches = (member.fuseJSSearchMeta && member.fuseJSSearchMeta.matches) ? 
                 member.fuseJSSearchMeta.matches.map(match => match.key) : 
                 (member.apiMatch ? member.apiMatch.matchingFields : []); 
               
