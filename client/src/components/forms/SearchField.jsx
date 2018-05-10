@@ -91,7 +91,17 @@ class SearchField extends Component {
       Logger.logError({source:'executeSearch/fuse', error: err});
     }
 
-    this.onSearch(results);
+    const scoredResults = results.map(record => {
+      const searchMeta = {
+        fuseJSSearchMeta: {
+          score: record.score, 
+          matches: record.matches
+        }
+      }
+      return Object.assign({}, record.item, searchMeta);
+    });
+
+    this.onSearch(scoredResults);
   }
 
   onSearch(results){
@@ -150,7 +160,7 @@ SearchField.propTypes = {
 SearchField.defaultProps = {
   caseSensitive: false,
   distance: 100,
-  include: [],
+  include: ['score', 'matches'],
   location: 0,
   width: 430,
   placeholder: 'Search',

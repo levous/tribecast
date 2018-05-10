@@ -146,8 +146,20 @@ class MemberList extends Component {
 
 
               //const avatarSrc = member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
-              const matchTag = member.apiMatch && member.apiMatch.matchingFields && member.apiMatch.matchingFields.length > 0 ? (
-                <div style={{float: 'right', fontSize: '0.8em', color: '#bbbbbb', backgroundColor: 'rgba(255, 255, 255, 0.3)', border: '1px solid rgba(255, 255, 255, 0.3)'}}><span style={{fontWeight: 'bold', fontSize: '0.7em'}}>match</span>: {member.apiMatch.matchingFields.join(', ')}</div>
+              const matches = member.fuseJSSearchMeta ? 
+                member.fuseJSSearchMeta.matches.map(match => match.key) : 
+                (member.apiMatch ? member.apiMatch.matchingFields : []); 
+              
+              const matchTag = matches && matches.length > 0 ? (
+                <div style={{
+                  fontSize: '0.7em', 
+                  color: '#bbbbbb', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  marginTop: '-18px',
+                  marginBottom: '3px',
+                  borderRadius: '15px',
+                }}><span style={{fontWeight: 'bold', fontSize: '0.7em', paddingLeft: '3px'}}>match</span>: {matches.join(', ')}</div>
               ) : '';
 
               return (
@@ -158,9 +170,9 @@ class MemberList extends Component {
                 }
                 primaryText={
                   <div>
+                  {matchTag}
                   {`${member.firstName} ${member.lastName}`}
                   {member.nameSuffix && ` ${member.nameSuffix}`}
-                  {matchTag}
                   </div>
                 }
                 secondaryText={member.propertyAddress && member.propertyAddress.street}

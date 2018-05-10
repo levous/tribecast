@@ -38,14 +38,16 @@ class MembershipPage extends Component {
       bulkSearchDialogOpen: false,
       bulkSearchMode: 'names',
       bulkSearchResultsMeta: null,
-      showInvitationsLink: false
+      showInvitationsLink: false,
+      searchFields: null
     }
 
     this.auth = new Auth(context.store);
   }
 
   componentDidMount() {
-    const qs = QS.parse(this.props.location.search);
+    
+    const qs = QS.parse(this.props.location.search, { ignoreQueryPrefix: true });
     if(qs.notification){
       NotificationManager.info(qs.notification);
     }
@@ -60,6 +62,10 @@ class MembershipPage extends Component {
 
     if(qs.refresh){
       this.props.actions.refreshMembersFromServer();
+    }
+
+    if(qs.searchFields){
+      this.setState({searchFields: qs.searchFields.split(',')});
     }
   }
 
@@ -276,26 +282,28 @@ class MembershipPage extends Component {
     const selectedMemberId = selectedMember ? selectedMember.id : -1;
     const canEditSelectedMember = isAdmin || isLoggedIn && this.auth.userCanEditMember(userData, selectedMember);
     const shouldSuppressListAutoScroll = this.state.editingSelectedMember;
-    const weightedSearchKeys = [{
-      name: 'lastName',
-      weight: 0.3
-    },
-    {
-      name: 'firstName',
-      weight: 0.3
-    },
-    {
-       name: 'propertyAddress.street',
-       weight: 0.1
-    },
-    {
-       name: 'neighborhood',
-       weight: 0.1
-    },
-    {
-       name: 'email',
-       weight: 0.1
-    }];
+    const weightedSearchKeys = this.state.searchFields || [
+      {
+        name: 'lastName',
+        weight: 0.3
+      },
+      {
+        name: 'firstName',
+        weight: 0.3
+      },
+      {
+        name: 'propertyAddress.street',
+        weight: 0.1
+      },
+      {
+        name: 'neighborhood',
+        weight: 0.1
+      },
+      {
+        name: 'email',
+        weight: 0.1
+      }
+    ];
 
     const csvURL = this.props.csvMemberDownload ? window.URL.createObjectURL(new Blob([this.props.csvMemberDownload]), {type: "text/csv"}) : null;
     let adminButtons = ''
@@ -367,6 +375,26 @@ class MembershipPage extends Component {
             <Col xs={12} md={4}>
               {(!this.state.bulkSearchResultsMeta) && (
                 <div>
+                  {this.state.searchFields && (
+                    <div style={{textAlign: 'center', fontSize: '0.7em'}}>
+                      Search Fields: ({this.state.searchFields.join(', ')}) available: (
+                        'lastName', 
+                        'firstName', 
+                        'propertyAddress.street', 
+                        'neighborhood',
+                        'email',
+                        'alternateAddress.street',
+                        'alternateAddress.city', 
+                        'alternateAddress.state',
+                        'adultResidents',
+                        'children',
+                        'originallyFrom',
+                        'profession',
+                        'passionsInterests',
+                        'hobbies'
+                      )
+                    </div>
+                  )}
                   <SearchField
                     list={this.props.members}
                     keys={weightedSearchKeys}
