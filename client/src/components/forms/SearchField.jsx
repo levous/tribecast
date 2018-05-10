@@ -168,7 +168,7 @@ SearchField.defaultProps = {
   sortFn(a, b) {
     return a.score - b.score;
   },
-  threshold: 0.6,
+  threshold: 0.4,
   tokenize: false,
   verbose: false,
   autoFocus: false
