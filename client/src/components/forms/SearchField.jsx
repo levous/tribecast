@@ -135,26 +135,26 @@ class SearchField extends Component {
 SearchField.propTypes = {
   onSearch: PropTypes.func.isRequired,
   text: PropTypes.string,
-  caseSensitive: PropTypes.bool,
-  className: PropTypes.string,
-  distance: PropTypes.number,
-  id: PropTypes.string,
-  include: PropTypes.array,
-  maxPatternLength: PropTypes.number,
-  width: PropTypes.number,
-  keys: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  list: PropTypes.array.isRequired,
-  location: PropTypes.number,
   placeholder: PropTypes.string,
+  list: PropTypes.array.isRequired,  // the list to search
+  className: PropTypes.string,
+  style: PropTypes.object,
+  id: PropTypes.string,
+  width: PropTypes.number,
+  caseSensitive: PropTypes.bool, // Indicates whether comparisons should be case sensitive
+  include: PropTypes.array, // [matches, score] Will add meta info as .fuseJSSearchMeta to the results item 
+  maxPatternLength: PropTypes.number,
+  keys: PropTypes.oneOfType([PropTypes.array, PropTypes.string]), // Which keys in the target list items to search
+  location: PropTypes.number, // Determines approximately where in the text is the pattern expected to be found
+  distance: PropTypes.number, // Determines how close the match must be to the location 
   shouldSort: PropTypes.bool,
   sortFn: PropTypes.func,
-  threshold: PropTypes.number,
+  threshold: PropTypes.number, // At what point does the match algorithm give up. A threshold of 0.0 requires a perfect match (of both letters and location), a threshold of 1.0 would match anything.
   tokenize: PropTypes.bool,
-  verbose: PropTypes.bool,
+  verbose: PropTypes.bool, // Debugging, set to true
   autoFocus: PropTypes.bool,
   maxResults: PropTypes.number,
-  autoFocus: PropTypes.bool,
-  style: PropTypes.object
+  autoFocus: PropTypes.bool
 };
 
 SearchField.defaultProps = {
