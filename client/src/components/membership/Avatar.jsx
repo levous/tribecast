@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-// A Notification component
+// Presents a typical circular avatar with the member's profile photo or, if no photo url, the member's initials
 const Avatar = (props) => {
     const {member, color, fgColor, size} = props;
     const imageUrl =  member.profilePhoto && member.profilePhoto.thumbnailURL ? member.profilePhoto.thumbnailURL : null;
