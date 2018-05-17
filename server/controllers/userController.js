@@ -130,6 +130,7 @@ exports.generateInvite = function(member) {
     }).then(member => {
       memberUser.passwordResetToken = uuid();
       memberUser.passwordResetTokenExpires = Date.now() + expireDuration;
+      memberUser.accessExpiresAt = moment().add(1, 'years');
       // ensure member role for invited member
       if(!memberUser.roles) memberUser.roles = [];
       if(!memberUser.roles.find(role => role === user_roles.member)) memberUser.roles.push(user_roles.member);

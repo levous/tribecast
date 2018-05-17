@@ -25,12 +25,6 @@ module.exports = new PassportLocalStrategy({
     .then(user => {
       if(!user) return done(new errors.InvalidCredentialsError('Incorrect email or password'));
       
-      res.status(200);
-      const responseBody = {
-        message: `successfully added ${user.name} to ${role} role`,
-        data: user.roles
-      }
-      
       // check if a hashed user's password is equal to a value saved in the database
       return user.comparePassword(userData.password, (passwordErr, isMatch) => {
         if (passwordErr) { return done(passwordErr); }

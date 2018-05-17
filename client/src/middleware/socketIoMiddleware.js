@@ -1,7 +1,7 @@
 import {member_action_types, member_data_sources} from '../actions/member-actions';
 import {user_action_types} from '../actions/user-actions';
 import Auth from '../modules/Auth';
-
+import Logger from '../modules/Logger';
 
 const socketIoMiddleware = store => {
 
@@ -29,10 +29,11 @@ const socketIoMiddleware = store => {
         type: member_action_types.DELETE_SUCCESS_RECEIVED,
         id:  data.memberId
       });
+      Logger.logInfo({source: 'socketIoMiddleware:member:delete', description: 'delete notification', payload: payload});
     }
   });
   socket.on('member:new', payload => {
-    console.log(payload);
+    Logger.logInfo({source: 'socketIoMiddleware:member:new', description: 'delete notification', payload: payload});
   });
 
 

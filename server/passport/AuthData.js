@@ -11,7 +11,7 @@ class AuthData{
 
     this.token = jwt.sign(payload, config.get('jwtSecret'));
 
-    const roles = (user.accessExpiresAt && user.accessExpiresAt < new Date) ? user.roles : [];  
+    const roles = (user.accessExpiresAt && user.accessExpiresAt instanceof Date && user.accessExpiresAt < new Date) ? [] : user.roles;  
     
     this.userData = {
       id: user.id,
