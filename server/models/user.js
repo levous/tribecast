@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
   passwordResetToken: String,
   passwordResetTokenExpires: Date,
   confirmedAt: Date,
+  accessExpiresAt: Date,
   lastAuthCheckAt: Date
 },
 {
