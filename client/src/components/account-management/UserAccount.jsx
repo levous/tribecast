@@ -59,7 +59,7 @@ const UserAccountView = ({
       </p>
       <p> 
         <span style={{marginRight: '10px', fontSize:'0.8em'}}>access expires:</span>
-        {user.accessExpiresAt ? moment(user.accessExpiresAt).format('LLL') : 'unknown'}
+        {user.accessExpiresAt ? moment(user.accessExpiresAt).format('LLL') : 'none'}
       </p>
     
     </div>
