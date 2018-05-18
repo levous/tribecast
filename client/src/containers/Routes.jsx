@@ -9,6 +9,8 @@ import {
   Link
 } from 'react-router-dom';
 import {Provider} from 'react-redux';
+import {NotificationContainer} from 'react-notifications';
+
 import configureStore from '../store/configureStore';
 import Auth from '../modules/Auth';
 
@@ -28,6 +30,7 @@ class Routes extends React.Component {
   render() {
 
     return (
+      <div>
       <Provider store={this.store}>
         <Router>
           <Switch>
@@ -38,6 +41,8 @@ class Routes extends React.Component {
           </Switch>
         </Router>
       </Provider>
+      <NotificationContainer />
+      </div>
     );
   }
 }

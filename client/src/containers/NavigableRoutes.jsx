@@ -12,7 +12,6 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import IconHelp from 'material-ui/svg-icons/action/help-outline';
 import { white, lightBlue500 } from 'material-ui/styles/colors';
 import { LinkContainer } from 'react-router-bootstrap';
-import {NotificationContainer} from 'react-notifications';
 import Auth from '../modules/Auth';
 import communityDefaults from '../../../config/community-defaults';
 
@@ -115,7 +114,6 @@ const NavigableRoutes = (props, {store}) => {
         <Route path='/*' component={NotFound} />
       </Switch>
     </div>
-    <NotificationContainer />
   </div>
   );
 };
