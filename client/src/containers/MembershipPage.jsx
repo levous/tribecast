@@ -205,7 +205,7 @@ class MembershipPage extends Component {
   }
 
   handleDataSourceModeCancel(dataSource){
-    this.handleRefreshButtonTouchTap();
+    this.props.actions.refreshMembersFromServer();
   }
 
   handleInvite(member) {

@@ -82,7 +82,8 @@ class MemberList extends Component {
         borderRadius: '8px'
       },
       selectedRow: {
-        border: '1px solid #82b186'
+        border: '1px solid #82b186',
+        backgroundColor: 'rgba(255, 255, 255, 0.4)'
       },
       listStyle: {
         overflow: 'scroll',
