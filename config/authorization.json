@@ -11,5 +11,9 @@
     "route": "/api/members",
     "roles": ["administrator"],
     "operations": ["DELETE"]
+  },
+  {
+    "route": "/api/users",
+    "roles": ["administrator"]
   }
 ]

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Grid, Row, Col, Panel} from 'react-bootstrap';
@@ -18,7 +19,8 @@ import Member from '../components/membership/Member.jsx';
 import NavigationButton from '../components/NavigationButton';
 import DataSourceModePanel from '../components/membership/DataSourceModePanel.jsx';
 import SearchField from '../components/forms/SearchField.jsx';
-import * as memberActions from '../actions/member-actions';
+import StyledLabel from '../components/forms/StyledLabel';
+import * as allActions from '../actions';
 import Auth from '../modules/Auth'
 import IconRefresh from 'material-ui/svg-icons/navigation/refresh';
 import IconAdd from 'material-ui/svg-icons/content/add';
@@ -196,7 +198,7 @@ class MembershipPage extends Component {
   }
 
   handleDataSourceModeAccept(dataSource) {
-    if(this.props.dataSource !== memberActions.member_data_sources.CSV_IMPORT) {
+    if(this.props.dataSource !== allActions.member_data_sources.CSV_IMPORT) {
       alert('ERROR: Cannot publish unless it\'s a csv import');
       return;
     }
@@ -219,6 +221,11 @@ class MembershipPage extends Component {
 
   presentResetUserAccountConfirmation(present){
     this.setState({resetUserAccountDialogOpen: present, editingSelectedMember: false});
+  }
+
+  viewMemberUserAccount(member){
+    this.props.actions.selectUserAccountByMemberUserKey(member.memberUserKey);
+    this.props.history.push('/user-accounts');
   }
 
   handleDeleteMember(member) {
@@ -306,7 +313,8 @@ class MembershipPage extends Component {
     ];
 
     const csvURL = this.props.csvMemberDownload ? window.URL.createObjectURL(new Blob([this.props.csvMemberDownload]), {type: "text/csv"}) : null;
-    let adminButtons = ''
+    let adminButtons = '';
+    let UserAccountButton = () => {};
     if(isAdmin){
       adminButtons = (
         <div style={{display: 'inline'}}>
@@ -315,6 +323,18 @@ class MembershipPage extends Component {
           <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.presentBulkSearch(true)}><IconBulkSearch /></FloatingActionButton>
         </div>
       );
+      UserAccountButton = () => {
+        if(this.state.editingSelectedMember) return null;
+        const button = selectedMember.memberUserKey ? 
+          <FlatButton label="View User Account" onClick={(button) => this.viewMemberUserAccount(selectedMember)} /> : 
+          <small>no associated user account</small>;
+        return (
+          <div>
+            <StyledLabel htmlFor='user-account-button' text='user account' />
+            {button}
+          </div>
+        )
+      }
     }
 
     return (
@@ -431,6 +451,9 @@ class MembershipPage extends Component {
                       <RaisedButton secondary={true} label="Reset User Account" onClick={(button) => this.presentResetUserAccountConfirmation(true)} />
                     </div>
                   )}
+
+                  <UserAccountButton />
+
                   <Dialog
                     title={`DELETE ${selectedMember.firstName} ${selectedMember.lastName}?`}
                     modal={true}
@@ -528,8 +551,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(memberActions, dispatch)
+    actions: bindActionCreators(allActions, dispatch)
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MembershipPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MembershipPage));

@@ -68,6 +68,15 @@ let userApp = function(state = initialState, action) {
         NotificationManager.success(`${action.resetResponse.message}\n Please check your email for a reset link. (note: it might take a few minutes)`);
       }
       return state;
+    case user_action_types.SELECT_USER_ACCOUNT_BY_MEMBER_USER_KEY: {
+      const memberUserKey = action.memberUserKey;
+      const selectedUser = state.users.find(u => u.memberUserKey === memberUserKey);
+      if(!selectedUser) NotificationManager.warn('User account not found.  The login account may have been deleted');
+      
+      return Object.assign({}, state, {
+        selectedUser: selectedUser
+      });
+    }
     case user_action_types.SELECT_USER_ACCOUNT:
 
       return Object.assign({}, state, {

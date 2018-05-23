@@ -5,11 +5,13 @@ export const user_action_types = {
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
   USER_LOG_IN_FAILED: 'USER_LOG_IN_FAILED',
   UPDATE_PASSWORD: 'UPDATE_PASSWORD',
+  UPDATE_USER: 'UPDATE_USER',
   RESET_PASSWORD: 'RESET_PASSWORD',
   RESET_PASSWORD_RESPONSE_RECEIVED: 'RESET_PASSWORD_RESPONSE_RECEIVED',
   UPDATE_PASSWORD_SUCCESS: 'UPDATE_PASSWORD_SUCCESS',
   UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
   SELECT_USER_ACCOUNT: 'SELECT_USER_ACCOUNT',
+  SELECT_USER_ACCOUNT_BY_MEMBER_USER_KEY: 'SELECT_USER_ACCOUNT_BY_MEMBER_USER_KEY',
   USER_DATA_RECEIVED: 'USER_DATA_RECEIVED',
   USER_DATA_FAILED: 'USER_DATA_FAILED',
   TOGGLE_USER_ROLE: 'TOGGLE_USER_ROLE'
@@ -60,6 +62,13 @@ export function updateUserPassword(password, resetToken) {
   };
 };
 
+export function updateUser(user) {
+  return {
+    type: user_action_types.UPDATE_USER,
+    user
+  };
+};
+
 export function toggleUserRole(user, role) {
   return {
     type: user_action_types.TOGGLE_USER_ROLE,
@@ -72,5 +81,12 @@ export function selectUserAccount(user) {
   return {
     type: user_action_types.SELECT_USER_ACCOUNT,
     user
+  };
+};
+
+export function selectUserAccountByMemberUserKey(memberUserKey) {
+  return {
+    type: user_action_types.SELECT_USER_ACCOUNT_BY_MEMBER_USER_KEY,
+    memberUserKey
   };
 };

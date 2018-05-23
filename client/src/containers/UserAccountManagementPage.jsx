@@ -74,12 +74,17 @@ class UserAccountManagementPage extends Component {
     // http://fusejs.io/
     this.setState({filteredList: results});
   }
+  
   handleViewUserMember(user) {
     const userMember = this.props.members.find(m => m.memberUserKey === user.memberUserKey);
     if(!userMember) return NotificationManager.warning("There was no member found for that user account.  The member record may have been deleted.", "Invalid Member User Key");
     this.props.actions.selectMember(userMember);
     this.props.history.push('/membership');
   } 
+
+  handleUpdate(user) {
+    this.props.actions.updateUser(user);
+  }
 
   render() {
     const {selectedUser, currentUserData, auth, loading} = this.props;

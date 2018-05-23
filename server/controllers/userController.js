@@ -17,7 +17,7 @@ exports.getAll = function(){
 
   return User
     .find()
-    .select('-_id -password -__v')
+    .select('-password -__v')
     .lean()
     .exec();
 };
@@ -41,6 +41,16 @@ exports.findByMemberUserKeys = function(memberUserKeys) {
   // find a user by email address
   return User.find({ memberUserKey: { $in: memberUserKeys } }).exec();
 };
+
+exports.update = function(id, user){
+
+  if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
+  if(!user) return Promise.reject(new errors.MissingParameterError('user was not provided'));
+  if(user._id && user._id != id) return Promise.reject(new errors.InvalidArgumentError('id did not match user._id'));
+  user.updatedAt = moment();
+  const query = {'_id': id };
+  return User.findOneAndUpdate(query, user, {upsert:false, new: true, runValidators: true}).exec();
+}
 
 exports.forgotPassword = function(email) {
   return User.findOne({ email: email.toLowerCase() }).exec()
@@ -159,13 +169,15 @@ exports.removeUserFromRole = function(user, role){
   }
 };
 
+
+
 exports.removeUserMembershipByMemberUserKey = function(memberUserKey){
   return exports.findByMemberUserKey(memberUserKey)
   .then(user => {
     if(!user) return Promise.reject(new errors.PreconditionFailedError(`User not found having memberUserKey '${memberUserKey}'`));
     user.roles = [];
     user.memberUserKey = null;
-    console.log('saving user with no rols or muk');
+    console.log('saving user with no roles or muk');
     return user.save();
   });
 };

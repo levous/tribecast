@@ -343,6 +343,38 @@ const dataService = store => next => action => {
         });
       });
       break;
+
+    case user_action_types.UPDATE_USER:
+
+      if(!auth.isUserAdmin()){
+        return next({
+          type: user_action_types.USER_DATA_FAILED,
+          err: new errors.NotAuthorizedError('Sorry, you aren\'t authorized to update the user records.')
+        });
+      }
+
+      const user = action.user;
+      return fetch(`/api/users/${user._id}`, {
+        method: 'put',
+        headers: authHeaders,
+        body: JSON.stringify(user)
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        let updatedUser = responseJson.data;
+        return next({
+          type: user_action_types.UPDATE_USER_SUCCESS,
+          id: updatedUser._id,
+          user: updatedUser
+        });
+      })
+      .catch(err => {
+        return next({
+          type: user_action_types.USER_DATA_FAILED,
+          err
+        });
+      });
+
     case user_action_types.LOG_IN_USER:
       const {userData} = action;
 
