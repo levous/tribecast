@@ -56,6 +56,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const server = require('http').Server(app);
 const io = require('socket.io')(server);// add as middleware so routes have access to io
+app.use(function(req, res, next) { console.log('>>>> request going on'); next(); });
 app.use(function(req, res, next) { 'use strict'; req.io = io; next(); });
 
 // Compression
@@ -65,7 +66,7 @@ app.use(compression());
 app.use(function (req, res, next) {
   var host = req.get('host');
   if ( app.get('env') !== 'development' && host.indexOf("localhost") !== 0 ) {
-    enforceSSL.HTTPS(req, res, next, { trustProtoHeader: true });
+    enforceSSL.HTTPS({ trustProtoHeader: true })(req, res, next);
   } else {
     next();
   }
