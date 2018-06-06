@@ -318,9 +318,9 @@ class MembershipPage extends Component {
     if(isAdmin){
       adminButtons = (
         <div style={{display: 'inline'}}>
-          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
-          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
-          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.presentBulkSearch(true)}><IconBulkSearch /></FloatingActionButton>
+          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton>
+          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleExportTouchTap()}><IconDownload /></FloatingActionButton>
+          <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.presentBulkSearch(true)}><IconBulkSearch /></FloatingActionButton>
         </div>
       );
       UserAccountButton = () => {
@@ -375,7 +375,7 @@ class MembershipPage extends Component {
         )}
 
         <NavigationButton to='/address-view' label="Address View"  style={{float:'right', margin: '5px'}} />
-        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
+        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
         {adminButtons}
         {/* This panel is a fail-safe as we're doing some finicky browser tricks to invoke a file download.  The panel will close once the trick invokes.  */}
         {this.props.csvMemberDownload && (

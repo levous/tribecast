@@ -178,7 +178,7 @@ class MemberList extends Component {
                   </div>
                 }
                 secondaryText={member.propertyAddress && member.propertyAddress.street}
-                onTouchTap={() => this.handleItemTouchTap(member)}
+                onClick={() => this.handleItemTouchTap(member)}
                 style={computeStyle(member)}
               />
             )

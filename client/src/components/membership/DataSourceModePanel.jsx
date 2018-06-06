@@ -90,7 +90,7 @@ export default class DataSourceModePanel extends Component {
                           <td rowSpan='4' style={{padding:'10px', fontSize:'0.7em'}}>
                           New members will be added.  Confidently matched records already exist and will be updated.  Possible matches could result in unintended overwrite.
                           <br/>
-                          <IconButton onTouchTap={this.toggleDevNote}>
+                          <IconButton onClick={this.toggleDevNote}>
                             <IconCake />
                           </IconButton>
                           </td>
@@ -126,7 +126,7 @@ export default class DataSourceModePanel extends Component {
                       icon={<IconCancel />}
                       />
                     <FlatButton
-                      onTouchTap={() => this.handlePublishTouchTap(member_data_sources.CSV_IMPORT)}
+                      onClick={() => this.handlePublishTouchTap(member_data_sources.CSV_IMPORT)}
                       label="Publish"
                       primary={true}
                       style={{float:'right', marginLeft: '20px'}}

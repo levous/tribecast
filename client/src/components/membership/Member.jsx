@@ -110,7 +110,7 @@ export default class Member extends Component {
       }
       // present a button for adding if editing
       if (editing){
-        return (<RaisedButton secondary={true} label='Photo' onTouchTap={(e) => {e.preventDefault(); this.handleProfileImageEditTouchTap()}}/>);
+        return (<RaisedButton secondary={true} label='Photo' onClick={(e) => {e.preventDefault(); this.handleProfileImageEditTouchTap()}}/>);
       }
       // no presentation if not editing and no image available
       return '';
@@ -133,9 +133,9 @@ export default class Member extends Component {
 
     return (
       <div key={`member${member.id}`} style={{}}>
-        {isLinked && (<RaisedButton secondary={true} label='Unlink Record' style={Object.assign({}, buttonStyle, {backgroundColor: 'red'})} onTouchTap={(e) => {e.preventDefault(); this.handleUnLinkApiMatch(this.props.member)}}/>)}
-        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={buttonStyle} onTouchTap={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
-        {canInvite && (<RaisedButton secondary={true} label='Invite' style={buttonStyle} onTouchTap={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
+        {isLinked && (<RaisedButton secondary={true} label='Unlink Record' style={Object.assign({}, buttonStyle, {backgroundColor: 'red'})} onClick={(e) => {e.preventDefault(); this.handleUnLinkApiMatch(this.props.member)}}/>)}
+        {canEdit && (<RaisedButton primary={true} label={editButtonText} style={buttonStyle} onClick={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
+        {canInvite && (<RaisedButton secondary={true} label='Invite' style={buttonStyle} onClick={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
         {profileIcon}
         {isLinked && (
             <div style={{ maxWidth: 250, fontSize: '0.7em' }}>

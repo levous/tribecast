@@ -89,7 +89,7 @@ export default class UserList extends Component {
               <ListItem key={`mem${i}`} ref={ref => this.listItems[i] = ref}
                 primaryText={`${user.name}`}
                 secondaryText={user.email}
-                onTouchTap={() => this.handleItemTouchTap(user)}
+                onClick={() => this.handleItemTouchTap(user)}
                 style={computeStyle(user)}
               />
             )

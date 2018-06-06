@@ -155,7 +155,7 @@ class UploadPage extends React.Component {
                 </table>
               </div>
 
-              <FlatButton primary={true} label='PREVIEW' style={{float:'right', margin: '20px', backgroundColor:'rgba(127, 184, 241, 0.43)'}} onTouchTap={() => this.handleImportButtonTouchTap()}/>
+              <FlatButton primary={true} label='PREVIEW' style={{float:'right', margin: '20px', backgroundColor:'rgba(127, 184, 241, 0.43)'}} onClick={() => this.handleImportButtonTouchTap()}/>
 
             </div>
           }

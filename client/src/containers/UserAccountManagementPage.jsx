@@ -113,8 +113,8 @@ class UserAccountManagementPage extends Component {
             {`${loading}`}
           </div>
         )}
-        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
-        {isAdmin && ( <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton> )}
+        {isLoggedIn && (<FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleRefreshButtonTouchTap()}><IconRefresh /></FloatingActionButton> )}
+        {isAdmin && ( <FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleAddButtonTouchTap()}><IconAdd /></FloatingActionButton> )}
         <div style={{clear:'both', marginTop:'5px'}}></div>
         <Grid>
           <Row className="show-grid">

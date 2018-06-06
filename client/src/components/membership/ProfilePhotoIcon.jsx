@@ -30,7 +30,7 @@ export default class ProfilePhotoIcon extends React.Component {
       <div>
         <img src={this.props.thumbnailURL}
           style={{float: 'left', marginRight: '10px', height: '70px', borderRadius: '100%'}}
-          onTouchTap={(img)=>{this.handleProfileImageTouchTap(img)}} />
+          onClick={(img)=>{this.handleProfileImageTouchTap(img)}} />
         <Dialog
           title="Profile Photo"
           actions={<FlatButton label="Close" primary={true} keyboardFocused={true} onClick={() => this.handleDialogClose()} />}

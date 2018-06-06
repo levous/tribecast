@@ -78,7 +78,7 @@ class MemberProfilePhotoEditor extends React.Component {
           color={[255, 255, 255, 0.8]}
         />
 
-        <IconButton onTouchTap={() => this.rotateRight()} style={{float: 'right', margin: '-40px 5px 0 5px'}}>
+        <IconButton onClick={() => this.rotateRight()} style={{float: 'right', margin: '-40px 5px 0 5px'}}>
           <IconRotateRight />
         </IconButton>
 

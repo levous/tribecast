@@ -5,7 +5,10 @@
 - Look into Cypress testing https://github.com/bahmutov/cypress-react-unit-test
   http://cypress.io
   
+- Increase Border Radius on material UI buttons to 5px
+- Change margin on material ui floating buttons to margin: 3px 4px; (or adjust so that they center vertically with other things)
 
+- OnTouchTap >> onClick : UserList, DataSourceModePanel, Member, MemberShipPage, UploadPage, UserAccountManagementPage, PasswordResetPage, MemberProfileEditor, ProfilePhotoIcon, MemberList
 ## Rusty needs to learn
 
 

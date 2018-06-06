@@ -145,7 +145,7 @@ class PasswordResetPage extends React.Component {
               value={fields.passwordConfirmation}
             />
           </div>
-          <RaisedButton onTouchTap={this.handleUpdatePassword} label='Go!' />
+          <RaisedButton onClick={this.handleUpdatePassword} label='Go!' />
           <p style={{fontSize: '.7em', marginTop: '10px'}}>
             If you have trouble with an expired reset link, please <a onClick={ (e) => { e.preventDefault(); this.handleNewResetClick() } } >generate a new reset link </a>.
           </p>
