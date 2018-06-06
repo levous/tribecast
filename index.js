@@ -62,9 +62,17 @@ app.use(function(req, res, next) { 'use strict'; req.io = io; next(); });
 app.use(compression());
 
 // enforce SSL 
-if ( app.get('env') !== 'development' ) {
-  app.use(enforceSSL.HTTPS({ trustProtoHeader: true }));
-}
+app.use(function (req, res, next) {
+  var host = req.get('host');
+  if ( app.get('env') !== 'development' && host.indexOf("localhost") !== 0 ) {
+    enforceSSL.HTTPS(req, res, next, { trustProtoHeader: true });
+  } else {
+    next();
+  }
+  
+})
+
+
 
 
 // tell the app to look for static files in these directories
@@ -137,7 +145,8 @@ app.get('*', function (request, response){
 
 // start the server
 server.listen(PORT, () => {
-  log.info(`Server is running on http://localhost:${PORT} or http://127.0.0.1:${PORT} in ${app.get('env')} mode`);
+  const message = `Server is running on http://localhost:${PORT} or http://127.0.0.1:${PORT} in ${app.get('env')} mode`;
+  console.log(message);
 });
 
 // socket.io

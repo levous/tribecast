@@ -314,7 +314,7 @@ class MembershipPage extends Component {
 
     const csvURL = this.props.csvMemberDownload ? window.URL.createObjectURL(new Blob([this.props.csvMemberDownload]), {type: "text/csv"}) : null;
     let adminButtons = '';
-    let UserAccountButton = () => {};
+    let UserAccountButton = () => { return null };
     if(isAdmin){
       adminButtons = (
         <div style={{display: 'inline'}}>
