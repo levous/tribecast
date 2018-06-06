@@ -56,7 +56,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const server = require('http').Server(app);
 const io = require('socket.io')(server);// add as middleware so routes have access to io
-app.use(function(req, res, next) { console.log('>>>> request going on'); next(); });
+//app.use(function(req, res, next) { console.log('>>>> request going on'); next(); });
 app.use(function(req, res, next) { 'use strict'; req.io = io; next(); });
 
 // Compression
