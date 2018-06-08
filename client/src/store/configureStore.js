@@ -1,12 +1,10 @@
 import {compose, createStore, combineReducers, applyMiddleware} from 'redux';
 import rootReducer from '../reducers';
 import persistState, {mergePersistedState} from 'redux-localstorage';
-// import filter from 'redux-localstorage-filter';
 import adapter from 'redux-localstorage/lib/adapters/localStorage';
-import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction';
 
-import promiseMiddleware from '../middleware/promiseMiddleware';
+// I don't think this is used 6/8/2018 RZ import promiseMiddleware from '../middleware/promiseMiddleware';
 import dataService from '../middleware/dataService';
 import socketIoMiddleware from '../middleware/socketIoMiddleware';
 
@@ -34,7 +32,7 @@ export default function configureStore() {
   const storage = compose()(adapter(window.localStorage));
 
   const enhancers = composeWithDevTools(
-    applyMiddleware(dataService, socketIoMiddleware, thunk, promiseMiddleware),
+    applyMiddleware(dataService, socketIoMiddleware),
     persistState(storage, 'redux-localstorage')
   );
 

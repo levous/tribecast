@@ -45,71 +45,67 @@ export function addMember(member) {
 }
 
 export function updateMember(member){
-  return {type: member_action_types.UPDATE, member};
+  return { type: member_action_types.UPDATE, member };
 }
 
 export function deleteMember(member){
-  return {type: member_action_types.DELETE, member};
+  return { type: member_action_types.DELETE, member };
 }
 
 export function resetMemberUserAccount(member){
-  return {type: member_action_types.RESET_MEMBER_USER_ACCOUNT, member};
+  return { type: member_action_types.RESET_MEMBER_USER_ACCOUNT, member };
 }
 
 
 export function updateMemberProfileImage(member, thumbnailImage, fullsizeImage, unEditedImage){
-  return {type: member_action_types.UPDATE_PROFILE_IMAGE, member, thumbnailImage, fullsizeImage, unEditedImage};
+  return { type: member_action_types.UPDATE_PROFILE_IMAGE, member, thumbnailImage, fullsizeImage, unEditedImage };
 }
 
 
 export function selectMember(member){
-  return {type: member_action_types.SELECT_MEMBER, member};
+  return { type: member_action_types.SELECT_MEMBER, member };
 }
 
 export function unlinkImportedMemberFromApiMatch(member){
-  return {type: member_action_types.UNLINK_FROM_API_MATCH, member};
+  return { type: member_action_types.UNLINK_FROM_API_MATCH, member };
 }
 
 export function importCsv(data, fieldMap, importNote){
-  return {type: member_action_types.UPLOAD_DATA_RECEIVED, data, fieldMap, importNote};
+  return { type: member_action_types.UPLOAD_DATA_RECEIVED, data, fieldMap, importNote };
 }
 
 export function apiMatchCheck(){
-  return {type: member_action_types.UPLOAD_DATA_REQUEST_MATCH_CHECK};
+  return { type: member_action_types.UPLOAD_DATA_REQUEST_MATCH_CHECK };
 }
 
 export function publishMembers(members){
-  return {type: member_action_types.UPLOAD_PUBLISH, members};
+  return { type: member_action_types.UPLOAD_PUBLISH, members };
 }
 
 export function refreshMembersFromServer() {
-  return {
-    type: member_action_types.GET_ALL
-  };
+  return { type: member_action_types.GET_ALL };
 }
 
 export function cancelLoading() {
-  return {
-    type: member_action_types.CANCEL_LOADING
-  };
+  return { type: member_action_types.CANCEL_LOADING };
 }
 
 export function assignUserMember(member){
-  return {type: member_action_types.ASSIGN_USER_MEMBER, member};
+  return { type: member_action_types.ASSIGN_USER_MEMBER, member };
 }
 
 export function inviteMember(member){
-  return {type: member_action_types.INVITE_MEMBER, member};
+  return { type: member_action_types.INVITE_MEMBER, member };
 }
 
 export function setMemberSort(sort){
-  return {type: member_action_types.MEMBER_SET_SORT, sort};
+  return { type: member_action_types.MEMBER_SET_SORT, sort };
 }
 
 export function generateCsvFromMemberlist(memberList){
-  return {type: member_action_types.GENERATE_CSV_FROM_MEMBERS, memberList};
+  return { type: member_action_types.GENERATE_CSV_FROM_MEMBERS, memberList };
 }
 
 export function csvFromMemberlistDownloaded(){
-  return {type: member_action_types.CSV_DOWNLOADED};
+  return { type: member_action_types.CSV_DOWNLOADED };
 }

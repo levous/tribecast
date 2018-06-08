@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const baseConfig = require('./base.config.js');
 
 module.exports = merge(baseConfig, {
@@ -11,7 +12,7 @@ module.exports = merge(baseConfig, {
         'NODE_ENV': JSON.stringify('production')
       }
     })
-
+    //, new BundleAnalyzerPlugin()
   ],
   mode: 'production',
   devtool: "source-map",
