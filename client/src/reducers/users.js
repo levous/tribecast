@@ -115,6 +115,11 @@ let userApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         loading: false
       });
+
+    case user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT:
+      return Object.assign({}, state, {
+        newestApiRecordSavedAt: action.newestApiRecordSavedAt
+      });
     default:
       return state;
   }

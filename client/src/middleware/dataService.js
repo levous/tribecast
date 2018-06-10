@@ -7,6 +7,7 @@ import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types, member_data_sources} from '../actions/member-actions';
 import {user_action_types} from '../actions/user-actions';
+import {poll_action_types} from '../actions/poll-actions';
 import errors from '../modules/client-errors';
 
 const membersApiURL = '/api/members';
@@ -480,6 +481,45 @@ const dataService = store => next => action => {
             err
           });
         });
+    }
+
+    case poll_action_types.DISPATCH_API_SYNC: {
+      const state = store.getState()
+      // don't check api if data source is not API
+      if(state.memberApp.dataSource !== member_data_sources.API) return Promise.resolve()
+      // retrieve cached date or default to very long ago
+      const jsonBody = {
+        since: state.userApp.newestApiRecordSavedAt || new Date(1975, 1, 1)
+      };
+
+      return fetch('/api/updates-since',
+        {
+          method: 'post',
+          headers: authHeaders,
+          body: JSON.stringify(jsonBody)
+        })
+        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+        .then(responseJson => {
+          let newestSave = jsonBody.since
+          const message = responseJson.message
+          const members = responseJson.members
+          const users = responseJson.users
+
+          // send users or members received
+
+          // cache the newest save for next check
+          store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt});
+          return next(action);
+        })
+        .catch(err => {
+          //HACK: NotificationManager should probably be wired as middleware and sent messages explicitly.
+          // for now, use member action types to send failure
+          return next({
+            type: member_action_types.MEMBER_DATA_FAILED,
+            err
+          });
+        });
+    }
     }
     // Already passed action along so no need to pass through again.
     default:

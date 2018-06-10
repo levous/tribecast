@@ -8,6 +8,9 @@ import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProductio
 import dataService from '../middleware/dataService';
 import socketIoMiddleware from '../middleware/socketIoMiddleware';
 
+import createSagaMiddleware from ReduxSaga
+import rootSaga from '../middleware/pollingSaga'
+const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore() {
 
@@ -32,7 +35,7 @@ export default function configureStore() {
   const storage = compose()(adapter(window.localStorage));
 
   const enhancers = composeWithDevTools(
-    applyMiddleware(dataService, socketIoMiddleware),
+    applyMiddleware(dataService, socketIoMiddleware, sagaMiddleware),
     persistState(storage, 'redux-localstorage')
   );
 
@@ -41,6 +44,8 @@ export default function configureStore() {
     {},
     enhancers
   );
+
+  sagaMiddleware.run(rootSaga)
 
   if (module.hot) {
       // Enable Webpack hot module replacement for reducers

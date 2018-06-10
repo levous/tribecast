@@ -1,6 +1,6 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
-import Address from './PropertyTextInput';
+import { createRenderer } from  'react-test-renderer/shallow';
+import PropertyTextInput from './PropertyTextInput.jsx';
 
 function setup(propOverrides) {
   const props = Object.assign({
@@ -9,7 +9,7 @@ function setup(propOverrides) {
     propertySelector: 'address/street'
   }, propOverrides);
 
-  const renderer = TestUtils.createRenderer();
+  const renderer = createRenderer();
   renderer.render(<PropertyTextInput address={props}/>);
   const output = renderer.getRenderOutput();
 

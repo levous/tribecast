@@ -1,5 +1,5 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import { createRenderer } from  'react-test-renderer/shallow';
 import Member from './Member';
 
 function setup(propOverrides) {
@@ -9,7 +9,7 @@ function setup(propOverrides) {
     lastName: 'Flintstone'
   }, propOverrides);
 
-  const renderer = TestUtils.createRenderer();
+  const renderer = createRenderer();
   renderer.render(<Member member={props}/>);
   const output = renderer.getRenderOutput();
 
