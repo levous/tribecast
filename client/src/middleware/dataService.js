@@ -508,17 +508,17 @@ const dataService = store => next => action => {
         // send users or members received
 
         // cache the newest save for next check
-        store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt});
+        store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestSave});
         return next(action);
       })
-      .catch(err => {
+      /*.catch(err => {
         //HACK: NotificationManager should probably be wired as middleware and sent messages explicitly.
         // for now, use member action types to send failure
         return next({
           type: member_action_types.MEMBER_DATA_FAILED,
           err
         })
-      })
+      })*/
     }
     // Already passed action along so no need to pass through again.
     default:

@@ -11,6 +11,14 @@ exports.setup = function (basePath, app){
     });
   });
 
+  router.post('/updates-since', function(req, res) {
+    res.status(200).json({
+      message: "Fake out.",
+      members: [],
+      users: []
+    });
+  });
+
   router.get('/*', function(req, res, next){
     next(new errors.ResourceNotFoundError());
   });

@@ -66,6 +66,11 @@ class MembershipPage extends Component {
       this.props.actions.refreshMembersFromServer();
     }
 
+    if(qs.poll){
+      console.log('Initiate Sync Polling')
+      this.props.actions.startPolling();
+    }
+
     if(qs.searchFields){
       this.setState({searchFields: qs.searchFields.split(',')});
     }

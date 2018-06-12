@@ -5,7 +5,8 @@ const initialState = {
   userData: undefined,
   loginFailureMessage: undefined,
   passwordResetSucceeded: undefined,
-  loading: false
+  loading: false,
+  pollFrequencySeconds: 30
 };
 
 const sortComparer = sortKey => {
