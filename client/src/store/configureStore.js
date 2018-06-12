@@ -8,7 +8,7 @@ import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProductio
 import dataService from '../middleware/dataService';
 import socketIoMiddleware from '../middleware/socketIoMiddleware';
 
-import createSagaMiddleware from ReduxSaga
+import createSagaMiddleware from 'redux-saga'
 import rootSaga from '../middleware/pollingSaga'
 const sagaMiddleware = createSagaMiddleware();
 

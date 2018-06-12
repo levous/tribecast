@@ -1,4 +1,4 @@
-import { put, takeEvery, all } from 'redux-saga/effects'
+import { put, take, takeEvery, all } from 'redux-saga/effects'
 import {poll_action_types, dispatchApiSync} from '../actions/poll-actions'
 
 export function* apiSync() {

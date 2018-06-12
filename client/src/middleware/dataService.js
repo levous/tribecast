@@ -490,36 +490,35 @@ const dataService = store => next => action => {
       // retrieve cached date or default to very long ago
       const jsonBody = {
         since: state.userApp.newestApiRecordSavedAt || new Date(1975, 1, 1)
-      };
+      }
 
       return fetch('/api/updates-since',
-        {
-          method: 'post',
-          headers: authHeaders,
-          body: JSON.stringify(jsonBody)
-        })
-        .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
-        .then(responseJson => {
-          let newestSave = jsonBody.since
-          const message = responseJson.message
-          const members = responseJson.members
-          const users = responseJson.users
+      {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify(jsonBody)
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        let newestSave = jsonBody.since
+        const message = responseJson.message
+        const members = responseJson.members
+        const users = responseJson.users
 
-          // send users or members received
+        // send users or members received
 
-          // cache the newest save for next check
-          store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt});
-          return next(action);
+        // cache the newest save for next check
+        store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt});
+        return next(action);
+      })
+      .catch(err => {
+        //HACK: NotificationManager should probably be wired as middleware and sent messages explicitly.
+        // for now, use member action types to send failure
+        return next({
+          type: member_action_types.MEMBER_DATA_FAILED,
+          err
         })
-        .catch(err => {
-          //HACK: NotificationManager should probably be wired as middleware and sent messages explicitly.
-          // for now, use member action types to send failure
-          return next({
-            type: member_action_types.MEMBER_DATA_FAILED,
-            err
-          });
-        });
-    }
+      })
     }
     // Already passed action along so no need to pass through again.
     default:
