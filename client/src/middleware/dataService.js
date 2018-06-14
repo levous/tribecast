@@ -3,6 +3,7 @@
 
 import fetch from 'isomorphic-fetch';
 import qs from 'qs';
+import moment from 'moment';
 import Auth from '../modules/Auth';
 import ApiResponseHandler from '../modules/api-response-handler';
 import {member_action_types, member_data_sources} from '../actions/member-actions';
@@ -500,15 +501,25 @@ const dataService = store => next => action => {
       })
       .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
-        let newestSave = jsonBody.since
+       
         const message = responseJson.message
         const members = responseJson.members
         const users = responseJson.users
+        // find the most recent member updatedAt
+        let newestUpdatedAt = members.reduce(
+          (newest, member) => newest.isBefore(member.updatedAt) ? moment(member.updatedAt) : newest,
+          moment(jsonBody.since)
+        )
 
-        // send users or members received
+        // find the most recent overall updatedAt
+        newestUpdatedAt = users.reduce(
+          (newest, user) => newest.isBefore(user.updatedAt) ? moment(user.updatedAt) : newest,
+          newestUpdatedAt
+        ).toDate()
+        // send users and/or members received
 
         // cache the newest save for next check
-        store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestSave});
+        store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt: newestUpdatedAt});
         return next(action);
       })
       /*.catch(err => {

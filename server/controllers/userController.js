@@ -42,6 +42,17 @@ exports.findByMemberUserKeys = function(memberUserKeys) {
   return User.find({ memberUserKey: { $in: memberUserKeys } }).exec();
 };
 
+
+/**
+ * Get Users updated since 
+ * @returns (Promise) [Users]
+ */
+exports.findUpdatedSince = function(since){
+  if(!since) return Promise.reject(new errors.MissingParameterError('since [date] was not provided'));
+  const query = {'updatedAt': {"$gt": since} };
+  return User.find(query).exec();
+}
+
 exports.update = function(id, user){
 
   if(!id) return Promise.reject(new errors.MissingParameterError('id was not provided'));
@@ -207,6 +218,6 @@ exports.delete = function(id){
 
 exports.auditAuthCheck = function(user){
   //TODO: consider using a queue such as redis for performance if needed to scale
-  user.lastAuthCheckAt = new moment().toDate();
-  return user.save();
+  const update = { '$set': { 'lastAuthCheckAt': moment().toDate() } };
+  return User.findOneAndUpdate({'_id': user._id }, update).exec();
 }

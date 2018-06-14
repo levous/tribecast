@@ -1,6 +1,8 @@
 
 const express = require('express');
 const errors = require('../../../shared-modules/http-errors');
+const memberController = require('../../controllers/memberController');
+const userController = require('../../controllers/userController');
 
 exports.setup = function (basePath, app){
 
@@ -11,12 +13,32 @@ exports.setup = function (basePath, app){
     });
   });
 
-  router.post('/updates-since', function(req, res) {
-    res.status(200).json({
-      message: "Fake out.",
-      members: [],
-      users: []
-    });
+  router.post('/updates-since', function(req, res, next) {
+    const json = req.body
+    const since = json.since
+    if (!since || !since.length) return next(new errors.MissingParameterError('parameter "since" Date required'))
+    
+    // admins will query users, otherwise, resolve with empty array
+    const isUserAdmin = req.user.roles.includes("administrator")
+
+    let queries = [
+      memberController.findUpdatedSince(since),
+      isUserAdmin ? userController.findUpdatedSince(since) : Promise.resolve([])
+    ]
+
+    return Promise.all(queries)
+    .then(resultSets => {
+      const memberResult = resultSets[0]
+      const userResult = resultSets[1]
+      
+      return res.status(200).json({
+        message: "Fake out.",
+        members: memberResult,
+        users: userResult
+      });
+    })
+    .catch(next)
+
   });
 
   router.get('/*', function(req, res, next){

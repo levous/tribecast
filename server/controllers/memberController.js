@@ -65,6 +65,16 @@ exports.findByEmail = function(email){
 }
 
 /**
+ * Get Members updated since 
+ * @returns (Promise) [Members]
+ */
+exports.findUpdatedSince = function(since){
+  if(!since) return Promise.reject(new errors.MissingParameterError('since [date] was not provided'));
+  const query = {'updatedAt': {"$gt": since} };
+  return Member.find(query).exec();
+}
+
+/**
  * Get all Member(s) having email who do not have an associated user account.
  * @returns (Promise) [Members]
  */
@@ -125,6 +135,7 @@ exports.publish = function(members){
   members.forEach(member => {
     //TODO: check for matching email?
     if(member._id) {
+      member.updatedAt = moment();
       batch.push(Member.findOneAndUpdate({'_id': member._id }, member, {upsert:false, new: true, runValidators: true}).exec());
     } else {
       batch.push(Member.create(member));
@@ -248,6 +259,8 @@ exports.update = function(id, member){
     member.officePhone = officePhone.getNumber( 'national' );
   }
 
+  member.updatedAt = new moment()
+
   const query = {'_id': id };
   return Member.findOneAndUpdate(query, member, {upsert:false, new: true, runValidators: true}).exec();
 }
@@ -296,7 +309,8 @@ exports.assignUserMember = function(userId, memberId){
   if(!memberId) return Promise.reject(new errors.MissingParameterError('member id was not provided'));
 
   const key = uuidV1();
-  const update = { '$set': { 'memberUserKey': key } }
+  const update = { '$set': { 'memberUserKey': key, 'updatedAt': moment() } }
+
   return Member.findOneAndUpdate({'_id': memberId }, update).exec()
   .then(member => {
     if(!member) throw new errors.InvalidArgumentError('No member found using provided memberId');
