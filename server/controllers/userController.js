@@ -220,5 +220,14 @@ exports.delete = function(id){
 exports.auditAuthCheck = function(user){
   //TODO: consider using a queue such as redis for performance if needed to scale
   const update = { '$set': { 'lastAuthCheckAt': moment().toDate() } };
-  return User.findOneAndUpdate({'_id': user._id }, update).exec();
+
+  // this method of update does not change timestamps. We don't want to update timestamps when auditing auth check
+  Mongoose.connection.db.collection('users').update(
+    {'_id': user._id},
+    update
+  );
+
+  console.log('updated? ', user.email)
+
+  //return User.findOneAndUpdate({'_id': user._id }, update).exec();
 }

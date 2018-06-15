@@ -528,41 +528,32 @@ const dataService = store => next => action => {
           newestUpdatedAt
         ).toDate()
 
-        if(members.length > 20 || users.length > 20) {
+        if(users.length > 20) {
           // too many, notify user of need to refresh
-          const err = new Error('Too many updates returned by periodic poll.  Please save any changes and refresh your local data.');
-          return next({
-            type: member_action_types.UPDATE_FAILURE_RECEIVED,
+          const err = new Error('Too many USER updates returned by periodic poll.  Please save any changes and refresh your local data.');
+          store.dispatch({
+            type: user_action_types.USER_DATA_FAILED,
             err
           });
-         
+        } else {
+          //TODO: replicate mechanism used for members so this isn't limited to 20
+          users.forEach(user => {
+            store.dispatch(
+              {
+                type: user_action_types.UPDATE_USER_SUCCESS,
+                id: user._id,
+                user
+              }
+            )
+          });
         }
-        // send users and/or members received
-        members.forEach(member => {
-          store.dispatch(
-            {
-              type: member_action_types.UPDATE_SUCCESS_RECEIVED,
-              id: member._id,
-              member
-            }
-          )
-        })
-
-        users.forEach(user => {
-          store.dispatch(
-            {
-              type: user_action_types.UPDATE_SUCCESS_RECEIVED,
-              id: user._id,
-              user
-            }
-          )
-        })
-        
-       
-
         // cache the newest save for next check
         store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt: newestUpdatedAt});
-        return next(action);
+        
+        return next({
+          type: member_action_types.MULTIPLE_MEMBER_UPDATES_RECEIVED,
+          members
+        });
       })
       /*.catch(err => {
         //HACK: NotificationManager should probably be wired as middleware and sent messages explicitly.
