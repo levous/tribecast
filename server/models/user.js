@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
+
 const bcrypt = require('bcrypt');
 const EmailStatusSchema = require('./emailStatusSchema');
 // define the User model schema
@@ -59,5 +61,15 @@ UserSchema.pre('save', function saveHook(next) {
   });
 });
 
+
+
+UserSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {   delete ret._id  }
+});
+
+// Plugin must be *after* virtuals
+UserSchema.plugin(mongooseLeanVirtuals);
 
 module.exports = mongoose.model('User', UserSchema);

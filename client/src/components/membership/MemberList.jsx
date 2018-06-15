@@ -207,7 +207,7 @@ MemberList.memberMatchType = (member) => {
 
   if(!member.apiMatch || !member.apiMatch.matchingFields || member.apiMatch.matchingFields.length === 0) return MemberList.recordImportMatchType.notMatched;
   if(member.validationErrors) return MemberList.recordImportMatchType.invalid;
-  if(member.apiMatch.apiRecord._id === member.id || member.apiMatch.matchingFields.length > 2) return MemberList.recordImportMatchType.confidentlyMatchedRecord;
+  if(member.apiMatch.apiRecord.id === member.id || member.apiMatch.matchingFields.length > 2) return MemberList.recordImportMatchType.confidentlyMatchedRecord;
   return MemberList.recordImportMatchType.questionablyMatchedRecord;
 
 };

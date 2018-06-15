@@ -43,6 +43,17 @@ const dataService = store => next => action => {
       .then(responseJson => {
         const members = responseJson.data;
         //console.log('members', members);
+
+        // cache the newest save for next check
+        const latestSavedAt = store.getState().userApp.newestApiRecordSavedAt || new Date(1975, 1, 1);
+
+        let newestUpdatedAt = members.reduce(
+          (newest, member) => newest.isBefore(member.updatedAt) ? moment(member.updatedAt) : newest,
+          moment(latestSavedAt)
+        ).toDate();
+
+        store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt: newestUpdatedAt});
+        
         return next({
           type: member_action_types.MEMBER_DATA_RECEIVED,
           members
@@ -90,7 +101,7 @@ const dataService = store => next => action => {
       }
 
       const member = action.member;
-      return fetch(`/api/members/${member._id}`, {
+      return fetch(`/api/members/${member.id}`, {
         method: 'put',
         headers: authHeaders,
         body: JSON.stringify(member)
@@ -100,7 +111,7 @@ const dataService = store => next => action => {
         let updatedMember = responseJson.data;
         return next({
           type: member_action_types.UPDATE_SUCCESS_RECEIVED,
-          id: updatedMember._id,
+          id: updatedMember.id,
           member: updatedMember
         });
       })
@@ -121,7 +132,7 @@ const dataService = store => next => action => {
       return fetch('/api/members/reset-member-user-account', {
         method: 'post',
         headers: authHeaders,
-        body: JSON.stringify({id: member._id})
+        body: JSON.stringify({id: member.id})
       })
       .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
       .then(responseJson => {
@@ -129,7 +140,7 @@ const dataService = store => next => action => {
  
         return next({
           type: member_action_types.UPDATE_SUCCESS_RECEIVED,
-          id: updatedMember._id,
+          id: updatedMember.id,
           member: updatedMember
         });
       })
@@ -149,7 +160,7 @@ const dataService = store => next => action => {
       }
 
       const member = action.member;
-      return fetch(`/api/members/${member._id}`, {
+      return fetch(`/api/members/${member.id}`, {
         method: 'delete',
         headers: authHeaders,
         body: JSON.stringify(member)
@@ -177,7 +188,7 @@ const dataService = store => next => action => {
       }
 
       const member = action.member;
-      const url = `/api/members/${member._id}/profile-photo`;
+      const url = `/api/members/${member.id}/profile-photo`;
       const formdata = new FormData();
       formdata.append('profile-photo', action.fullsizeImage);
       formdata.append('extra', 'forces multipart');
@@ -192,7 +203,7 @@ const dataService = store => next => action => {
         let updatedMember = responseJson.data;
         return next({
           type: member_action_types.UPDATE_SUCCESS_RECEIVED,
-          id: updatedMember._id,
+          id: updatedMember.id,
           member: updatedMember
         });
       })
@@ -366,7 +377,7 @@ const dataService = store => next => action => {
         let updatedUser = responseJson.data;
         return next({
           type: user_action_types.UPDATE_USER_SUCCESS,
-          id: updatedUser._id,
+          id: updatedUser.id,
           user: updatedUser
         });
       })

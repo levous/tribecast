@@ -144,6 +144,41 @@ let memberApp = function(state = initialState, action) {
     });
   };
 
+
+  const updateMultiMemberInList = (state, members) => {
+    // sort both arrays
+    const sortedUpdate = [...members].sort((a, b) => a.id.localeCompare(b.id));
+    const sortedState = [...state.members].sort((a, b) => a.id.localeCompare(b.id));
+    
+    let sIdx = 0;
+    const uL = sortedUpdate.length;
+
+    for(let uIdx = 0 , uL = sortedUpdate.length; uIdx < uL; uIdx++) {
+      // both arrays are correspondently sorted and iterating forward.  
+      // Advance the state array until either an equal or later sorted value is found
+      const sL = sortedState.length;
+      while(sIdx < sL && sortedState[sIdx].id < sortedUpdate[uIdx].id) sIdx++;
+      // match?
+      if(sIdx < sL && sortedState[sIdx].id == sortedUpdate[uIdx].id) {
+        // replace by index
+        sortedState[sIdx] = sortedUpdate[uIdx];
+      } else if(sIdx < sL) {
+        // insert at index
+        sortedState.splice(sIdx, 0, sortedUpdate[uIdx]);
+      } else {
+        // insert at end
+        sortedState.push(sortedUpdate[uIdx]);
+      }
+    }
+
+    sortedState.sort(sortComparer(state.sortKey));
+
+    return Object.assign({}, state, {
+      members: sortedState
+    });
+  };
+
+
   switch (action.type) {
     case member_action_types.SELECT_MEMBER:
       return Object.assign({}, state, {
@@ -160,19 +195,31 @@ let memberApp = function(state = initialState, action) {
       });
 
     case member_action_types.UPDATE_SUCCESS_RECEIVED: {
+      // memberId received separately because new records are assigned a temporary id 
+      // so that they can be updated after saving to the server.  Perhaps using a source 
+      // origin_id would have been cleaner.  hindsight === 2020
       //NotificationManager.success(`${action.member.firstName} ${action.member.lastName} Server Saved!`);
       const memberId = action.id || action.member.id;
-      let member = action.member;
-
-      // ensure that if member._id is present, a server record identifier, that it matches the id.
-      //   If not, this was a new record with a temp id.  Update without mutating
-      if(member._id && member._id !== member.id) member = Object.assign({}, member, {id: member._id});
+      const member = action.member;
       let newState = updateMemberInList(state, memberId, member);
 
       // updated selected member if action id matches selectedMember id
       if(action.id === state.selectedMember.id) newState = Object.assign({}, newState, {selectedMember: member});
 
       return newState;
+    }
+
+    case member_action_types.MULTIPLE_MEMBER_UPDATES_RECEIVED: {
+     
+      const members = action.members;
+      let newState = updateMultiMemberInList(state, members);
+
+      // updated selected member if action id matches selectedMember id
+      const selectedMemberInUpdates = state.selectedMember ? members.find(m => m.id == state.selectedMember.id) : null;
+      if(selectedMemberInUpdates) newState = Object.assign({}, newState, {selectedMember: selectedMemberInUpdates});
+
+      return newState;
+
     }
 
     case member_action_types.DELETE_SUCCESS_RECEIVED: {
@@ -212,7 +259,7 @@ let memberApp = function(state = initialState, action) {
       );
 
       NotificationManager.info(`${updated.firstName} ${updated.lastName} unlinked`);
-
+      
       return updateMemberInList(state, memberId, updated);
     }
 
@@ -220,15 +267,13 @@ let memberApp = function(state = initialState, action) {
 
       NotificationManager.success('Server data loaded');
       //TODO: look for local records that are not on the server.  support offline edits
-      // copy server _id to local id
 
-      const patchedMembers = action.members
-        .map(member => Object.assign(member, {id: member._id}))
+      const sortMembers = [...action.members]
         .sort(sortComparer(state.sortKey));
 
       console.log('MEMBER_DATA_RECEIVED');
       return Object.assign({}, state, {
-        members: patchedMembers,
+        members: sortMembers,
         dataSource: member_data_sources.API,
         loading: false
       });
@@ -339,8 +384,7 @@ let memberApp = function(state = initialState, action) {
       let duplicateIds = [];
       for(let i=0, l=matchResponse.data.length; i < l; i++) {
         if(!matchResponse.data[i].oldRecord) continue;
-        //TODO: not sure why id is not populated.  Check into that.  Would rather not use _id outside of serverside
-        const id = matchResponse.data[i].oldRecord._id;
+        const id = matchResponse.data[i].oldRecord.id;
         if(matchIds.includes(id)) {
           duplicateIds.push(id)
         } else {
@@ -360,7 +404,7 @@ let memberApp = function(state = initialState, action) {
      
       duplicateIds.forEach(id => {
         const dups = matchResponse.data
-          .filter(m => m.oldRecord && m.oldRecord._id === id)
+          .filter(m => m.oldRecord && m.oldRecord.id === id)
           .sort((a, b) => b.matchingFields.length - a.matchingFields.length); // reverse sort.  Most matches to least matches
         if(dups.length < 2) {
           // why is this happneing?

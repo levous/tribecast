@@ -1,4 +1,5 @@
 const Mongoose = require('mongoose');
+
 const moment = require('moment');
 
 //const Promise = require ('bluebird');
@@ -18,7 +19,7 @@ exports.getAll = function(){
   return User
     .find()
     .select('-password -__v')
-    .lean()
+    .lean({ virtuals: true })
     .exec();
 };
 

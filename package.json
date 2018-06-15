@@ -16,7 +16,7 @@
     "bundledev": "webpack --config ./webpack/dev.config.js -w",
     "test": "NODE_ENV=test mocha --recursive -w --compilers js:babel-core/register ./server/controllers/something.test.js",
     "clienttest": "jest",
-    "singletest": "jest ./client/src/middleware/pollingSaga.spec.js"
+    "singletest": "jest ./client/src/reducers/members.spec.js"
   },
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
     "material-ui": "^0.20.0",
     "moment": "^2.22.1",
     "mongoose": "^4.13.12",
+    "mongoose-lean-virtuals": "^0.3.0",
     "multer": "^1.3.0",
     "multer-s3": "^2.7.0",
     "nw-react-slider": "^2.0.1",

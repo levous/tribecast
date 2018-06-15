@@ -40,7 +40,7 @@ const copyWithTrimmedFields = function(member) {
  * @returns (Promise) [Member]
  */
 exports.getAll = function(){
-  return Member.find().lean().exec();
+  return Member.find().lean({ virtuals: true }).exec();
 }
 
 /**
