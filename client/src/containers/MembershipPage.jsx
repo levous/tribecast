@@ -69,6 +69,12 @@ class MembershipPage extends Component {
     if(qs.poll){
       console.log('Initiate Sync Polling')
       this.props.actions.startPolling();
+
+      const pollVal = parseInt(qs.poll, 10);
+      if(!isNaN(pollVal)){
+        this.props.actions.setPollFrequency(pollVal);
+      }
+
     }
 
     if(qs.searchFields){

@@ -1,4 +1,7 @@
-import {user_action_types, user_sort_keys} from '../actions/user-actions.js';
+import {user_action_types, user_sort_keys} from '../actions/user-actions';
+//TODO: refactor poll actions into a separate reducer
+import {poll_action_types} from '../actions/poll-actions';
+
 import {NotificationManager} from 'react-notifications';
 
 const initialState = {
@@ -121,6 +124,13 @@ let userApp = function(state = initialState, action) {
       return Object.assign({}, state, {
         newestApiRecordSavedAt: action.newestApiRecordSavedAt
       });
+
+    case poll_action_types.SET_POLL_FREQUENCY_SECONDS:
+    console.log('Setting poll frequency to %s', action.seconds)
+      return Object.assign({}, state, {
+        pollFrequencySeconds: action.seconds
+      });
+      
     default:
       return state;
   }

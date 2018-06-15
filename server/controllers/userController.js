@@ -227,7 +227,6 @@ exports.auditAuthCheck = function(user){
     update
   );
 
-  console.log('updated? ', user.email)
 
   //return User.findOneAndUpdate({'_id': user._id }, update).exec();
 }
