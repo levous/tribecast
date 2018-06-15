@@ -1,4 +1,5 @@
 const Mongoose      = require('mongoose');
+const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
 const Promise       = require('bluebird');
 const AddressSchema = require('./address');
 const EmailStatusSchema = require('./emailStatusSchema');
@@ -78,5 +79,13 @@ MemberSchema.pre('save', function saveHook(next) {
     return next();
 });
 
+MemberSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {   delete ret._id  }
+});
+
+// Plugin must be *after* virtuals
+MemberSchema.plugin(mongooseLeanVirtuals);
 
 module.exports = Mongoose.model('Member', MemberSchema);

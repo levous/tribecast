@@ -15,7 +15,7 @@ const socketIoMiddleware = store => {
     if(data.editingUserID !== auth.loggedInUserID()){
       store.dispatch({
         type: member_action_types.UPDATE_SUCCESS_RECEIVED,
-        id:  data.member._id,
+        id:  data.member.id,
         member: data.member
       });
     }
