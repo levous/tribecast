@@ -516,7 +516,38 @@ const dataService = store => next => action => {
           (newest, user) => newest.isBefore(user.updatedAt) ? moment(user.updatedAt) : newest,
           newestUpdatedAt
         ).toDate()
+
+        if(members.length > 20 || users.length > 20) {
+          // too many, notify user of need to refresh
+          const err = new Error('Too many updates returned by periodic poll.  Please save any changes and refresh your local data.');
+          return next({
+            type: member_action_types.UPDATE_FAILURE_RECEIVED,
+            err
+          });
+         
+        }
         // send users and/or members received
+        members.forEach(member => {
+          store.dispatch(
+            {
+              type: member_action_types.UPDATE_SUCCESS_RECEIVED,
+              id: member._id,
+              member
+            }
+          )
+        })
+
+        users.forEach(user => {
+          store.dispatch(
+            {
+              type: user_action_types.UPDATE_SUCCESS_RECEIVED,
+              id: user._id,
+              user
+            }
+          )
+        })
+        
+       
 
         // cache the newest save for next check
         store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt: newestUpdatedAt});
