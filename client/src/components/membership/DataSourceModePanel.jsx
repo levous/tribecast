@@ -86,7 +86,7 @@ export default class DataSourceModePanel extends Component {
                       <tbody>
                         <tr>
                           <td style={{backgroundColor:'#daf1d0'}}>new member</td>
-                          <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.notMatched)}><IconForward /></FloatingActionButton></td>
+                          <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.notMatched)}><IconForward /></FloatingActionButton></td>
                           <td rowSpan='4' style={{padding:'10px', fontSize:'0.7em'}}>
                           New members will be added.  Confidently matched records already exist and will be updated.  Possible matches could result in unintended overwrite.
                           <br/>
@@ -97,15 +97,15 @@ export default class DataSourceModePanel extends Component {
                         </tr>
                         <tr>
                           <td style={{backgroundColor:'#cdecf0', width: '170px'}}>confident match</td>
-                          <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.confidentlyMatchedRecord)}><IconForward /></FloatingActionButton></td>
+                          <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.confidentlyMatchedRecord)}><IconForward /></FloatingActionButton></td>
                         </tr>
                         <tr>
                           <td style={{backgroundColor:'#fcf8e3'}}>possible match</td>
-                            <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.questionablyMatchedRecord)}><IconForward /></FloatingActionButton></td>
+                            <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.questionablyMatchedRecord)}><IconForward /></FloatingActionButton></td>
                         </tr>
                         <tr>
                           <td style={{backgroundColor:'#ffdddd'}}>failed validation, bad record</td>
-                          <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onTouchTap={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.invalid)}><IconForward /></FloatingActionButton></td>
+                          <td><FloatingActionButton mini={true} secondary={true} style={{float:'right', margin: '5px'}} onClick={() => this.handleNextMatchTypeTapped(MemberList.recordImportMatchType.invalid)}><IconForward /></FloatingActionButton></td>
                         </tr>
                       </tbody>
                     </table>
@@ -113,13 +113,13 @@ export default class DataSourceModePanel extends Component {
 
                     <Dialog
                       title="Imported Record Match Proof"
-                      actions={<FlatButton label="OK" secondary={true} onTouchTap={this.toggleDevNote}/>}
+                      actions={<FlatButton label="OK" secondary={true} onClick={this.toggleDevNote}/>}
                       modal={true}
                       open={this.state.devNoteOpen} >
                       This feature intentionally left incomplete.  If more capability is needed for reconciling mismatched imported records, development will need to be scheduled.  <small>I wanted to make it super-awesome but other features beckoned</small>
                     </Dialog>
                     <FlatButton
-                      onTouchTap={() => this.handleCancelTouchTap(member_data_sources.CSV_IMPORT)}
+                      onClick={() => this.handleCancelTouchTap(member_data_sources.CSV_IMPORT)}
                       label="Cancel"
                       secondary={true}
                       style={{float:'right'}}

@@ -39,7 +39,7 @@ export default class AddressList extends Component {
                     <Address address={address} />
                   </div>
                 }
-                onTouchTap={() => this.handleSelectItem(address)}
+                onClick={() => this.handleSelectItem(address)}
               />
             )
             })
