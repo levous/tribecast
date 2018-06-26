@@ -516,6 +516,10 @@ const dataService = store => next => action => {
         const message = responseJson.message
         const members = responseJson.members
         const users = responseJson.users
+        const meta = responseJson.meta
+        
+
+        
         // find the most recent member updatedAt
         let newestUpdatedAt = members.reduce(
           (newest, member) => newest.isBefore(member.updatedAt) ? moment(member.updatedAt) : newest,
@@ -547,6 +551,8 @@ const dataService = store => next => action => {
             )
           });
         }
+        // set polling frequency
+        store.dispatch({type: poll_action_types.SET_POLL_FREQUENCY_SECONDS, seconds: meta.pollFrequency});
         // cache the newest save for next check
         store.dispatch({type: user_action_types.CACHE_NEWEST_API_RECORD_SAVED_AT, newestApiRecordSavedAt: newestUpdatedAt});
         

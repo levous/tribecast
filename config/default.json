@@ -11,6 +11,10 @@
   "aws": {
     "assetBucket": "tribecast-assets",
     "cloudfrontBaseURL": "d19q2adhqzm1vd.cloudfront.net",
-    "region": "us-east-1",
+    "region": "us-east-1"
+  },
+  "pollFrequency": {
+    "default": 30,
+    "admin": 5
   }
 }

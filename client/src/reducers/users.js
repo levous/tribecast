@@ -102,6 +102,7 @@ let userApp = function(state = initialState, action) {
 
       NotificationManager.success('User Updated Successfully');
       const user = action.user;
+      if(!state.users || state.users.length == 0) return Object.assign({}, state, {loading: false});
       const updatedUsers = updateUserInList(state, user);
       let selectedUser = state.selectedUser;
       if(selectedUser && selectedUser.email === user.email ){
@@ -110,6 +111,7 @@ let userApp = function(state = initialState, action) {
 
       return Object.assign({}, state, {
         users: updatedUsers,
+        selectedUser,
         loading: false
       });
 

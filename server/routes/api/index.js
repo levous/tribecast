@@ -1,6 +1,7 @@
 
 const express = require('express');
 const errors = require('../../../shared-modules/http-errors');
+const config = require('config');
 const memberController = require('../../controllers/memberController');
 const userController = require('../../controllers/userController');
 
@@ -30,11 +31,15 @@ exports.setup = function (basePath, app){
     .then(resultSets => {
       const memberResult = resultSets[0]
       const userResult = resultSets[1]
-      
+      const pollFrequency = config.get('pollFrequency')
+      const message = `${memberResult.length} members and ${userResult.length} users`
       return res.status(200).json({
-        message: "Fake out.",
+        message,
         members: memberResult,
-        users: userResult
+        users: userResult,
+        meta: {
+          pollFrequency: isUserAdmin ? pollFrequency.admin : pollFrequency.default
+        }
       });
     })
     .catch(next)
