@@ -56,6 +56,8 @@ module.exports = {
       inject: true
     })
 
-  ]
+  ],
+
+  node: {fs: "empty"} // required for vcard-js as it references fs
 
 };
