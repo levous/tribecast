@@ -36,7 +36,6 @@
     "csv": "^1.2.1",
     "express": "^4.16.3",
     "express-sslify": "^1.2.0",
-    "fs": "0.0.1-security",
     "fuse.js": "^2.6.1",
     "git": "^0.1.5",
     "gsap": "^1.20.4",
