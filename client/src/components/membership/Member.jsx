@@ -16,6 +16,7 @@ import MemberPeopleView from './MemberPeopleView'
 import MemberPersonalView from './MemberPersonalView'
 import ProfilePhotoIcon from './ProfilePhotoIcon'
 import MemberProfilePhotoEditor from './MemberProfilePhotoEditor'
+import VCardButton from './VCardButton'
 
 export default class Member extends Component {
   constructor(){
@@ -137,6 +138,9 @@ export default class Member extends Component {
         {canEdit && (<RaisedButton primary={true} label={editButtonText} style={buttonStyle} onClick={(e) => {e.preventDefault(); this.handleEditButtonTouchTap()}}/>)}
         {canInvite && (<RaisedButton secondary={true} label='Invite' style={buttonStyle} onClick={(e) => {e.preventDefault(); this.handleInviteButtonTouchTap(member)}}/>)}
         {profileIcon}
+
+        <VCardButton member={member} style={Object.assign({}, buttonStyle, {marginRight: '10px'})} />
+        
         {isLinked && (
             <div style={{ maxWidth: 250, fontSize: '0.7em' }}>
               <table>
