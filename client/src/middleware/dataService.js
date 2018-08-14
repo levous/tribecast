@@ -416,6 +416,27 @@ const dataService = store => next => action => {
         });
       });
 
+    case user_action_types.LOG_IN_MAGIC_LINK:
+      const {magicLinkToken} = action;
+
+      return fetch(`/auth/magiclink/${magicLinkToken}`, {
+        method: 'get'
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        auth.authenticateUser(responseJson.token);
+        return next({
+          type: user_action_types.USER_LOGGED_IN,
+          user: responseJson.user
+        });
+      })
+      .catch(err => {
+        return next({
+          type: user_action_types.USER_LOG_IN_FAILED,
+          error: err
+        });
+      });
+
     case user_action_types.UPDATE_PASSWORD:
       const {password, resetToken} = action;
       const jsonBody = {newPassword: password};

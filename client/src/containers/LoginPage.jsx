@@ -38,7 +38,8 @@ class LoginPage extends React.Component {
         password: ''
       },
       passwordResetDialogOpen: props.passwordResetSucceeded || false,
-      loggedIn: false
+      loggedIn: false,
+      attemptedMagicLinkToken: ''
     };
 
     this.auth = new Auth(context.store);
@@ -107,6 +108,18 @@ class LoginPage extends React.Component {
     this.props.actions.logInUser(this.state.user);
   }
 
+
+  /**
+   * Login using magic link
+   *
+   * @param String magicLinkToken - a token passed in the url that can log a user in
+   */
+  loginMagicLink(magicLinkToken) {
+    alert('lordie');
+    this.setState({attemptedMagicLinkToken: magicLinkToken});
+    return this.props.actions.logInMagicLink(magicLinkToken);
+  }
+
   /**
    * Change the user object.
    *
@@ -144,6 +157,11 @@ class LoginPage extends React.Component {
    * Render the component.
    */
   render() {
+
+
+    if(this.props.match.params.magicLinkToken && !this.state.loggedIn && this.state.attemptedMagicLinkToken != this.props.match.params.magicLinkToken) {
+      this.loginMagicLink(this.props.match.params.magicLinkToken);
+    }
 
     if (this.state.loggedIn) {
       return <Redirect to="/membership" />

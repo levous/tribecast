@@ -100,6 +100,9 @@ const NavigableRoutes = (props, {store}) => {
         <Route path='/login' component={LoginPage} onEnter={(nextState, replace) => {
           if (this.auth.isUserAuthenticated()) { replace('/membership') }
         }} />
+        <Route path='/magiclink/:magicLinkToken' component={LoginPage} onEnter={(nextState, replace) => {
+          if (this.auth.isUserAuthenticated()) { replace('/membership') }
+        }} />
         <Route path='/signup' component={SignUpPage} />
         <Route path='/membership' component={MembershipPage} />
         <Route path='/address-view' component={AddressListPage} />

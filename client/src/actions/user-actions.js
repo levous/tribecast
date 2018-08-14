@@ -4,6 +4,7 @@ export const user_action_types = {
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
   USER_LOG_IN_FAILED: 'USER_LOG_IN_FAILED',
+  LOG_IN_MAGIC_LINK: 'LOG_IN_MAGIC_LINK',
   UPDATE_PASSWORD: 'UPDATE_PASSWORD',
   UPDATE_USER: 'UPDATE_USER',
   RESET_PASSWORD: 'RESET_PASSWORD',
@@ -36,6 +37,12 @@ export function logInUser(userData) {
   };
 };
 
+export function logInMagicLink(magicLinkToken) {
+  return {
+    type: user_action_types.LOG_IN_MAGIC_LINK,
+    magicLinkToken
+  };
+};
 
 export function userLoggedIn(userData) {
   return {
