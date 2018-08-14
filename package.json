@@ -53,6 +53,7 @@
     "parse-address": "0.0.6",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "passport-strategy": "^1.0.0",
     "prop-types": "^15.6.1",
     "qs": "^6.5.1",
     "rc-slider": "^8.6.1",

@@ -17,6 +17,8 @@ const UserSchema = new mongoose.Schema({
   source: String,
   passwordResetToken: String,
   passwordResetTokenExpires: Date,
+  magicLinkToken: String,
+  magicLinkTokenExpires: Date,
   confirmedAt: Date,
   accessExpiresAt: Date,
   lastAuthCheckAt: Date
@@ -66,7 +68,11 @@ UserSchema.pre('save', function saveHook(next) {
 UserSchema.set('toJSON', {
   virtuals: true,
   versionKey:false,
-  transform: function (doc, ret) {   delete ret._id  }
+  transform: function (doc, ret) {
+    delete ret._id
+    ret.passwordResetToken = 'obfuscated'
+    ret.magicLinkToken = 'obfuscated'
+  }
 });
 
 // Plugin must be *after* virtuals

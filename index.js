@@ -89,8 +89,10 @@ app.use(passport.initialize());
 // load passport strategies
 const localSignupStrategy = require('./server/passport/local-signup');
 const localLoginStrategy = require('./server/passport/local-login');
+const magicLinkLoginStrategy = require('./server/passport/magic-link-login');
 passport.use('local-signup', localSignupStrategy);
 passport.use('local-login', localLoginStrategy);
+passport.use('magic-link-login', magicLinkLoginStrategy);
 
 //TODO: investigate node-sass-middleware
 /*app.use(require('node-sass-middleware')({

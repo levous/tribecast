@@ -102,6 +102,20 @@ exports.findByPasswordResetToken = function(resetToken) {
     });
 };
 
+exports.findByMagicLinkToken = function(magicLinkToken) {
+  if(!magicLinkToken || !magicLinkToken.length) return Promise.reject(new errors.PreconditionFailedError('magic link token missing or invalid'));
+
+  // find a user by password reset token
+  return User.findOne({ magicLinkToken: magicLinkToken, magicLinkTokenExpires: { $gt: Date.now() } }).exec()
+    .then(user => {
+      if (!user) {
+        const err = new errors.ResourceNotFoundError('Magic link token is invalid or has expired')
+        return Promise.reject(err);
+      }
+      return user;
+    });
+};
+
 exports.updatePasswordUsingResetToken = function(resetToken, newPassword) {
   return this.findByPasswordResetToken(resetToken)
   .then(user => {
