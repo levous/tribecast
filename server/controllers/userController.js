@@ -102,6 +102,30 @@ exports.findByPasswordResetToken = function(resetToken) {
     });
 };
 
+exports.generateMagicLink = function(email) {
+  return User.findOne({ email: email.toLowerCase() }).exec()
+    .then(user => {
+      if (!user) {
+        const err = new errors.ResourceNotFoundError('No user found using provided email address')
+        return Promise.reject(err);
+      }
+
+      user.magicLinkToken = uuid();
+      user.magicLinkTokenExpires = Date.now() + (3600000 * 2); // 2 hour
+      log.info(`magicLink - magic link token: ${user.magicLinkToken}`);
+      return user.save();
+    })
+    .then(user => {
+
+      return {
+        message: 'generate magic link routine completed successfully',
+        magicLinkToken: user.magicLinkToken,
+        userName: user.name,
+        undeliverable: (user.emailStatus && !user.emailStatus.deliverable)
+      }
+    });
+};
+
 exports.findByMagicLinkToken = function(magicLinkToken) {
   if(!magicLinkToken || !magicLinkToken.length) return Promise.reject(new errors.PreconditionFailedError('magic link token missing or invalid'));
 

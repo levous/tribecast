@@ -10,6 +10,7 @@ const LoginForm = ({
   onSubmit,
   onChange,
   onResetPassword,
+  onSendMagicLink,
   errors,
   successMessage,
   user
@@ -52,7 +53,8 @@ const LoginForm = ({
 
       <CardText>
         Don't have an account? <Link to={'/signup'}>Create one</Link><br />
-        Can't remember your password? <a onClick={onResetPassword}>Reset password</a>
+        Can't remember your password? <a onClick={onResetPassword}>Reset password</a><br/>
+        Hate typing passwords? <a onClick={onSendMagicLink}>Send Magic link</a>
       </CardText>
     </form>
   </Card>

@@ -47,6 +47,7 @@ class LoginPage extends React.Component {
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
+    this.sendMagicLink = this.sendMagicLink.bind(this);
     this.dialogClosed = this.dialogClosed.bind(this);
 
   }
@@ -109,13 +110,27 @@ class LoginPage extends React.Component {
   }
 
 
+
+  sendMagicLink() {
+    // valid8 email and only send when there is one there
+
+    if (!Validator.isValidEmail(this.state.user.email)) {
+      this.setState({
+        errors: { email: 'Email address is Not Valid', summary: 'That email address doesn\'t look right.  Please provide a valid email address to send your magic link.'}
+      });
+      return;
+    }
+
+    Logger.logWarn({description: `${this.state.user.email} sending magic link`});
+    this.props.actions.sendMagicLink(this.state.user.email);
+  }
+
   /**
    * Login using magic link
    *
    * @param String magicLinkToken - a token passed in the url that can log a user in
    */
   loginMagicLink(magicLinkToken) {
-    alert('lordie');
     this.setState({attemptedMagicLinkToken: magicLinkToken});
     return this.props.actions.logInMagicLink(magicLinkToken);
   }
@@ -185,6 +200,7 @@ class LoginPage extends React.Component {
           onSubmit={this.processForm}
           onChange={this.changeUser}
           onResetPassword={this.resetPassword}
+          onSendMagicLink={this.sendMagicLink}
           errors={this.state.errors}
           successMessage={this.state.successMessage}
           user={this.state.user}

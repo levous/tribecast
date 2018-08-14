@@ -4,9 +4,11 @@ export const user_action_types = {
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
   USER_LOG_IN_FAILED: 'USER_LOG_IN_FAILED',
-  LOG_IN_MAGIC_LINK: 'LOG_IN_MAGIC_LINK',
   UPDATE_PASSWORD: 'UPDATE_PASSWORD',
   UPDATE_USER: 'UPDATE_USER',
+  LOG_IN_MAGIC_LINK: 'LOG_IN_MAGIC_LINK',
+  SEND_MAGIC_LINK: 'SEND_MAGIC_LINK',
+  SEND_MAGIC_LINK_RESPONSE_RECEIVED: 'SEND_MAGIC_LINK_RESPONSE_RECEIVED',
   RESET_PASSWORD: 'RESET_PASSWORD',
   RESET_PASSWORD_RESPONSE_RECEIVED: 'RESET_PASSWORD_RESPONSE_RECEIVED',
   UPDATE_PASSWORD_SUCCESS: 'UPDATE_PASSWORD_SUCCESS',
@@ -58,6 +60,13 @@ export function userLoggedOut() {
 export function resetPassword(email) {
   return {
     type: user_action_types.RESET_PASSWORD,
+    email
+  };
+};
+
+export function sendMagicLink(email) {
+  return {
+    type: user_action_types.SEND_MAGIC_LINK,
     email
   };
 };

@@ -460,7 +460,7 @@ const dataService = store => next => action => {
         });
       });
 
-    case user_action_types.RESET_PASSWORD:
+    case user_action_types.RESET_PASSWORD:{
 
       const accountEmail = action.email;
 
@@ -482,8 +482,31 @@ const dataService = store => next => action => {
           err
         });
       });
+    }
+    case user_action_types.SEND_MAGIC_LINK:{
 
+      const accountEmail = action.email;
 
+      return fetch('/auth/magiclink', {
+        method: 'post',
+        headers: authHeaders,
+        body: JSON.stringify({email: accountEmail})
+      })
+      .then(ApiResponseHandler.handleFetchResponseRejectOrJson)
+      .then(responseJson => {
+        store.dispatch({type: user_action_types.RESET_PASSWORD_RESPONSE_RECEIVED, resetResponse: responseJson});
+        return next(action);
+      })
+      .catch(err => {
+        // need something more specific?
+        return next({
+          //TODO: better failure respone
+          type: user_action_types.USER_DATA_FAILED,
+          err
+        });
+      });
+
+    }
     case user_action_types.TOGGLE_USER_ROLE: {
       const {user, role} = action;
       const jsonBody = {

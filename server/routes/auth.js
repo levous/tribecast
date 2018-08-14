@@ -169,7 +169,7 @@ exports.setup = function (basePath, app) {
       const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
           `<p>Dear ${json.userName},</p>` +
           `<p>A password reset was requested for ${communityDefaults.name}!  Please follow the <a href="${urlRoot}/forgot-password/${json.resetToken}">Reset Password Link</a> to create a new password.</p>` +
-          `<p style="font-size:0.8em">(If you did not initiate this reset, please contact support as an unauthorized somebody may be trying to access your account.)</p>` +
+          `<p style="font-size:0.8em">(If you did not initiate this reset, you may disregard)</p>` +
           '<p style="padding-left: 300px;">Warm regards,</p>' +
           `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
           '</div>';
@@ -187,6 +187,54 @@ exports.setup = function (basePath, app) {
     })
     .then(mailResponse => {
       let message = 'Password reset email sent successfully';
+      if(emailMarkedUndeliverable) {
+        message += '.  WARNING: the email address has been marked undeliverable.  Please contact support to investigate problems encountered sending to this email address.';
+        log.warn(`Forgot password email to "${email}" attempted but email was previously marked undeliverable.`);
+      }
+      return res.json({status: mailResponse.status, username: username, message: message});
+    })
+    .catch(next);
+
+  });
+
+  /**
+   * magiclink - POST
+   * @param {string} email - email address of user
+   * @returns TODO:add proper docs
+   */
+  router.post('/magiclink', (request, res, next) => {
+    const email = request.body.email;
+    const urlRoot = `${request.protocol}://${request.hostname}`;
+    let username;
+    let emailMarkedUndeliverable = false;
+    userController.generateMagicLink(email)
+    .then(json => {
+      // successful response means email was found
+      username = json.userName;
+      emailMarkedUndeliverable = json.undeliverable;
+
+      const emailHtml = '<div style="border: 1px solid rgb(255, 255, 255); border-radius: 10px; margin: 20px; padding: 20px;">' +
+          `<p>Hi ${json.userName},</p>` +
+          `<p>Here is your magic link for ${communityDefaults.name}!  It is for YOU, alone.  Please don't share or forward this.  It will log you in, <i>just.like.magic!</i> </p>` +
+          `<p style="font-size:1.2em;margin:5px;"><a href="${urlRoot}/magiclink/${json.magicLinkToken}">Magic Link</a></p>` +
+          `<p style="font-size:0.8em">(If you did not initiate this, you can probably ignore it.  It was sent only yo your email address)</p>` +
+          '<p style="padding-left: 300px;">Warm regards,</p>' +
+          `<p style="padding-left: 300px;">${communityDefaults.fromEmail.name}</p>` +
+          '</div>';
+
+      log.info(`MAGICLINK success email \n     to: ${email}\n     body:${emailHtml}`);
+
+      return sendmail(
+        communityDefaults.fromEmail.address,
+        communityDefaults.fromEmail.name,
+        email,
+        username,
+        `${communityDefaults.name} Magic Link`,
+        emailHtml
+      );
+    })
+    .then(mailResponse => {
+      let message = 'Magic Link email sent successfully';
       if(emailMarkedUndeliverable) {
         message += '.  WARNING: the email address has been marked undeliverable.  Please contact support to investigate problems encountered sending to this email address.';
         log.warn(`Forgot password email to "${email}" attempted but email was previously marked undeliverable.`);
