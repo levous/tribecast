@@ -61,7 +61,7 @@ class VCardButton extends React.Component {
     console.log(vCardString)
 
     const a = window.document.createElement("a")
-    const file = 'data:text/vcard;charset=utf-8,' + encodeURIComponent(vCardString)
+    const file = 'data:text/vcard;name=' + filename + ';charset=utf-8,' + encodeURIComponent(vCardString)
     a.href = file
     a.target = '_blank'
     a.download = filename
