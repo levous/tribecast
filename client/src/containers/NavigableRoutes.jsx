@@ -28,6 +28,7 @@ import UploadPage from './UploadPage';
 import HelpPage from './HelpPage';
 import AdminDashboardPage from './AdminDashboardPage';
 import NotFound from './NotFound';
+import ManagedContentPage from './ManagedContentPage';
 
 
 const NavigableRoutes = (props, {store}) => {
@@ -114,6 +115,7 @@ const NavigableRoutes = (props, {store}) => {
         <RequireAuth path='/upload' component={UploadPage}
           isAuthenticated={userIsAuthenticated} isLoading={false} />
         <Route path='/help' component={HelpPage} />
+        <Route path='/resources/:topicSlug' component={ManagedContentPage} />
         <Route path='/*' component={NotFound} />
       </Switch>
     </div>
