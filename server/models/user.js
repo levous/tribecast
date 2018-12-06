@@ -24,7 +24,8 @@ const UserSchema = new mongoose.Schema({
   lastAuthCheckAt: Date
 },
 {
-  timestamps: true
+  timestamps: true,
+  usePushEach: true
 });
 
 

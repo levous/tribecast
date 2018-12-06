@@ -2,6 +2,16 @@
 
 An application to manage membership(cast) in a community (tribe)
 
+
+## Dev Setup
+
+### Local Dev
+
+In terminal, open two windows/tabs
+(Mongo needs to be running as well)
+`npm run bundledev`
+`npm run startdev`
+
 ##TODO
 This article makes sense and is probably the better way to deploy to heroku
 https://ditrospecta.com/javascript/react/es6/webpack/heroku/2015/08/08/deploying-react-webpack-heroku.html
